@@ -1,0 +1,11 @@
+@import url(common.css);
+.font-pane-root {
+    -fx-font-family: "Serif";
+}
+.btn-box{
+    -fx-border-color:#d3d3d3;
+}
+
+.slider .axis{
+    -fx-tick-label-font: 12 "Serif";
+}

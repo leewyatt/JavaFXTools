@@ -1,0 +1,72 @@
+<idea-plugin>
+    <id>com.itcodebox.fxtools.id</id>
+    <name>JavaFX Tools</name>
+    <version>1.2.4</version>
+    <vendor email="leewyatt7788@gmail.com">LeeWyatt</vendor>
+
+    <description><![CDATA[
+      <p>This is a tool set plugin for Java FX.</p>
+      <ul>
+        <li>Color tool: Color collocation, color extraction, color editing; supports gradient color;Can output CSS Code /Java Code.</li>
+        <li>Font tool: Font effect preview, get font information; Can output CSS Code /Java Code.</li>
+        <li>Svg tool: svg effect preview, color modification, export Path or JPG PNG GIF image.</li>
+        <li>Because the plugin based on <b>JavaFX Runtime for Plugins </b>, so it doesn't seem to support <span style="color:#54829F">Mac M1</span>.</li>
+      </ul>
+        </br>
+        <p>If you have any bugs or suggestions, you can contact us through the following methods: </p>
+        <p>Email: <b>leewyatt7788@gmail.com</b></p>
+        <p>JavaFX/Swing QQ群: <span style="color:#54829F"><b>715598051</b></span></p>
+        感谢<b>@圆胖胖</b>指出 MacOs(intel) 环境下字符编码错误。<br/>
+        感谢<b>@liufanglei</b> 帮忙测试字符编码。
+    ]]></description>
+
+    <!--
+        无需javafx插件的版本号 ....   1.0.1->under202
+        需要javaFX1.0.2的版本号...   1.0.2->202
+        需要javaFX1.0.3的版本号...   1.0.3->203
+                             ...   1.0.4->211
+        用最后的后缀区分
+
+当颜色为黑色时 svg输出javacode 不要设置fill
+当颜色为纯色时，变量名是color而不是paint, 统一为Paint
+当缩放比例为x 1.0 或 y1.0 不要进行设置.
+当加载字体时 .如果加载失败,提示用户检查字体文件名名是否包含空格,{} []等特殊字符,
+
+v plugin。xml 版本号，  描述  changnotes
+v 1. 修改了CSS文件, 修改了多个类,引入CSS
+v FXColorinfoPane 修改了 stylesheet关联的文件名
+v PaintConvertUtil 修改了59行   varStr = "Color paint =";
+v FXSvgPane.java  修改了第339行 开始的if分支
+v FXFontPane       修改了335行 添加新变量
+v message 文件修改了
+    -->
+
+    <change-notes><![CDATA[
+        <ul>
+           <li>Fix corrupted character encoding for <b>macOS(Intel)</b></li>
+           <li>Fix some bugs</li>
+        </ul>
+    ]]>
+    </change-notes>
+
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html for description -->
+    <idea-version since-build="211.6693.111"/>
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.javafx</depends>
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="com.itcodebox.fxtools.service.TempFileService"/>
+
+        <toolWindow id="JavaFX Tools"
+                    secondary="true"
+                    icon="PluginIcons.FXToolsToolWindow"
+                    anchor="right"
+                    factoryClass="com.itcodebox.fxtools.ToolWindowFactoryImpl"/>
+    </extensions>
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+
+
+</idea-plugin>

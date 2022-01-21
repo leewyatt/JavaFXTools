@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '0.7.3'
+//    id 'org.jetbrains.intellij' version '1.1.4'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+//--add-exports=java.desktop/java.awt.dnd.peer=javafx.swing
+//--add-exports=java.desktop/sun.awt=javafx.swing
+//--add-exports=java.desktop/sun.awt.dnd=javafx.swing
+//--add-exports=java.desktop/sun.swing=javafx.swing
+runIde {
+    jvmArgs '--add-exports', 'java.base/jdk.internal.vm=ALL-UNNAMED'
+}
+group 'com.itcodebox'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+//    compile files('libs/rxcontrols.jar')
+//    compile fileTree(dir: 'libs', include: '*.jar')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    // https://mvnrepository.com/artifact/com.miglayout/miglayout-core
+    implementation group: 'com.miglayout', name: 'miglayout-core', version: '5.3'
+
+    // https://mvnrepository.com/artifact/com.miglayout/miglayout-swing
+    implementation group: 'com.miglayout', name: 'miglayout-swing', version: '5.3'
+
+    // https://mvnrepository.com/artifact/com.miglayout/miglayout-javafx
+    implementation group: 'com.miglayout', name: 'miglayout-javafx', version: '5.3'
+
+
+
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version '211.6693.111'
+    pluginName 'JavaFX Tools'
+    updateSinceUntilBuild false
+    plugins "com.intellij.javafx:1.0.3"
+}
+patchPluginXml {
+    sinceBuild "211.6693.111"
+}
+test {
+    useJUnitPlatform()
+}

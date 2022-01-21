@@ -1,0 +1,13 @@
+@import url(common.css);
+.svg-pane-root {
+    -fx-font-family: "Serif";
+}
+.svg-path-pane {
+    -fx-background-color: null;
+    /*如果是FXML里那么路径 就不需要前面的.. 因为FXML最后会加载成java类 */
+    -fx-background-image: url(../images/transport.png);
+    -fx-background-repeat: repeat;
+}
+.image-view-pane {
+    -fx-background-color: white;
+}

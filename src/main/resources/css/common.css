@@ -1,0 +1,12 @@
+.icon-btn SVGPath {
+    -fx-fill: #6E6E6E;
+}
+
+.icon-btn-blue SVGPath {
+    -fx-fill: #3c72d2;
+}
+
+.icon-btn:pressed SVGPath, .icon-btn-blue:pressed SVGPath {
+    -fx-fill: #64a9cc;
+}
+

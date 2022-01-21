@@ -1,0 +1,4 @@
+@import "common.css";
+.text-field {
+    -fx-font-family: "Serif";
+}
