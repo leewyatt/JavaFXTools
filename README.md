@@ -1,12 +1,7 @@
 ## JavaFX Tools
 
 **Plugin supports Chinese and English.**
-### Picture Preview
-![Paint Piker](readmeImags/1.jpg)
-![](readmeImags/2.png)
-![](readmeImags/3.png)
-![](readmeImags/4.png)
-![](readmeImags/5.png)
+
 ### How to install
 Idea的插件市场搜索 JavaFXTools 就可以下载.<br/>
 Idea's plugin market can be downloaded by searching for JavaFXTools.
@@ -21,8 +16,14 @@ Idea's plugin market can be downloaded by searching for JavaFXTools.
 - SVG工具: 可以提取svg文件的path路径,或者直接生成图片,支持2x,3x多倍图.<br/>
   SVG Tool: It can extract the path of the svg file, or directly generate the image, support 2x, 3x multiple images.
 
-
 > It doesn't seem to support Apple Silicon(M1,M1X,M2... ).
+
+### Picture Preview
+![Paint Piker](readmeImags/1.jpg)
+![](readmeImags/2.png)
+![](readmeImags/3.png)
+![](readmeImags/4.png)
+![](readmeImags/5.png)
 
 ### Paint Picker Description
 对 [SceneBuilder](https://github.com/gluonhq/scenebuilder) 的颜色代码组件进行了增强,添加了新的功能, 可以直接复制颜色的java代码或者javafx的CSS代码.<br/>
