@@ -143,7 +143,7 @@ A structured MVC pattern for JavaFX with convention-based file resolution.
 
 **Manual installation:**
 
-1. Download the latest release `.zip` from [Releases](https://github.com/niceboylee/JavaFXTools/releases)
+1. Download the latest release `.zip` from [Releases](https://github.com/leewyatt/JavaFXTools/releases)
 2. Settings → Plugins → ⚙️ → Install Plugin from Disk → select the `.zip`
 
 ---
@@ -173,7 +173,7 @@ The plugin auto-detects these libraries on your project classpath and provides t
 
 ```bash
 # Clone
-git clone https://github.com/niceboylee/JavaFXTools.git
+git clone https://github.com/leewyatt/JavaFXTools.git
 cd JavaFXTools
 
 # Build
