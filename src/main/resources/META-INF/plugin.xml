@@ -1,72 +1,254 @@
 <idea-plugin>
     <id>com.itcodebox.fxtools.id</id>
+    <!-- "Tools" in the name is flagged by DevKit's Marketplace naming guideline
+         check, but this plugin is grandfathered under its existing Marketplace
+         listing (multi-year history under this name) and "Tools" carries real
+         semantic meaning here (toolkit vs. single-purpose helper). -->
+    <!--suppress PluginXmlValidity -->
     <name>JavaFX Tools</name>
-    <version>1.2.4</version>
-    <vendor email="leewyatt7788@gmail.com">LeeWyatt</vendor>
+    <vendor email="leewyatt7788@gmail.com" url="https://github.com/leewyatt">LeeWyatt</vendor>
 
     <description><![CDATA[
-      <p>This is a tool set plugin for Java FX.</p>
-      <ul>
-        <li>Color tool: Color collocation, color extraction, color editing; supports gradient color;Can output CSS Code /Java Code.</li>
-        <li>Font tool: Font effect preview, get font information; Can output CSS Code /Java Code.</li>
-        <li>Svg tool: svg effect preview, color modification, export Path or JPG PNG GIF image.</li>
-        <li>Because the plugin based on <b>JavaFX Runtime for Plugins </b>, so it doesn't seem to support <span style="color:#54829F">Mac M1</span>.</li>
-      </ul>
-        </br>
-        <p>If you have any bugs or suggestions, you can contact us through the following methods: </p>
-        <p>Email: <b>leewyatt7788@gmail.com</b></p>
-        <p>JavaFX/Swing QQ群: <span style="color:#54829F"><b>715598051</b></span></p>
-        感谢<b>@圆胖胖</b>指出 MacOs(intel) 环境下字符编码错误。<br/>
-        感谢<b>@liufanglei</b> 帮忙测试字符编码。
+        All-in-one JavaFX development toolkit for IntelliJ IDEA.
+        Visual tools, CSS intelligence, FXML code assistance, and FxmlKit integration.
     ]]></description>
 
-    <!--
-        无需javafx插件的版本号 ....   1.0.1->under202
-        需要javaFX1.0.2的版本号...   1.0.2->202
-        需要javaFX1.0.3的版本号...   1.0.3->203
-                             ...   1.0.4->211
-        用最后的后缀区分
+    <resource-bundle>messages.FxToolsBundle</resource-bundle>
 
-当颜色为黑色时 svg输出javacode 不要设置fill
-当颜色为纯色时，变量名是color而不是paint, 统一为Paint
-当缩放比例为x 1.0 或 y1.0 不要进行设置.
-当加载字体时 .如果加载失败,提示用户检查字体文件名名是否包含空格,{} []等特殊字符,
+    <!-- Required dependencies -->
+    <depends>com.intellij.modules.java</depends>
+    <depends>com.intellij.modules.xml</depends>
+    <!-- Optional: CSS PSI enhancement. DevKit can't resolve "com.intellij.css" against
+         IC SDK (plugin ships only with Ultimate); the runtime loader handles it correctly
+         via optional="true". Warning is cosmetic. -->
+    <!--suppress PluginXmlValidity -->
+    <depends optional="true" config-file="css-enhancement.xml">com.intellij.css</depends>
 
-v plugin。xml 版本号，  描述  changnotes
-v 1. 修改了CSS文件, 修改了多个类,引入CSS
-v FXColorinfoPane 修改了 stylesheet关联的文件名
-v PaintConvertUtil 修改了59行   varStr = "Color paint =";
-v FXSvgPane.java  修改了第339行 开始的if分支
-v FXFontPane       修改了335行 添加新变量
-v message 文件修改了
-    -->
+    <!-- Optional: Properties PSI for FXML %key i18n support -->
+    <depends optional="true" config-file="properties-enhancement.xml">com.intellij.properties</depends>
 
-    <change-notes><![CDATA[
-        <ul>
-           <li>Fix corrupted character encoding for <b>macOS(Intel)</b></li>
-           <li>Fix some bugs</li>
-        </ul>
-    ]]>
-    </change-notes>
-
-    <!-- please see https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html for description -->
-    <idea-version since-build="211.6693.111"/>
-    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
-         on how to target different products -->
-    <depends>com.intellij.modules.platform</depends>
-    <depends>com.intellij.javafx</depends>
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.itcodebox.fxtools.service.TempFileService"/>
+        <internalFileTemplate name="FxmlKitView"/>
+        <internalFileTemplate name="FxmlKitViewProvider"/>
+        <internalFileTemplate name="FxmlKitController"/>
+        <internalFileTemplate name="FxmlKitFxml"/>
+        <internalFileTemplate name="FxmlKitCss"/>
+        <defaultLiveTemplates file="/liveTemplates/FxmlKit.xml"/>
+
+        <!-- FxmlKit four-file navigation -->
+        <codeInsight.lineMarkerProvider language="JAVA"
+            implementationClass="io.github.leewyatt.fxtools.fxmlkit.navigation.FxmlKitViewLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML"
+            implementationClass="io.github.leewyatt.fxtools.fxmlkit.navigation.FxmlKitFxmlLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="TEXT"
+            implementationClass="io.github.leewyatt.fxtools.fxmlkit.navigation.FxmlKitCssLineMarkerProvider"/>
+
+        <!-- @FxmlPath reference and completion -->
+        <psi.referenceContributor language="JAVA"
+            implementation="io.github.leewyatt.fxtools.fxmlkit.reference.FxmlPathReferenceContributor"/>
+
+        <!-- @FxmlPath validation -->
+        <localInspection language="JAVA" groupKey="inspection.group.fxmlkit"
+            shortName="FxmlKitFxmlPath"
+            key="inspection.FxmlKitFxmlPath.displayName"
+            enabledByDefault="true"
+            level="ERROR"
+            implementationClass="io.github.leewyatt.fxtools.fxmlkit.inspection.FxmlPathInspection"/>
+
+        <!-- FxmlKit code inspections -->
+        <localInspection language="JAVA" groupKey="inspection.group.fxmlkit"
+            shortName="FxmlKitMissingFxml"
+            key="inspection.FxmlKitMissingFxml.displayName"
+            enabledByDefault="true"
+            level="ERROR"
+            implementationClass="io.github.leewyatt.fxtools.fxmlkit.inspection.MissingFxmlInspection"/>
+
+        <localInspection language="XML" groupKey="inspection.group.fxmlkit"
+            shortName="FxmlKitMissingController"
+            key="inspection.FxmlKitMissingController.displayName"
+            enabledByDefault="true"
+            level="ERROR"
+            implementationClass="io.github.leewyatt.fxtools.fxmlkit.inspection.MissingControllerInspection"/>
+
+        <localInspection language="JAVA" groupKey="inspection.group.fxmlkit"
+            shortName="FxmlKitMissingCss"
+            key="inspection.FxmlKitMissingCss.displayName"
+            enabledByDefault="true"
+            level="WEAK WARNING"
+            implementationClass="io.github.leewyatt.fxtools.fxmlkit.inspection.MissingCssInspection"/>
+
+        <localInspection language="JAVA" groupKey="inspection.group.fxmlkit"
+            shortName="FxmlKitNamingConvention"
+            key="inspection.FxmlKitNamingConvention.displayName"
+            enabledByDefault="true"
+            level="WARNING"
+            implementationClass="io.github.leewyatt.fxtools.fxmlkit.inspection.NamingConventionInspection"/>
+
+        <!-- FXML indexes -->
+        <fileBasedIndex implementation="io.github.leewyatt.fxtools.fxml.index.FxControllerIndex"/>
+        <fileBasedIndex implementation="io.github.leewyatt.fxtools.fxml.index.FxIdIndex"/>
+        <fileBasedIndex implementation="io.github.leewyatt.fxtools.fxml.index.FxEventHandlerIndex"/>
+        <fileBasedIndex implementation="io.github.leewyatt.fxtools.fxml.index.FxStyleClassIndex"/>
+
+        <!-- FXML <-> Controller navigation (all JavaFX projects) -->
+        <codeInsight.lineMarkerProvider language="XML"
+            implementationClass="io.github.leewyatt.fxtools.fxml.navigation.FxmlToControllerLineMarker"/>
+        <codeInsight.lineMarkerProvider language="JAVA"
+            implementationClass="io.github.leewyatt.fxtools.fxml.navigation.ControllerToFxmlLineMarker"/>
+
+        <!-- FXML CSS references (all JavaFX projects) -->
+        <psi.referenceContributor language="XML"
+            implementation="io.github.leewyatt.fxtools.fxml.reference.FxmlCssReferenceContributor"/>
+
+        <!-- FXML code inspections (all JavaFX projects) -->
+        <localInspection language="XML" groupKey="inspection.group.javafx"
+            shortName="MissingFxIdField"
+            key="inspection.MissingFxIdField.displayName"
+            enabledByDefault="true"
+            level="WARNING"
+            implementationClass="io.github.leewyatt.fxtools.fxml.inspection.MissingFxIdFieldInspection"/>
+
+        <localInspection language="XML" groupKey="inspection.group.javafx"
+            shortName="MissingEventHandler"
+            key="inspection.MissingEventHandler.displayName"
+            enabledByDefault="true"
+            level="WARNING"
+            implementationClass="io.github.leewyatt.fxtools.fxml.inspection.MissingEventHandlerInspection"/>
+
+        <!-- @FXML type and usage inspections (all JavaFX projects) -->
+        <localInspection language="JAVA" groupKey="inspection.group.javafx"
+            shortName="FxmlFieldTypeMismatch"
+            key="inspection.FxmlFieldTypeMismatch.displayName"
+            enabledByDefault="true"
+            level="WARNING"
+            implementationClass="io.github.leewyatt.fxtools.fxml.inspection.FxmlFieldTypeMismatchInspection"/>
+
+        <localInspection language="JAVA" groupKey="inspection.group.javafx"
+            shortName="UnusedFxmlField"
+            key="inspection.UnusedFxmlField.displayName"
+            enabledByDefault="true"
+            level="WEAK WARNING"
+            implementationClass="io.github.leewyatt.fxtools.fxml.inspection.UnusedFxmlFieldInspection"/>
+
+        <localInspection language="JAVA" groupKey="inspection.group.javafx"
+            shortName="UnusedFxmlMethod"
+            key="inspection.UnusedFxmlMethod.displayName"
+            enabledByDefault="true"
+            level="WEAK WARNING"
+            implementationClass="io.github.leewyatt.fxtools.fxml.inspection.UnusedFxmlMethodInspection"/>
+
+        <!-- FXML resource path references and validation -->
+        <psi.referenceContributor language="XML"
+            implementation="io.github.leewyatt.fxtools.fxml.reference.FxmlResourceReferenceContributor"/>
+
+        <localInspection language="XML" groupKey="inspection.group.javafx"
+            shortName="FxmlResourcePath"
+            key="inspection.FxmlResourcePath.displayName"
+            enabledByDefault="true"
+            level="ERROR"
+            implementationClass="io.github.leewyatt.fxtools.fxml.inspection.FxmlResourcePathInspection"/>
+
+        <!-- CSS property index -->
+        <fileBasedIndex implementation="io.github.leewyatt.fxtools.css.index.FxCssPropertyIndex"/>
+
+        <!-- CSS completion and documentation -->
+        <typedHandler implementation="io.github.leewyatt.fxtools.css.completion.FxCssTypedHandler"/>
+        <typedHandler implementation="io.github.leewyatt.fxtools.css.completion.FxCssInlineTypedHandler"/>
+        <completion.contributor language="any"
+            implementationClass="io.github.leewyatt.fxtools.css.completion.FxCssCompletionContributor"/>
+        <completion.confidence language="JAVA"
+            implementationClass="io.github.leewyatt.fxtools.css.completion.FxCssInlineCompletionConfidence"
+            order="first"/>
+        <completion.contributor language="JAVA"
+            implementationClass="io.github.leewyatt.fxtools.css.completion.FxCssInlineCompletionContributor"/>
+        <completion.contributor language="XML"
+            implementationClass="io.github.leewyatt.fxtools.css.completion.FxCssInlineCompletionContributor"/>
+        <platform.backend.documentation.targetProvider
+            implementation="io.github.leewyatt.fxtools.css.documentation.FxCssDocumentationProvider"/>
+
+        <!-- JavaFX Property code completion -->
+        <completion.contributor language="JAVA"
+            implementationClass="io.github.leewyatt.fxtools.generate.completion.FxPropCompletionContributor"/>
+        <liveTemplateMacro implementation="io.github.leewyatt.fxtools.generate.completion.FxCssNameMacro"/>
+
+        <!-- ResourceBundle.getBundle() navigation -->
+        <psi.referenceContributor language="JAVA"
+            implementation="io.github.leewyatt.fxtools.fxml.reference.ResourceBundleReferenceContributor"/>
+        <codeInsight.lineMarkerProvider language="JAVA"
+            implementationClass="io.github.leewyatt.fxtools.fxml.navigation.ResourceBundleLineMarkerProvider"/>
+
+        <!-- CSS variable Ctrl+Click navigation (Community: CSS = PlainText; Ultimate
+             CSS language variant is registered in css-enhancement.xml) -->
+        <psi.referenceContributor language="TEXT"
+            implementation="io.github.leewyatt.fxtools.css.navigation.CssVariableReferenceContributor"/>
+        <psi.referenceContributor language="JAVA"
+            implementation="io.github.leewyatt.fxtools.css.navigation.InlineCssVariableReferenceContributor"/>
+        <psi.referenceContributor language="XML"
+            implementation="io.github.leewyatt.fxtools.css.navigation.InlineCssVariableReferenceContributor"/>
+
+        <!-- CSS Gutter previews (Community: CSS = PlainText; Ultimate variants registered in css-enhancement.xml) -->
+        <codeInsight.lineMarkerProvider language="TEXT"
+            implementationClass="io.github.leewyatt.fxtools.css.preview.FxCssColorPreviewProvider"/>
+        <codeInsight.lineMarkerProvider language="TEXT"
+            implementationClass="io.github.leewyatt.fxtools.css.preview.FxCssGradientPreviewProvider"/>
+        <codeInsight.lineMarkerProvider language="TEXT"
+            implementationClass="io.github.leewyatt.fxtools.css.preview.FxCssSvgPreviewProvider"/>
+        <codeInsight.lineMarkerProvider language="TEXT"
+            implementationClass="io.github.leewyatt.fxtools.css.preview.effect.FxCssEffectPreviewProvider"/>
+        <codeInsight.lineMarkerProvider language="TEXT"
+            implementationClass="io.github.leewyatt.fxtools.css.preview.FxCssIconCodePreviewProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA"
+            implementationClass="io.github.leewyatt.fxtools.css.preview.JavaInlineCssLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML"
+            implementationClass="io.github.leewyatt.fxtools.css.preview.FxmlInlineCssLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA"
+            implementationClass="io.github.leewyatt.fxtools.ikonli.IkonliGutterIconProvider"/>
+        <codeInsight.lineMarkerProvider language="XML"
+            implementationClass="io.github.leewyatt.fxtools.ikonli.FxmlIconLiteralGutterProvider"/>
+        <completion.contributor language="XML"
+            implementationClass="io.github.leewyatt.fxtools.ikonli.FxmlIconLiteralCompletionContributor"/>
+
+        <!-- CSS inspection -->
+        <localInspection language="TEXT"
+            groupKey="inspection.group.javafx"
+            shortName="UnusedCssSelector"
+            key="inspection.UnusedCssSelector.displayName"
+            enabledByDefault="true"
+            level="WEAK WARNING"
+            implementationClass="io.github.leewyatt.fxtools.css.inspection.UnusedCssSelectorInspection"/>
 
         <toolWindow id="JavaFX Tools"
-                    secondary="true"
-                    icon="PluginIcons.FXToolsToolWindow"
                     anchor="right"
-                    factoryClass="com.itcodebox.fxtools.ToolWindowFactoryImpl"/>
+                    secondary="true"
+                    factoryClass="io.github.leewyatt.fxtools.toolwindow.FxToolWindowFactory"
+                    icon="/icons/javaFxToolWindow.svg"/>
+        <!-- IconDataService and FxCssModificationTracker are auto-registered via @Service annotation -->
+        <postStartupActivity implementation="io.github.leewyatt.fxtools.util.FxClasspathListener"/>
+        <copyPastePreProcessor implementation="io.github.leewyatt.fxtools.action.FontFacePasteProcessor"/>
     </extensions>
+
     <actions>
-        <!-- Add your actions here -->
+        <!-- Action text/description resolved from messages.FxToolsBundle via
+             action.<id>.text / action.<id>.description keys (IntelliJ convention). -->
+        <action id="FxmlKit.NewView"
+                class="io.github.leewyatt.fxtools.fxmlkit.action.NewFxmlKitViewAction"
+                icon="AllIcons.FileTypes.Xml">
+            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
+        </action>
+
+        <action id="JavaFX.GenerateProperty"
+                class="io.github.leewyatt.fxtools.generate.FxPropertyGenerateAction">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+        </action>
+
+        <action id="JavaFX.CopyFontFamilyName"
+                class="io.github.leewyatt.fxtools.action.CopyFontFamilyNameAction">
+            <add-to-group group-id="CutCopyPasteGroup" anchor="last"/>
+        </action>
+
+        <action id="JavaFX.CopyFontFaceCss"
+                class="io.github.leewyatt.fxtools.action.CopyFontFaceCssAction">
+            <add-to-group group-id="CutCopyPasteGroup" anchor="last"/>
+        </action>
     </actions>
-
-
 </idea-plugin>
