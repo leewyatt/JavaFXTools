@@ -192,6 +192,7 @@ cd JavaFXTools
 - 内嵌的 PaintPicker（颜色与渐变编辑器）改写自 Gluon 的 [Scene Builder](https://github.com/gluonhq/scenebuilder) 中的 PaintPicker 组件（原版为 JavaFX 实现，本项目改写为 Swing）。感谢 Scene Builder 团队提供的优秀原始实现。
 - Ikonli 相关图标数据来自 [Ikonli](https://github.com/kordamp/ikonli) 库。感谢 Andres Almiray 为 JavaFX 生态创建并维护了如此丰富的图标包集合。
 - 图标浏览器中收录的 84 个图标包源自 100 多个开源图标库（如 FontAwesome、Material Design Icons、Weather Icons 等）。衷心感谢每一个图标项目背后的作者和社区。完整的图标库名称及链接列表将在后续版本中整理补充。
+- 特别感谢 [Dirk Lemmermann](https://github.com/dlemmermann) 提供的宝贵反馈、测试以及功能建议，对本插件的完善起到了重要作用。
 
 ---
 

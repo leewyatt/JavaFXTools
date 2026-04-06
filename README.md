@@ -192,6 +192,7 @@ Requires Gradle 8.14 and JBR 21 (configured via `gradle.properties`).
 - The embedded PaintPicker (color & gradient editor) is a Swing rewrite of the PaintPicker component from [Scene Builder](https://github.com/gluonhq/scenebuilder) by Gluon. Thanks to the Scene Builder team for the excellent original JavaFX implementation.
 - Ikonli icon data comes from the [Ikonli](https://github.com/kordamp/ikonli) library. Thanks to Andres Almiray for creating and maintaining such a comprehensive icon pack collection for JavaFX.
 - The 84 icon packs bundled in the Icon Browser originate from over 100 open-source icon libraries (such as FontAwesome, Material Design Icons, Weather Icons, etc.). We are deeply grateful to the authors and communities behind each of these projects. A complete list of icon library names and links will be compiled in a future update.
+- Special thanks to [Dirk Lemmermann](https://github.com/dlemmermann) for providing valuable feedback, testing, and feature suggestions that helped shape this plugin.
 
 ---
 
