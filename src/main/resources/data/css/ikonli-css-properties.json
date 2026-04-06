@@ -1,0 +1,27 @@
+{
+  "_meta": {
+    "library": "Ikonli",
+    "version": "12.3.1",
+    "markerClass": "org.kordamp.ikonli.Ikon"
+  },
+  "-fx-icon-code": {
+    "valueType": "icon-code",
+    "appliesTo": "FontIcon",
+    "description": "Ikonli icon literal. Identifies the icon to render by its pack-qualified literal name (e.g. \"fontawesome-home\", \"material-wifi\"). Available literals depend on Ikonli packs present on the classpath.",
+    "example": "-fx-icon-code: \"fontawesome-home\";"
+  },
+  "-fx-icon-size": {
+    "valueType": "size",
+    "appliesTo": "FontIcon",
+    "default": "8",
+    "description": "Size of the FontIcon in pixels.",
+    "example": "-fx-icon-size: 24;"
+  },
+  "-fx-icon-color": {
+    "valueType": "paint",
+    "appliesTo": "FontIcon",
+    "default": "black",
+    "description": "Fill color of the FontIcon. Accepts any JavaFX Paint value (named color, hex, rgb/rgba, linear-gradient, radial-gradient).",
+    "example": "-fx-icon-color: #1e88e5;"
+  }
+}

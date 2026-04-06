@@ -1,0 +1,86 @@
+{
+  "_meta": {
+    "library": "ControlsFX",
+    "version": "11.2.4-SNAPSHOT",
+    "markerClass": "org.controlsfx.control.GridView"
+  },
+  "-fx-cell-height": {
+    "valueType": "size",
+    "appliesTo": "GridView",
+    "default": "64",
+    "description": "The height of each cell in the grid.",
+    "example": "-fx-cell-height: 80;"
+  },
+  "-fx-cell-width": {
+    "valueType": "size",
+    "appliesTo": "GridView",
+    "default": "64",
+    "description": "The width of each cell in the grid.",
+    "example": "-fx-cell-width: 80;"
+  },
+  "-fx-horizontal-cell-spacing": {
+    "valueType": "size",
+    "appliesTo": "GridView",
+    "default": "12",
+    "description": "The horizontal spacing between cells in the same row.",
+    "example": "-fx-horizontal-cell-spacing: 8;"
+  },
+  "-fx-selection-area-boundary": {
+    "valueType": "enum",
+    "values": ["control", "node"],
+    "appliesTo": "SnapshotView",
+    "default": "control",
+    "description": "The boundary that limits the area in which the user can create a selection.",
+    "example": "-fx-selection-area-boundary: node;"
+  },
+  "-fx-selection-area-fill": {
+    "valueType": "paint",
+    "appliesTo": "SnapshotView",
+    "default": "transparent",
+    "description": "The fill paint of the selected area.",
+    "example": "-fx-selection-area-fill: rgba(0, 120, 215, 0.2);"
+  },
+  "-fx-selection-border-paint": {
+    "valueType": "paint",
+    "appliesTo": "SnapshotView",
+    "default": "whitesmoke",
+    "description": "The paint of the selection border.",
+    "example": "-fx-selection-border-paint: #336699;"
+  },
+  "-fx-selection-border-width": {
+    "valueType": "size",
+    "appliesTo": "SnapshotView",
+    "default": "2.5",
+    "description": "The width of the selection border.",
+    "example": "-fx-selection-border-width: 1.5;"
+  },
+  "-fx-unselected-area-boundary": {
+    "valueType": "enum",
+    "values": ["control", "node"],
+    "appliesTo": "SnapshotView",
+    "default": "control",
+    "description": "The boundary that limits the area covered by the unselected area overlay.",
+    "example": "-fx-unselected-area-boundary: node;"
+  },
+  "-fx-unselected-area-fill": {
+    "valueType": "paint",
+    "appliesTo": "SnapshotView",
+    "default": "rgba(0, 0, 0, 0.5)",
+    "description": "The fill paint of the area outside the selection.",
+    "example": "-fx-unselected-area-fill: rgba(0, 0, 0, 0.3);"
+  },
+  "-fx-vertical-cell-spacing": {
+    "valueType": "size",
+    "appliesTo": "GridView",
+    "default": "12",
+    "description": "The vertical spacing between cells in the same column.",
+    "example": "-fx-vertical-cell-spacing: 8;"
+  },
+  "-thumb-move-animation-time": {
+    "valueType": "number",
+    "appliesTo": "ToggleSwitch",
+    "default": "200",
+    "description": "The duration in milliseconds for the thumb slide animation.",
+    "example": "-thumb-move-animation-time: 150;"
+  }
+}

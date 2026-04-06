@@ -1,0 +1,16 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- FXML %key i18n reference and completion -->
+        <psi.referenceContributor language="XML"
+            implementation="io.github.leewyatt.fxtools.fxml.reference.FxmlI18nReferenceContributor"/>
+
+        <localInspection language="XML"
+            bundle="messages.FxToolsBundle"
+            groupKey="inspection.group.javafx"
+            shortName="FxmlI18nKey"
+            key="inspection.FxmlI18nKey.displayName"
+            enabledByDefault="true"
+            level="WARNING"
+            implementationClass="io.github.leewyatt.fxtools.fxml.inspection.FxmlI18nInspection"/>
+    </extensions>
+</idea-plugin>

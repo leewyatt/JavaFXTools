@@ -1,0 +1,228 @@
+{
+  "_meta": {
+    "library": "JFoenix",
+    "version": "9.0.10",
+    "markerClass": "com.jfoenix.controls.JFXButton"
+  },
+  "-jfx-button-type": {
+    "valueType": "enum",
+    "values": ["flat", "raised"],
+    "appliesTo": "JFXButton",
+    "default": "flat",
+    "description": "The visual type of the button, either flat or raised with shadow.",
+    "example": "-jfx-button-type: raised;"
+  },
+  "-jfx-cell-limit": {
+    "valueType": "integer",
+    "appliesTo": "JFXAutoCompletePopup",
+    "default": "10",
+    "description": "The maximum number of suggestion cells to display in the popup.",
+    "example": "-jfx-cell-limit: 5;"
+  },
+  "-jfx-checked-color": {
+    "valueType": "paint",
+    "appliesTo": "JFXCheckBox",
+    "default": "#0F9D58",
+    "description": "The fill color of the checkbox when checked.",
+    "example": "-jfx-checked-color: #4CAF50;"
+  },
+  "-jfx-default-color": {
+    "valueType": "paint",
+    "appliesTo": "JFXDatePicker, JFXTimePicker",
+    "default": "#009688",
+    "description": "The accent color used for the picker overlay header and selection.",
+    "example": "-jfx-default-color: #3F51B5;"
+  },
+  "-jfx-dialog-transition": {
+    "valueType": "enum",
+    "values": ["center", "top", "right", "bottom", "left", "none"],
+    "appliesTo": "JFXDialog",
+    "default": "center",
+    "description": "The entrance transition animation for the dialog.",
+    "example": "-jfx-dialog-transition: top;"
+  },
+  "-jfx-disable-animation": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "JFXComboBox, JFXColorPicker, JFXRadioButton, JFXTabPane, JFXTextArea, JFXTextField, JFXToggleButton, JFXToggleNode",
+    "default": "false",
+    "description": "Whether to disable transition animations on the control.",
+    "example": "-jfx-disable-animation: true;"
+  },
+  "-jfx-disable-visual-focus": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "JFXButton, JFXCheckBox, JFXRadioButton, JFXToggleButton, JFXToggleNode",
+    "default": "false",
+    "description": "Whether to disable the visual focus indicator on the control.",
+    "example": "-jfx-disable-visual-focus: true;"
+  },
+  "-jfx-expanded": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "JFXListView",
+    "default": "false",
+    "description": "Whether the list view is in expanded mode showing sub-lists.",
+    "example": "-jfx-expanded: true;"
+  },
+  "-jfx-focus-color": {
+    "valueType": "paint",
+    "appliesTo": "JFXComboBox, JFXTextArea, JFXTextField",
+    "default": "#3f51b5",
+    "description": "The line color when the control has focus.",
+    "example": "-jfx-focus-color: #E91E63;"
+  },
+  "-jfx-indicator-position": {
+    "valueType": "enum",
+    "values": ["left", "right"],
+    "appliesTo": "JFXSlider",
+    "default": "left",
+    "description": "The position of the value indicator relative to the slider thumb.",
+    "example": "-jfx-indicator-position: right;"
+  },
+  "-jfx-label-float": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "JFXComboBox, JFXTextArea, JFXTextField",
+    "default": "false",
+    "description": "Whether the prompt text floats above the field when focused or filled.",
+    "example": "-jfx-label-float: true;"
+  },
+  "-jfx-mask-type": {
+    "valueType": "enum",
+    "values": ["circle", "rect", "fit"],
+    "appliesTo": "JFXRippler",
+    "default": "rect",
+    "description": "The shape of the ripple clip mask.",
+    "example": "-jfx-mask-type: circle;"
+  },
+  "-jfx-offset": {
+    "valueType": "number",
+    "appliesTo": "JFXTreeViewPath",
+    "default": "10",
+    "description": "The horizontal offset between path buttons in the tree view breadcrumb bar.",
+    "example": "-jfx-offset: 15;"
+  },
+  "-jfx-overlay": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "JFXDatePicker, JFXTimePicker",
+    "default": "false",
+    "description": "Whether the picker content is shown as a fullscreen overlay dialog.",
+    "example": "-jfx-overlay: true;"
+  },
+  "-jfx-radius": {
+    "valueType": "size",
+    "appliesTo": "JFXSpinner",
+    "default": "-1",
+    "description": "The radius of the spinner arc.",
+    "example": "-jfx-radius: 30;"
+  },
+  "-jfx-rippler-disabled": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "JFXRippler",
+    "default": "false",
+    "description": "Whether the ripple effect is disabled.",
+    "example": "-jfx-rippler-disabled: true;"
+  },
+  "-jfx-rippler-fill": {
+    "valueType": "paint",
+    "appliesTo": "JFXRippler",
+    "default": "rgb(0, 200, 255)",
+    "description": "The fill color of the ripple effect.",
+    "example": "-jfx-rippler-fill: #FF5722;"
+  },
+  "-jfx-rippler-radius": {
+    "valueType": "size",
+    "appliesTo": "JFXRippler",
+    "default": "-1",
+    "description": "The radius of the ripple effect circle.",
+    "example": "-jfx-rippler-radius: 50;"
+  },
+  "-jfx-rippler-recenter": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "JFXRippler",
+    "default": "false",
+    "description": "Whether the ripple effect animates from the center of the control instead of the click point.",
+    "example": "-jfx-rippler-recenter: true;"
+  },
+  "-jfx-selected-color": {
+    "valueType": "color",
+    "appliesTo": "JFXRadioButton",
+    "default": "#0F9D58",
+    "description": "The color of the radio button when selected.",
+    "example": "-jfx-selected-color: #2196F3;"
+  },
+  "-jfx-size": {
+    "valueType": "number",
+    "appliesTo": "JFXToggleButton, SVGGlyph",
+    "default": "10",
+    "description": "The size of the toggle button circle or the preferred size of the SVG glyph.",
+    "example": "-jfx-size: 20;"
+  },
+  "-jfx-starting-angle": {
+    "valueType": "number",
+    "appliesTo": "JFXSpinner",
+    "default": "0",
+    "description": "The starting angle in degrees for the spinner arc.",
+    "example": "-jfx-starting-angle: 90;"
+  },
+  "-jfx-toggle-color": {
+    "valueType": "paint",
+    "appliesTo": "JFXToggleButton, JFXToggleNode",
+    "default": "#009688",
+    "description": "The color of the toggle button circle when toggled on.",
+    "example": "-jfx-toggle-color: #4CAF50;"
+  },
+  "-jfx-toggle-line-color": {
+    "valueType": "paint",
+    "appliesTo": "JFXToggleButton",
+    "default": "#77C2BB",
+    "description": "The color of the toggle button track when toggled on.",
+    "example": "-jfx-toggle-line-color: #80CBC4;"
+  },
+  "-jfx-unchecked-color": {
+    "valueType": "paint",
+    "appliesTo": "JFXCheckBox",
+    "default": "#5A5A5A",
+    "description": "The border color of the checkbox when unchecked.",
+    "example": "-jfx-unchecked-color: #757575;"
+  },
+  "-jfx-unfocus-color": {
+    "valueType": "paint",
+    "appliesTo": "JFXComboBox, JFXTextArea, JFXTextField",
+    "default": "#A6A6A6",
+    "description": "The line color when the control does not have focus.",
+    "example": "-jfx-unfocus-color: #BDBDBD;"
+  },
+  "-jfx-unselected-color": {
+    "valueType": "color",
+    "appliesTo": "JFXRadioButton",
+    "default": "#5A5A5A",
+    "description": "The color of the radio button when unselected.",
+    "example": "-jfx-unselected-color: #757575;"
+  },
+  "-jfx-untoggle-color": {
+    "valueType": "paint",
+    "appliesTo": "JFXToggleButton, JFXToggleNode",
+    "default": "#FAFAFA",
+    "description": "The color of the toggle button circle when toggled off.",
+    "example": "-jfx-untoggle-color: #EEEEEE;"
+  },
+  "-jfx-untoggle-line-color": {
+    "valueType": "paint",
+    "appliesTo": "JFXToggleButton",
+    "default": "#999999",
+    "description": "The color of the toggle button track when toggled off.",
+    "example": "-jfx-untoggle-line-color: #BDBDBD;"
+  },
+  "-jfx-vertical-gap": {
+    "valueType": "size",
+    "appliesTo": "JFXListView",
+    "default": "0",
+    "description": "The vertical gap between list cells.",
+    "example": "-jfx-vertical-gap: 10;"
+  }
+}

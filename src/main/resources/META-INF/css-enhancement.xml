@@ -1,0 +1,49 @@
+<!--
+  Loaded only when com.intellij.css plugin (Ultimate) is present.
+  In Ultimate, .css files use the CSSLanguage instead of PlainTextLanguage,
+  so we re-register all CSS-targeted line marker providers against
+  language="CSS". Main plugin.xml has the parallel TEXT-language registrations
+  for Community Edition where .css files are PlainText.
+
+  Note: UnusedCssSelectorInspection is NOT duplicated here — localInspection
+  shortName must be globally unique and cannot be registered twice. Ultimate
+  users miss the weak warning on real-CSS-language files; this is a minor
+  trade-off, the line marker previews (the user-visible CSS features) still
+  work in both editions.
+
+  About the per-element suppression comments: DevKit cannot resolve language
+  id "CSS" against the IC SDK classpath (CSSLanguage ships only with Ultimate).
+  The warnings are cosmetic — this whole file only loads when com.intellij.css
+  is present at runtime, which means CSSLanguage is guaranteed to exist then.
+  See plugin.xml line 17 for the parallel suppression on the optional depends.
+-->
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- FxmlKit CSS line marker -->
+        <!--suppress PluginXmlValidity -->
+        <codeInsight.lineMarkerProvider language="CSS"
+            implementationClass="io.github.leewyatt.fxtools.fxmlkit.navigation.FxmlKitCssLineMarkerProvider"/>
+
+        <!-- CSS gutter previews -->
+        <!--suppress PluginXmlValidity -->
+        <codeInsight.lineMarkerProvider language="CSS"
+            implementationClass="io.github.leewyatt.fxtools.css.preview.FxCssColorPreviewProvider"/>
+        <!--suppress PluginXmlValidity -->
+        <codeInsight.lineMarkerProvider language="CSS"
+            implementationClass="io.github.leewyatt.fxtools.css.preview.FxCssGradientPreviewProvider"/>
+        <!--suppress PluginXmlValidity -->
+        <codeInsight.lineMarkerProvider language="CSS"
+            implementationClass="io.github.leewyatt.fxtools.css.preview.FxCssSvgPreviewProvider"/>
+        <!--suppress PluginXmlValidity -->
+        <codeInsight.lineMarkerProvider language="CSS"
+            implementationClass="io.github.leewyatt.fxtools.css.preview.effect.FxCssEffectPreviewProvider"/>
+        <!--suppress PluginXmlValidity -->
+        <codeInsight.lineMarkerProvider language="CSS"
+            implementationClass="io.github.leewyatt.fxtools.css.preview.FxCssIconCodePreviewProvider"/>
+
+        <!-- CSS variable Ctrl+Click navigation (Ultimate CSS language variant) -->
+        <!--suppress PluginXmlValidity -->
+        <psi.referenceContributor language="CSS"
+            implementation="io.github.leewyatt.fxtools.css.navigation.CssVariableReferenceContributor"/>
+    </extensions>
+</idea-plugin>

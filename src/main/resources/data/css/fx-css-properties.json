@@ -1,0 +1,1943 @@
+{
+  "_meta": {
+    "library": "JavaFX",
+    "version": "26"
+  },
+  "-fx-accent": {
+    "valueType": "color",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "The accent color for focused elements. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-accent: #0096c9;",
+    "source": "modena"
+  },
+  "-fx-alignment": {
+    "valueType": "enum",
+    "values": [
+      "top-left",
+      "top-center",
+      "top-right",
+      "center-left",
+      "center",
+      "center-right",
+      "bottom-left",
+      "bottom-center",
+      "bottom-right",
+      "baseline-left",
+      "baseline-center",
+      "baseline-right"
+    ],
+    "appliesTo": "FlowPane, GridPane, HBox, VBox, StackPane, TilePane, Labeled, TextField",
+    "default": "top-left",
+    "description": "The alignment of the content within the container.",
+    "example": "-fx-alignment: center;"
+  },
+  "-fx-alternative-column-fill-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "XYChart",
+    "default": "true",
+    "description": "Whether alternating column fills are visible.",
+    "example": "-fx-alternative-column-fill-visible: false;"
+  },
+  "-fx-alternative-row-fill-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "XYChart",
+    "default": "true",
+    "description": "Whether alternating row fills are visible.",
+    "example": "-fx-alternative-row-fill-visible: false;"
+  },
+  "-fx-animated": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "TitledPane",
+    "default": "true",
+    "description": "Whether the expand/collapse is animated.",
+    "example": "-fx-animated: false;"
+  },
+  "-fx-arc-height": {
+    "valueType": "size",
+    "appliesTo": "Rectangle",
+    "default": "0",
+    "description": "The vertical diameter of the arc at the four corners of the rectangle.",
+    "example": "-fx-arc-height: 10;"
+  },
+  "-fx-arc-width": {
+    "valueType": "size",
+    "appliesTo": "Rectangle",
+    "default": "0",
+    "description": "The horizontal diameter of the arc at the four corners of the rectangle.",
+    "example": "-fx-arc-width: 10;"
+  },
+  "-fx-arrows-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Pagination",
+    "default": "true",
+    "description": "Whether the arrow buttons are visible.",
+    "example": "-fx-arrows-visible: false;"
+  },
+  "-fx-axis-sort-policy": {
+    "valueType": "enum",
+    "values": [
+      "none",
+      "value"
+    ],
+    "appliesTo": "XYChart",
+    "default": "value",
+    "description": "The policy for sorting data along the axis.",
+    "example": "-fx-axis-sort-policy: none;"
+  },
+  "-fx-background": {
+    "valueType": "paint",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "Background paint for controls, typically derived from -fx-base. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-background: -fx-base;",
+    "source": "modena"
+  },
+  "-fx-background-color": {
+    "valueType": "paint",
+    "appliesTo": "Region",
+    "default": "transparent",
+    "description": "A series of paint values separated by commas, applied as layered background fills.",
+    "example": "-fx-background-color: #f0f0f0, linear-gradient(to bottom, white, #cccccc);"
+  },
+  "-fx-background-image": {
+    "valueType": "uri",
+    "appliesTo": "Region",
+    "default": "null",
+    "description": "A series of image URIs used as background images.",
+    "example": "-fx-background-image: url('bg.png');"
+  },
+  "-fx-background-insets": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "0 0 0 0",
+    "description": "Insets for each background fill layer. Four values: top, right, bottom, left.",
+    "example": "-fx-background-insets: 0, 1;"
+  },
+  "-fx-background-position": {
+    "valueType": "compound",
+    "appliesTo": "Region",
+    "default": "0% 0%",
+    "description": "Position of each background image within the region.",
+    "example": "-fx-background-position: center center;"
+  },
+  "-fx-background-radius": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "0 0 0 0",
+    "description": "Corner radii for each background fill layer.",
+    "example": "-fx-background-radius: 5;"
+  },
+  "-fx-background-repeat": {
+    "valueType": "compound",
+    "appliesTo": "Region",
+    "default": "repeat repeat",
+    "description": "Repeat style for each background image.",
+    "example": "-fx-background-repeat: no-repeat;"
+  },
+  "-fx-background-size": {
+    "valueType": "compound",
+    "appliesTo": "Region",
+    "default": "auto auto",
+    "description": "Size of each background image.",
+    "example": "-fx-background-size: cover;"
+  },
+  "-fx-bar-gap": {
+    "valueType": "number",
+    "appliesTo": "BarChart",
+    "default": "4",
+    "description": "The gap between bars within a category.",
+    "example": "-fx-bar-gap: 2;"
+  },
+  "-fx-base": {
+    "valueType": "color",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "The base color for the UI theme. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-base: #ececec;",
+    "source": "modena"
+  },
+  "-fx-blend-mode": {
+    "valueType": "enum",
+    "values": [
+      "add",
+      "blue",
+      "color-burn",
+      "color-dodge",
+      "darken",
+      "difference",
+      "exclusion",
+      "green",
+      "hard-light",
+      "lighten",
+      "multiply",
+      "overlay",
+      "red",
+      "screen",
+      "soft-light",
+      "src-atop",
+      "src-in",
+      "src-out",
+      "src-over"
+    ],
+    "appliesTo": "Node",
+    "default": "null",
+    "description": "The blend mode used to blend this node into the scene.",
+    "example": "-fx-blend-mode: multiply;"
+  },
+  "-fx-block-increment": {
+    "valueType": "number",
+    "appliesTo": "ScrollBar, Slider",
+    "default": "10",
+    "description": "The amount by which to adjust the value when the track is clicked.",
+    "example": "-fx-block-increment: 20;"
+  },
+  "-fx-body-color": {
+    "valueType": "paint",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "Body color for controls like buttons. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-body-color: derive(-fx-color, 20%);",
+    "source": "modena"
+  },
+  "-fx-border-color": {
+    "valueType": "paint",
+    "appliesTo": "Region",
+    "default": "null",
+    "description": "A series of paint values for border color of each border layer. Four values: top, right, bottom, left.",
+    "example": "-fx-border-color: black;"
+  },
+  "-fx-border-image-insets": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "0 0 0 0",
+    "description": "Insets for each border image.",
+    "example": "-fx-border-image-insets: 5;"
+  },
+  "-fx-border-image-repeat": {
+    "valueType": "compound",
+    "appliesTo": "Region",
+    "default": "repeat repeat",
+    "description": "Repeat style for each border image.",
+    "example": "-fx-border-image-repeat: stretch;"
+  },
+  "-fx-border-image-slice": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "100%",
+    "description": "Slice values for each border image, dividing the image into nine regions.",
+    "example": "-fx-border-image-slice: 10 10 10 10 fill;"
+  },
+  "-fx-border-image-source": {
+    "valueType": "uri",
+    "appliesTo": "Region",
+    "default": "null",
+    "description": "A series of image URIs for border images.",
+    "example": "-fx-border-image-source: url('border.png');"
+  },
+  "-fx-border-image-width": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "1 1 1 1",
+    "description": "Width for each border image.",
+    "example": "-fx-border-image-width: 5;"
+  },
+  "-fx-border-insets": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "null",
+    "description": "Insets for each border layer.",
+    "example": "-fx-border-insets: 0;"
+  },
+  "-fx-border-radius": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "null",
+    "description": "Corner radii for each border layer.",
+    "example": "-fx-border-radius: 5;"
+  },
+  "-fx-border-style": {
+    "valueType": "compound",
+    "appliesTo": "Region",
+    "default": "null",
+    "description": "Border style for each border layer. Supports none, solid, dotted, dashed, segments().",
+    "example": "-fx-border-style: solid;"
+  },
+  "-fx-border-width": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "null",
+    "description": "Width for each border layer.",
+    "example": "-fx-border-width: 1;"
+  },
+  "-fx-bounds-type": {
+    "valueType": "enum",
+    "values": [
+      "logical",
+      "visual",
+      "logical_vertical_center"
+    ],
+    "appliesTo": "Text",
+    "default": "logical",
+    "description": "The method used to compute the bounds of the text.",
+    "example": "-fx-bounds-type: visual;"
+  },
+  "-fx-caret-blink-period": {
+    "valueType": "duration",
+    "appliesTo": "RichTextArea",
+    "default": "1000ms",
+    "description": "The caret blink period.",
+    "example": "-fx-caret-blink-period: 500ms;"
+  },
+  "-fx-category-gap": {
+    "valueType": "number",
+    "appliesTo": "BarChart",
+    "default": "10",
+    "description": "The gap between bar categories.",
+    "example": "-fx-category-gap: 20;"
+  },
+  "-fx-cell-size": {
+    "valueType": "size",
+    "appliesTo": "Cell",
+    "default": "24",
+    "description": "The cell size. Height for vertical ListView/TreeView/TableView, width for horizontal ListView.",
+    "example": "-fx-cell-size: 30;"
+  },
+  "-fx-clockwise": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "PieChart",
+    "default": "true",
+    "description": "Whether pie slices are laid out clockwise.",
+    "example": "-fx-clockwise: false;"
+  },
+  "-fx-close-tab-animation": {
+    "valueType": "enum",
+    "values": [
+      "grow",
+      "none"
+    ],
+    "appliesTo": "TabPane",
+    "default": "grow",
+    "description": "The animation used when closing a tab.",
+    "example": "-fx-close-tab-animation: none;"
+  },
+  "-fx-collapsible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "TitledPane",
+    "default": "true",
+    "description": "Whether the TitledPane can be collapsed.",
+    "example": "-fx-collapsible: false;"
+  },
+  "-fx-color": {
+    "valueType": "color",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "A derived color used for many control backgrounds. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-color: -fx-base;",
+    "source": "modena"
+  },
+  "-fx-color-label-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "ColorPicker",
+    "default": "true",
+    "description": "Whether the color label text is visible in the button.",
+    "example": "-fx-color-label-visible: false;"
+  },
+  "-fx-column-halignment": {
+    "valueType": "enum",
+    "values": [
+      "left",
+      "center",
+      "right"
+    ],
+    "appliesTo": "FlowPane",
+    "default": "left",
+    "description": "The horizontal alignment of nodes within each column of a vertical FlowPane.",
+    "example": "-fx-column-halignment: center;"
+  },
+  "-fx-column-resize-policy": {
+    "valueType": "enum",
+    "values": [
+      "unconstrained-resize",
+      "constrained-resize"
+    ],
+    "appliesTo": "TableView",
+    "default": "unconstrained-resize",
+    "description": "The column resize policy for the table.",
+    "example": "-fx-column-resize-policy: constrained-resize;"
+  },
+  "-fx-content-display": {
+    "valueType": "enum",
+    "values": [
+      "top",
+      "right",
+      "bottom",
+      "left",
+      "center",
+      "graphic-only",
+      "text-only"
+    ],
+    "appliesTo": "Labeled, Tooltip",
+    "default": "left",
+    "description": "The positioning of the graphic relative to the text.",
+    "example": "-fx-content-display: top;"
+  },
+  "-fx-content-padding": {
+    "valueType": "size",
+    "appliesTo": "RichTextArea",
+    "default": "0 0 0 0",
+    "description": "Amount of padding in the content area.",
+    "example": "-fx-content-padding: 5 10 5 10;"
+  },
+  "-fx-context-menu-enabled": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "WebView",
+    "default": "true",
+    "description": "Whether the context menu is enabled for this WebView.",
+    "example": "-fx-context-menu-enabled: false;"
+  },
+  "-fx-create-symbols": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "LineChart",
+    "default": "true",
+    "description": "Whether data point symbols are created.",
+    "example": "-fx-create-symbols: false;"
+  },
+  "-fx-cursor": {
+    "valueType": "enum",
+    "values": [
+      "null",
+      "crosshair",
+      "default",
+      "hand",
+      "move",
+      "e-resize",
+      "h-resize",
+      "ne-resize",
+      "nw-resize",
+      "n-resize",
+      "se-resize",
+      "sw-resize",
+      "s-resize",
+      "w-resize",
+      "v-resize",
+      "text",
+      "wait"
+    ],
+    "appliesTo": "Node",
+    "default": "null",
+    "description": "The type of cursor to display. Inherits.",
+    "example": "-fx-cursor: hand;"
+  },
+  "-fx-display-caret": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "TextInputControl, RichTextArea",
+    "default": "true",
+    "description": "Whether the text caret is displayed.",
+    "example": "-fx-display-caret: true;"
+  },
+  "-fx-effect": {
+    "valueType": "effect",
+    "appliesTo": "Node",
+    "default": "null",
+    "description": "An effect to apply to the node, such as DropShadow or InnerShadow.",
+    "example": "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 5);"
+  },
+  "-fx-ellipsis-string": {
+    "valueType": "string",
+    "appliesTo": "Labeled",
+    "default": "...",
+    "description": "The string to display when text is truncated.",
+    "example": "-fx-ellipsis-string: \"...\";"
+  },
+  "-fx-end-margin": {
+    "valueType": "number",
+    "appliesTo": "CategoryAxis",
+    "default": "5",
+    "description": "The margin between the axis end and the last tick mark.",
+    "example": "-fx-end-margin: 10;"
+  },
+  "-fx-faint-focus-color": {
+    "valueType": "color",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "A transparent version of the focus color. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-faint-focus-color: #039ED322;",
+    "source": "modena"
+  },
+  "-fx-fill": {
+    "valueType": "paint",
+    "appliesTo": "Shape",
+    "default": "black",
+    "description": "The fill paint of the shape.",
+    "example": "-fx-fill: red;"
+  },
+  "-fx-fill-height": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "HBox",
+    "default": "true",
+    "description": "Whether children are resized to fill the full height of the HBox.",
+    "example": "-fx-fill-height: true;"
+  },
+  "-fx-fill-width": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "VBox",
+    "default": "true",
+    "description": "Whether children are resized to fill the full width of the VBox.",
+    "example": "-fx-fill-width: true;"
+  },
+  "-fx-fit-height": {
+    "valueType": "number",
+    "appliesTo": "ImageView",
+    "default": "0",
+    "description": "The height of the bounding box within which the source image is resized to fit.",
+    "example": "-fx-fit-height: 48;"
+  },
+  "-fx-fit-to-height": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "ScrollPane",
+    "default": "false",
+    "description": "Whether the content should be resized to fit the height of the viewport.",
+    "example": "-fx-fit-to-height: true;"
+  },
+  "-fx-fit-to-width": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "ScrollPane",
+    "default": "false",
+    "description": "Whether the content should be resized to fit the width of the viewport.",
+    "example": "-fx-fit-to-width: true;"
+  },
+  "-fx-fit-width": {
+    "valueType": "number",
+    "appliesTo": "ImageView",
+    "default": "0",
+    "description": "The width of the bounding box within which the source image is resized to fit.",
+    "example": "-fx-fit-width: 48;"
+  },
+  "-fx-fixed-cell-size": {
+    "valueType": "size",
+    "appliesTo": "TableView, TreeView, TreeTableView",
+    "default": "-1",
+    "description": "Fixed cell size. A value greater than zero enables fixed cell size mode.",
+    "example": "-fx-fixed-cell-size: 24;"
+  },
+  "-fx-focus-color": {
+    "valueType": "color",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "The color used for the focus ring. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-focus-color: #039ED3;",
+    "source": "modena"
+  },
+  "-fx-focus-traversable": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Node",
+    "default": "false",
+    "description": "Whether this node can receive keyboard focus via tab traversal. Default is true for most controls.",
+    "example": "-fx-focus-traversable: false;"
+  },
+  "-fx-font": {
+    "valueType": "font",
+    "appliesTo": "Text, Labeled, TextInputControl",
+    "default": "Font.DEFAULT",
+    "description": "Shorthand property for font-size, font-family, font-weight and font-style. Inherits.",
+    "example": "-fx-font: bold 14px 'Arial';"
+  },
+  "-fx-font-family": {
+    "valueType": "string",
+    "appliesTo": "Text, Labeled, TextInputControl",
+    "default": "inherit",
+    "description": "The font family name. Inherits.",
+    "example": "-fx-font-family: 'Helvetica';"
+  },
+  "-fx-font-scale": {
+    "valueType": "number",
+    "appliesTo": "WebView",
+    "default": "1",
+    "description": "The font scale factor for the web content.",
+    "example": "-fx-font-scale: 1.2;"
+  },
+  "-fx-font-size": {
+    "valueType": "size",
+    "appliesTo": "Text, Labeled, TextInputControl",
+    "default": "inherit",
+    "description": "The font size. Inherits.",
+    "example": "-fx-font-size: 14px;"
+  },
+  "-fx-font-smoothing-type": {
+    "valueType": "enum",
+    "values": [
+      "gray",
+      "lcd"
+    ],
+    "appliesTo": "Text, WebView",
+    "default": "gray",
+    "description": "The type of font smoothing to use.",
+    "example": "-fx-font-smoothing-type: lcd;"
+  },
+  "-fx-font-style": {
+    "valueType": "enum",
+    "values": [
+      "normal",
+      "italic",
+      "oblique"
+    ],
+    "appliesTo": "Text, Labeled, TextInputControl",
+    "default": "inherit",
+    "description": "The font style. Inherits.",
+    "example": "-fx-font-style: italic;"
+  },
+  "-fx-font-weight": {
+    "valueType": "enum",
+    "values": [
+      "normal",
+      "bold",
+      "bolder",
+      "lighter",
+      "100",
+      "200",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "appliesTo": "Text, Labeled, TextInputControl",
+    "default": "inherit",
+    "description": "The font weight. Inherits.",
+    "example": "-fx-font-weight: bold;"
+  },
+  "-fx-gap-start-and-end": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CategoryAxis",
+    "default": "true",
+    "description": "If true, half the space between ticks is left at the start and end.",
+    "example": "-fx-gap-start-and-end: false;"
+  },
+  "-fx-graphic": {
+    "valueType": "uri",
+    "appliesTo": "Labeled, DialogPane, Tooltip",
+    "default": "null",
+    "description": "An image URI to display as the graphic for this labeled node.",
+    "example": "-fx-graphic: url('icon.png');"
+  },
+  "-fx-graphic-text-gap": {
+    "valueType": "size",
+    "appliesTo": "Labeled, Tooltip",
+    "default": "4",
+    "description": "The gap between the graphic and the text.",
+    "example": "-fx-graphic-text-gap: 8;"
+  },
+  "-fx-grid-lines-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "GridPane",
+    "default": "false",
+    "description": "Whether grid lines are visible for debugging layout.",
+    "example": "-fx-grid-lines-visible: true;"
+  },
+  "-fx-halignment": {
+    "valueType": "enum",
+    "values": [
+      "left",
+      "center",
+      "right"
+    ],
+    "appliesTo": "Separator",
+    "default": "center",
+    "description": "The horizontal alignment of the separator line.",
+    "example": "-fx-halignment: center;"
+  },
+  "-fx-hbar-policy": {
+    "valueType": "enum",
+    "values": [
+      "never",
+      "always",
+      "as-needed"
+    ],
+    "appliesTo": "ScrollPane",
+    "default": "as-needed",
+    "description": "The policy for showing the horizontal scroll bar.",
+    "example": "-fx-hbar-policy: never;"
+  },
+  "-fx-hgap": {
+    "valueType": "size",
+    "appliesTo": "FlowPane, GridPane, TilePane",
+    "default": "0",
+    "description": "The horizontal gap between children.",
+    "example": "-fx-hgap: 10;"
+  },
+  "-fx-hide-delay": {
+    "valueType": "duration",
+    "appliesTo": "Tooltip",
+    "default": "200ms",
+    "description": "The delay before the tooltip is hidden after the mouse leaves.",
+    "example": "-fx-hide-delay: 300ms;"
+  },
+  "-fx-highlight-current-paragraph": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "RichTextArea",
+    "default": "false",
+    "description": "Whether the current paragraph is highlighted.",
+    "example": "-fx-highlight-current-paragraph: true;"
+  },
+  "-fx-highlight-fill": {
+    "valueType": "paint",
+    "appliesTo": "TextInputControl",
+    "default": "dodgerblue",
+    "description": "The fill color for selected text background.",
+    "example": "-fx-highlight-fill: lightblue;"
+  },
+  "-fx-highlight-text-fill": {
+    "valueType": "paint",
+    "appliesTo": "TextInputControl",
+    "default": "white",
+    "description": "The fill color for selected text.",
+    "example": "-fx-highlight-text-fill: white;"
+  },
+  "-fx-horizontal-grid-lines-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "XYChart",
+    "default": "true",
+    "description": "Whether horizontal grid lines are visible.",
+    "example": "-fx-horizontal-grid-lines-visible: false;"
+  },
+  "-fx-horizontal-zero-line-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "XYChart",
+    "default": "true",
+    "description": "Whether the horizontal zero line is visible.",
+    "example": "-fx-horizontal-zero-line-visible: false;"
+  },
+  "-fx-image": {
+    "valueType": "uri",
+    "appliesTo": "ImageView",
+    "default": "null",
+    "description": "The image to display. Relative URLs are resolved against the stylesheet URL.",
+    "example": "-fx-image: url('icon.png');"
+  },
+  "-fx-indent": {
+    "valueType": "size",
+    "appliesTo": "TreeCell",
+    "default": "10",
+    "description": "The amount of space multiplied by tree item level for left margin.",
+    "example": "-fx-indent: 15;"
+  },
+  "-fx-indeterminate-bar-animation-time": {
+    "valueType": "number",
+    "appliesTo": "ProgressBar",
+    "default": "2.0",
+    "description": "The time in seconds for one indeterminate bar animation cycle.",
+    "example": "-fx-indeterminate-bar-animation-time: 1.5;"
+  },
+  "-fx-indeterminate-bar-escape": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "ProgressBar",
+    "default": "true",
+    "description": "Whether the indeterminate bar escapes the track bounds.",
+    "example": "-fx-indeterminate-bar-escape: false;"
+  },
+  "-fx-indeterminate-bar-flip": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "ProgressBar",
+    "default": "true",
+    "description": "Whether the indeterminate bar flips direction on each cycle.",
+    "example": "-fx-indeterminate-bar-flip: false;"
+  },
+  "-fx-indeterminate-bar-length": {
+    "valueType": "number",
+    "appliesTo": "ProgressBar",
+    "default": "60",
+    "description": "The length of the indeterminate bar.",
+    "example": "-fx-indeterminate-bar-length: 100;"
+  },
+  "-fx-indeterminate-segment-count": {
+    "valueType": "number",
+    "appliesTo": "ProgressIndicator",
+    "default": "8",
+    "description": "The number of segments in the indeterminate spinner.",
+    "example": "-fx-indeterminate-segment-count: 12;"
+  },
+  "-fx-initial-delay": {
+    "valueType": "duration",
+    "appliesTo": "Spinner",
+    "default": "300ms",
+    "description": "The delay before the spinner starts repeating when a button is held.",
+    "example": "-fx-initial-delay: 500ms;"
+  },
+  "-fx-inner-border": {
+    "valueType": "paint",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "Inner border paint for controls. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-inner-border: linear-gradient(to bottom, white, derive(-fx-color, 30%));",
+    "source": "modena"
+  },
+  "-fx-label-line-length": {
+    "valueType": "size",
+    "appliesTo": "PieChart",
+    "default": "20",
+    "description": "The length of the line connecting pie slices to their labels.",
+    "example": "-fx-label-line-length: 15;"
+  },
+  "-fx-label-padding": {
+    "valueType": "size",
+    "appliesTo": "Labeled",
+    "default": "0 0 0 0",
+    "description": "Padding for the label.",
+    "example": "-fx-label-padding: 5 10 5 10;"
+  },
+  "-fx-legend-side": {
+    "valueType": "enum",
+    "values": [
+      "top",
+      "bottom",
+      "left",
+      "right"
+    ],
+    "appliesTo": "Chart",
+    "default": "bottom",
+    "description": "The side of the chart where the legend is displayed.",
+    "example": "-fx-legend-side: right;"
+  },
+  "-fx-legend-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Chart",
+    "default": "true",
+    "description": "Whether the chart legend is visible.",
+    "example": "-fx-legend-visible: false;"
+  },
+  "-fx-line-spacing": {
+    "valueType": "number",
+    "appliesTo": "Text, TextFlow",
+    "default": "0",
+    "description": "The spacing between lines of text.",
+    "example": "-fx-line-spacing: 2;"
+  },
+  "-fx-major-tick-unit": {
+    "valueType": "number",
+    "appliesTo": "Slider",
+    "default": "25",
+    "description": "The unit distance between major tick marks.",
+    "example": "-fx-major-tick-unit: 10;"
+  },
+  "-fx-managed": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Node",
+    "default": "true",
+    "description": "Whether this node's layout will be managed by its parent.",
+    "example": "-fx-managed: false;"
+  },
+  "-fx-mark-color": {
+    "valueType": "paint",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "Color for marks/icons in controls like checkboxes. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-mark-color: white;",
+    "source": "modena"
+  },
+  "-fx-mark-highlight-color": {
+    "valueType": "paint",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "Highlight color for marks. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-mark-highlight-color: derive(-fx-mark-color, 20%);",
+    "source": "modena"
+  },
+  "-fx-max-height": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "-1",
+    "description": "The maximum height of the region.",
+    "example": "-fx-max-height: 400;"
+  },
+  "-fx-max-page-indicator-count": {
+    "valueType": "number",
+    "appliesTo": "Pagination",
+    "default": "10",
+    "description": "The maximum number of page indicators to display.",
+    "example": "-fx-max-page-indicator-count: 5;"
+  },
+  "-fx-max-width": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "-1",
+    "description": "The maximum width of the region.",
+    "example": "-fx-max-width: 600;"
+  },
+  "-fx-min-height": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "-1",
+    "description": "The minimum height of the region.",
+    "example": "-fx-min-height: 30;"
+  },
+  "-fx-min-width": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "-1",
+    "description": "The minimum width of the region.",
+    "example": "-fx-min-width: 50;"
+  },
+  "-fx-minor-tick-count": {
+    "valueType": "integer",
+    "appliesTo": "Slider, ValueAxis",
+    "default": "3",
+    "description": "The number of minor ticks to place between major ticks.",
+    "example": "-fx-minor-tick-count: 5;"
+  },
+  "-fx-minor-tick-length": {
+    "valueType": "size",
+    "appliesTo": "ValueAxis",
+    "default": "5",
+    "description": "The length of minor tick marks.",
+    "example": "-fx-minor-tick-length: 3;"
+  },
+  "-fx-minor-tick-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "ValueAxis",
+    "default": "true",
+    "description": "Whether minor tick marks are visible.",
+    "example": "-fx-minor-tick-visible: false;"
+  },
+  "-fx-opacity": {
+    "valueType": "number",
+    "appliesTo": "Node",
+    "default": "1",
+    "description": "The opacity of the node, in the range [0.0, 1.0].",
+    "example": "-fx-opacity: 0.8;"
+  },
+  "-fx-open-tab-animation": {
+    "valueType": "enum",
+    "values": [
+      "grow",
+      "none"
+    ],
+    "appliesTo": "TabPane",
+    "default": "grow",
+    "description": "The animation used when opening a tab.",
+    "example": "-fx-open-tab-animation: none;"
+  },
+  "-fx-orientation": {
+    "valueType": "enum",
+    "values": [
+      "horizontal",
+      "vertical"
+    ],
+    "appliesTo": "FlowPane, ListView, ScrollBar, Separator, Slider, SplitPane, TilePane, ToolBar",
+    "default": "horizontal",
+    "description": "The orientation of the control.",
+    "example": "-fx-orientation: vertical;"
+  },
+  "-fx-outer-border": {
+    "valueType": "paint",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "Outer border paint for controls. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-outer-border: derive(-fx-color, -23%);",
+    "source": "modena"
+  },
+  "-fx-padding": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "0 0 0 0",
+    "description": "Padding values. Four values: top, right, bottom, left.",
+    "example": "-fx-padding: 10 5 10 5;"
+  },
+  "-fx-page-fill": {
+    "valueType": "color",
+    "appliesTo": "WebView",
+    "default": "white",
+    "description": "The background fill color of the web page.",
+    "example": "-fx-page-fill: #f0f0f0;"
+  },
+  "-fx-page-information-alignment": {
+    "valueType": "enum",
+    "values": [
+      "top",
+      "bottom",
+      "left",
+      "right"
+    ],
+    "appliesTo": "Pagination",
+    "default": "bottom",
+    "description": "The alignment of the page information label.",
+    "example": "-fx-page-information-alignment: bottom;"
+  },
+  "-fx-page-information-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Pagination",
+    "default": "true",
+    "description": "Whether page information is displayed.",
+    "example": "-fx-page-information-visible: false;"
+  },
+  "-fx-pannable": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "ScrollPane",
+    "default": "false",
+    "description": "Whether the content can be panned by clicking and dragging.",
+    "example": "-fx-pannable: true;"
+  },
+  "-fx-pie-label-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "PieChart",
+    "default": "true",
+    "description": "Whether pie slice labels are visible.",
+    "example": "-fx-pie-label-visible: false;"
+  },
+  "-fx-pie-stroke-color": {
+    "valueType": "paint",
+    "appliesTo": "PieChart",
+    "default": "null",
+    "description": "The stroke color for pie slices.",
+    "example": "-fx-pie-stroke-color: white;"
+  },
+  "-fx-pie-to-label-line-one-length": {
+    "valueType": "size",
+    "appliesTo": "PieChart",
+    "default": "null",
+    "description": "The length of the first segment of the pie label line.",
+    "example": "-fx-pie-to-label-line-one-length: 10;"
+  },
+  "-fx-pie-to-label-line-stroke-color": {
+    "valueType": "paint",
+    "appliesTo": "PieChart",
+    "default": "null",
+    "description": "The stroke color for lines connecting pie slices to labels.",
+    "example": "-fx-pie-to-label-line-stroke-color: gray;"
+  },
+  "-fx-pie-to-label-line-two-length": {
+    "valueType": "size",
+    "appliesTo": "PieChart",
+    "default": "null",
+    "description": "The length of the second segment of the pie label line.",
+    "example": "-fx-pie-to-label-line-two-length: 10;"
+  },
+  "-fx-position-shape": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Region",
+    "default": "true",
+    "description": "If true, the shape is centered within the region. Otherwise positioned at source position.",
+    "example": "-fx-position-shape: true;"
+  },
+  "-fx-pref-column-count": {
+    "valueType": "integer",
+    "appliesTo": "TextField, TextArea",
+    "default": "12",
+    "description": "The preferred number of text columns.",
+    "example": "-fx-pref-column-count: 20;"
+  },
+  "-fx-pref-columns": {
+    "valueType": "integer",
+    "appliesTo": "TilePane",
+    "default": "5",
+    "description": "The preferred number of columns for a horizontal TilePane.",
+    "example": "-fx-pref-columns: 4;"
+  },
+  "-fx-pref-height": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "-1",
+    "description": "The preferred height of the region.",
+    "example": "-fx-pref-height: 200;"
+  },
+  "-fx-pref-row-count": {
+    "valueType": "integer",
+    "appliesTo": "TextArea",
+    "default": "10",
+    "description": "The preferred number of text rows.",
+    "example": "-fx-pref-row-count: 5;"
+  },
+  "-fx-pref-rows": {
+    "valueType": "integer",
+    "appliesTo": "TilePane",
+    "default": "5",
+    "description": "The preferred number of rows for a vertical TilePane.",
+    "example": "-fx-pref-rows: 3;"
+  },
+  "-fx-pref-tile-height": {
+    "valueType": "size",
+    "appliesTo": "TilePane",
+    "default": "-1",
+    "description": "The preferred height of each tile.",
+    "example": "-fx-pref-tile-height: 100;"
+  },
+  "-fx-pref-tile-width": {
+    "valueType": "size",
+    "appliesTo": "TilePane",
+    "default": "-1",
+    "description": "The preferred width of each tile.",
+    "example": "-fx-pref-tile-width: 100;"
+  },
+  "-fx-pref-width": {
+    "valueType": "size",
+    "appliesTo": "Region",
+    "default": "-1",
+    "description": "The preferred width of the region.",
+    "example": "-fx-pref-width: 300;"
+  },
+  "-fx-preserve-ratio": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "ImageView",
+    "default": "false",
+    "description": "Whether to preserve the aspect ratio when scaling the image.",
+    "example": "-fx-preserve-ratio: true;"
+  },
+  "-fx-progress-color": {
+    "valueType": "paint",
+    "appliesTo": "ProgressIndicator",
+    "default": "null",
+    "description": "The color of the progress indicator.",
+    "example": "-fx-progress-color: green;"
+  },
+  "-fx-prompt-text-fill": {
+    "valueType": "paint",
+    "appliesTo": "TextInputControl",
+    "default": "gray",
+    "description": "The fill color of the prompt text.",
+    "example": "-fx-prompt-text-fill: #999999;"
+  },
+  "-fx-repeat-delay": {
+    "valueType": "duration",
+    "appliesTo": "Spinner",
+    "default": "60ms",
+    "description": "The delay between repeated increments/decrements when a button is held.",
+    "example": "-fx-repeat-delay: 100ms;"
+  },
+  "-fx-rotate": {
+    "valueType": "number",
+    "appliesTo": "Node",
+    "default": "0",
+    "description": "The angle of rotation in degrees. Zero is at 3 o'clock, positive is clockwise. Rotation is about the center.",
+    "example": "-fx-rotate: 45;"
+  },
+  "-fx-row-valignment": {
+    "valueType": "enum",
+    "values": [
+      "top",
+      "center",
+      "baseline",
+      "bottom"
+    ],
+    "appliesTo": "FlowPane",
+    "default": "center",
+    "description": "The vertical alignment of nodes within each row of a horizontal FlowPane.",
+    "example": "-fx-row-valignment: top;"
+  },
+  "-fx-scale-shape": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Region",
+    "default": "true",
+    "description": "If true, the shape is scaled to fit the size of the region.",
+    "example": "-fx-scale-shape: true;"
+  },
+  "-fx-scale-x": {
+    "valueType": "number",
+    "appliesTo": "Node",
+    "default": "1",
+    "description": "The scale factor along the X axis, about the center.",
+    "example": "-fx-scale-x: 1.5;"
+  },
+  "-fx-scale-y": {
+    "valueType": "number",
+    "appliesTo": "Node",
+    "default": "1",
+    "description": "The scale factor along the Y axis, about the center.",
+    "example": "-fx-scale-y: 1.5;"
+  },
+  "-fx-scale-z": {
+    "valueType": "number",
+    "appliesTo": "Node",
+    "default": "1",
+    "description": "The scale factor along the Z axis, about the center.",
+    "example": "-fx-scale-z: 1.5;"
+  },
+  "-fx-selection-bar": {
+    "valueType": "paint",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "Background color for selected items. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-selection-bar: -fx-accent;",
+    "source": "modena"
+  },
+  "-fx-selection-bar-non-focused": {
+    "valueType": "paint",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "Background color for selected items when the control is not focused. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-selection-bar-non-focused: derive(-fx-accent, 50%);",
+    "source": "modena"
+  },
+  "-fx-shadow-highlight-color": {
+    "valueType": "paint",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "Color used for shadow highlights. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-shadow-highlight-color: rgba(255,255,255,0.07);",
+    "source": "modena"
+  },
+  "-fx-shape": {
+    "valueType": "shape",
+    "appliesTo": "Region",
+    "default": "null",
+    "description": "An SVG path string. The region takes on that shape instead of a rectangle.",
+    "example": "-fx-shape: \"M 0 -3.5 v 7 l 4 -3.5 z\";"
+  },
+  "-fx-show-delay": {
+    "valueType": "duration",
+    "appliesTo": "Tooltip",
+    "default": "1000ms",
+    "description": "The delay before the tooltip is shown.",
+    "example": "-fx-show-delay: 500ms;"
+  },
+  "-fx-show-duration": {
+    "valueType": "duration",
+    "appliesTo": "Tooltip",
+    "default": "5000ms",
+    "description": "The duration for which the tooltip is shown.",
+    "example": "-fx-show-duration: 10000ms;"
+  },
+  "-fx-show-tick-labels": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Slider",
+    "default": "false",
+    "description": "Whether tick mark labels are displayed.",
+    "example": "-fx-show-tick-labels: true;"
+  },
+  "-fx-show-tick-marks": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Slider",
+    "default": "false",
+    "description": "Whether tick marks are displayed.",
+    "example": "-fx-show-tick-marks: true;"
+  },
+  "-fx-show-week-numbers": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "DatePicker",
+    "default": "false",
+    "description": "Whether week numbers are shown in the calendar popup.",
+    "example": "-fx-show-week-numbers: true;"
+  },
+  "-fx-side": {
+    "valueType": "enum",
+    "values": [
+      "top",
+      "bottom",
+      "left",
+      "right"
+    ],
+    "appliesTo": "Axis",
+    "default": "null",
+    "description": "The side of the plot that this axis is on.",
+    "example": "-fx-side: bottom;"
+  },
+  "-fx-size": {
+    "valueType": "size",
+    "appliesTo": "TableColumnHeader",
+    "default": "20",
+    "description": "The table column header size.",
+    "example": "-fx-size: 25;"
+  },
+  "-fx-skin": {
+    "valueType": "string",
+    "appliesTo": "Control",
+    "default": "null",
+    "description": "The fully qualified class name of the Control's Skin.",
+    "example": "-fx-skin: 'com.example.MySkin';"
+  },
+  "-fx-smooth": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Shape, ImageView",
+    "default": "true",
+    "description": "Whether anti-aliasing is used when rendering the shape.",
+    "example": "-fx-smooth: true;"
+  },
+  "-fx-snap-to-pixel": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Region",
+    "default": "true",
+    "description": "Whether this region rounds position/spacing and ceils size values to pixel boundaries.",
+    "example": "-fx-snap-to-pixel: true;"
+  },
+  "-fx-snap-to-ticks": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Slider",
+    "default": "false",
+    "description": "Whether the slider value snaps to the nearest tick mark.",
+    "example": "-fx-snap-to-ticks: true;"
+  },
+  "-fx-spacing": {
+    "valueType": "size",
+    "appliesTo": "HBox, VBox",
+    "default": "0",
+    "description": "The amount of space between children.",
+    "example": "-fx-spacing: 8;"
+  },
+  "-fx-spin-enabled": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "ProgressIndicator",
+    "default": "false",
+    "description": "Whether the indeterminate spinner spins.",
+    "example": "-fx-spin-enabled: true;"
+  },
+  "-fx-start-angle": {
+    "valueType": "number",
+    "appliesTo": "PieChart",
+    "default": "0",
+    "description": "The angle in degrees at which the first pie slice starts.",
+    "example": "-fx-start-angle: 90;"
+  },
+  "-fx-start-margin": {
+    "valueType": "number",
+    "appliesTo": "CategoryAxis",
+    "default": "5",
+    "description": "The margin between the axis start and the first tick mark.",
+    "example": "-fx-start-margin: 10;"
+  },
+  "-fx-strikethrough": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Text, Labeled",
+    "default": "false",
+    "description": "Whether the text has a strikethrough line.",
+    "example": "-fx-strikethrough: true;"
+  },
+  "-fx-stroke": {
+    "valueType": "paint",
+    "appliesTo": "Shape",
+    "default": "null",
+    "description": "The stroke paint of the shape.",
+    "example": "-fx-stroke: black;"
+  },
+  "-fx-stroke-dash-array": {
+    "valueType": "size",
+    "appliesTo": "Shape",
+    "default": "null",
+    "description": "Dash pattern for the stroke. Alternate values represent opaque and transparent segments.",
+    "example": "-fx-stroke-dash-array: 12 2 4 2;"
+  },
+  "-fx-stroke-dash-offset": {
+    "valueType": "number",
+    "appliesTo": "Shape",
+    "default": "0",
+    "description": "The offset into the dash pattern at which the stroke begins.",
+    "example": "-fx-stroke-dash-offset: 6;"
+  },
+  "-fx-stroke-line-cap": {
+    "valueType": "enum",
+    "values": [
+      "square",
+      "butt",
+      "round"
+    ],
+    "appliesTo": "Shape",
+    "default": "square",
+    "description": "The decoration applied to the ends of unclosed subpaths and dash segments.",
+    "example": "-fx-stroke-line-cap: round;"
+  },
+  "-fx-stroke-line-join": {
+    "valueType": "enum",
+    "values": [
+      "miter",
+      "bevel",
+      "round"
+    ],
+    "appliesTo": "Shape",
+    "default": "miter",
+    "description": "The decoration applied where path segments meet.",
+    "example": "-fx-stroke-line-join: round;"
+  },
+  "-fx-stroke-miter-limit": {
+    "valueType": "number",
+    "appliesTo": "Shape",
+    "default": "10",
+    "description": "The limit for the miter join style.",
+    "example": "-fx-stroke-miter-limit: 10;"
+  },
+  "-fx-stroke-type": {
+    "valueType": "enum",
+    "values": [
+      "inside",
+      "outside",
+      "centered"
+    ],
+    "appliesTo": "Shape",
+    "default": "centered",
+    "description": "Where the stroke is applied relative to the boundary of the shape.",
+    "example": "-fx-stroke-type: inside;"
+  },
+  "-fx-stroke-width": {
+    "valueType": "size",
+    "appliesTo": "Shape",
+    "default": "1",
+    "description": "The width of the stroke.",
+    "example": "-fx-stroke-width: 2;"
+  },
+  "-fx-tab-max-height": {
+    "valueType": "size",
+    "appliesTo": "TabPane",
+    "default": "Double.MAX_VALUE",
+    "description": "The maximum height of each tab.",
+    "example": "-fx-tab-max-height: 50;"
+  },
+  "-fx-tab-max-width": {
+    "valueType": "size",
+    "appliesTo": "TabPane",
+    "default": "Double.MAX_VALUE",
+    "description": "The maximum width of each tab.",
+    "example": "-fx-tab-max-width: 200;"
+  },
+  "-fx-tab-min-height": {
+    "valueType": "size",
+    "appliesTo": "TabPane",
+    "default": "0",
+    "description": "The minimum height of each tab.",
+    "example": "-fx-tab-min-height: 25;"
+  },
+  "-fx-tab-min-width": {
+    "valueType": "size",
+    "appliesTo": "TabPane",
+    "default": "0",
+    "description": "The minimum width of each tab.",
+    "example": "-fx-tab-min-width: 50;"
+  },
+  "-fx-tab-size": {
+    "valueType": "integer",
+    "appliesTo": "Text, TextFlow",
+    "default": "8",
+    "description": "The number of spaces that a tab character represents.",
+    "example": "-fx-tab-size: 4;"
+  },
+  "-fx-table-cell-border-color": {
+    "valueType": "paint",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "Border color for table cells. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-table-cell-border-color: derive(-fx-color, -5%);",
+    "source": "modena"
+  },
+  "-fx-text-alignment": {
+    "valueType": "enum",
+    "values": [
+      "left",
+      "center",
+      "right",
+      "justify"
+    ],
+    "appliesTo": "Text, TextFlow, Labeled, Tooltip",
+    "default": "left",
+    "description": "The horizontal text alignment. Inherits.",
+    "example": "-fx-text-alignment: center;"
+  },
+  "-fx-text-background-color": {
+    "valueType": "paint",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "Text color for use on colored backgrounds. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-text-background-color: white;",
+    "source": "modena"
+  },
+  "-fx-text-base-color": {
+    "valueType": "paint",
+    "appliesTo": "Modena theme",
+    "default": "theme-dependent",
+    "description": "Base text color. (Modena looked-up color, not in official CSS spec)",
+    "example": "-fx-text-base-color: ladder(-fx-color, black 30%, white 70%);",
+    "source": "modena"
+  },
+  "-fx-text-fill": {
+    "valueType": "paint",
+    "appliesTo": "Labeled, TextInputControl",
+    "default": "black",
+    "description": "The fill color of the text.",
+    "example": "-fx-text-fill: #333333;"
+  },
+  "-fx-text-origin": {
+    "valueType": "enum",
+    "values": [
+      "baseline",
+      "top",
+      "bottom",
+      "center"
+    ],
+    "appliesTo": "Text",
+    "default": "baseline",
+    "description": "The origin for positioning text vertically.",
+    "example": "-fx-text-origin: top;"
+  },
+  "-fx-text-overrun": {
+    "valueType": "enum",
+    "values": [
+      "clip",
+      "ellipsis",
+      "word-ellipsis",
+      "center-ellipsis",
+      "center-word-ellipsis",
+      "leading-ellipsis",
+      "leading-word-ellipsis"
+    ],
+    "appliesTo": "Labeled, Tooltip",
+    "default": "ellipsis",
+    "description": "The strategy for handling text that overflows the available space.",
+    "example": "-fx-text-overrun: ellipsis;"
+  },
+  "-fx-tick-label-fill": {
+    "valueType": "paint",
+    "appliesTo": "Axis",
+    "default": "black",
+    "description": "The fill color for tick mark labels.",
+    "example": "-fx-tick-label-fill: gray;"
+  },
+  "-fx-tick-label-font": {
+    "valueType": "font",
+    "appliesTo": "Axis",
+    "default": "8 system",
+    "description": "The font for tick mark labels.",
+    "example": "-fx-tick-label-font: 10px 'Arial';"
+  },
+  "-fx-tick-label-gap": {
+    "valueType": "size",
+    "appliesTo": "Axis",
+    "default": "3",
+    "description": "The gap between tick marks and their labels.",
+    "example": "-fx-tick-label-gap: 5;"
+  },
+  "-fx-tick-labels-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Axis",
+    "default": "true",
+    "description": "Whether tick labels are visible on the axis.",
+    "example": "-fx-tick-labels-visible: false;"
+  },
+  "-fx-tick-length": {
+    "valueType": "size",
+    "appliesTo": "Axis",
+    "default": "8",
+    "description": "The length of tick marks on the axis.",
+    "example": "-fx-tick-length: 5;"
+  },
+  "-fx-tick-mark-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Axis",
+    "default": "true",
+    "description": "Whether tick marks are visible on the axis.",
+    "example": "-fx-tick-mark-visible: false;"
+  },
+  "-fx-tick-unit": {
+    "valueType": "number",
+    "appliesTo": "NumberAxis",
+    "default": "5",
+    "description": "The value between each major tick mark.",
+    "example": "-fx-tick-unit: 10;"
+  },
+  "-fx-tile-alignment": {
+    "valueType": "enum",
+    "values": [
+      "top-left",
+      "top-center",
+      "top-right",
+      "center-left",
+      "center",
+      "center-right",
+      "bottom-left",
+      "bottom-center",
+      "bottom-right",
+      "baseline-left",
+      "baseline-center",
+      "baseline-right"
+    ],
+    "appliesTo": "TilePane",
+    "default": "center",
+    "description": "The default alignment of each child within its tile.",
+    "example": "-fx-tile-alignment: center;"
+  },
+  "-fx-title-side": {
+    "valueType": "enum",
+    "values": [
+      "top",
+      "bottom",
+      "left",
+      "right"
+    ],
+    "appliesTo": "Chart",
+    "default": "top",
+    "description": "The side of the chart where the title is displayed.",
+    "example": "-fx-title-side: top;"
+  },
+  "-fx-tooltip-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Pagination",
+    "default": "false",
+    "description": "Whether a tooltip showing the page number is displayed on page indicators.",
+    "example": "-fx-tooltip-visible: true;"
+  },
+  "-fx-translate-x": {
+    "valueType": "number",
+    "appliesTo": "Node",
+    "default": "0",
+    "description": "The translation along the X axis in pixels.",
+    "example": "-fx-translate-x: 10;"
+  },
+  "-fx-translate-y": {
+    "valueType": "number",
+    "appliesTo": "Node",
+    "default": "0",
+    "description": "The translation along the Y axis in pixels.",
+    "example": "-fx-translate-y: 10;"
+  },
+  "-fx-translate-z": {
+    "valueType": "number",
+    "appliesTo": "Node",
+    "default": "0",
+    "description": "The translation along the Z axis in pixels.",
+    "example": "-fx-translate-z: 10;"
+  },
+  "-fx-underline": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Text, Labeled",
+    "default": "false",
+    "description": "Whether the text has an underline.",
+    "example": "-fx-underline: true;"
+  },
+  "-fx-unit-increment": {
+    "valueType": "number",
+    "appliesTo": "ScrollBar",
+    "default": "1",
+    "description": "The amount by which to adjust the value when an arrow button is clicked.",
+    "example": "-fx-unit-increment: 5;"
+  },
+  "-fx-use-content-height": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "RichTextArea",
+    "default": "false",
+    "description": "Whether the preferred height equals the content height.",
+    "example": "-fx-use-content-height: true;"
+  },
+  "-fx-use-content-width": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "RichTextArea",
+    "default": "false",
+    "description": "Whether the preferred width equals the content width.",
+    "example": "-fx-use-content-width: true;"
+  },
+  "-fx-use-system-menu-bar": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "MenuBar",
+    "default": "false",
+    "description": "Whether the system menu bar is used (macOS).",
+    "example": "-fx-use-system-menu-bar: true;"
+  },
+  "-fx-valignment": {
+    "valueType": "enum",
+    "values": [
+      "top",
+      "center",
+      "baseline",
+      "bottom"
+    ],
+    "appliesTo": "Separator",
+    "default": "center",
+    "description": "The vertical alignment of the separator line.",
+    "example": "-fx-valignment: center;"
+  },
+  "-fx-vbar-policy": {
+    "valueType": "enum",
+    "values": [
+      "never",
+      "always",
+      "as-needed"
+    ],
+    "appliesTo": "ScrollPane",
+    "default": "as-needed",
+    "description": "The policy for showing the vertical scroll bar.",
+    "example": "-fx-vbar-policy: always;"
+  },
+  "-fx-vertical-grid-lines-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "XYChart",
+    "default": "true",
+    "description": "Whether vertical grid lines are visible.",
+    "example": "-fx-vertical-grid-lines-visible: false;"
+  },
+  "-fx-vertical-zero-line-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "XYChart",
+    "default": "true",
+    "description": "Whether the vertical zero line is visible.",
+    "example": "-fx-vertical-zero-line-visible: false;"
+  },
+  "-fx-vgap": {
+    "valueType": "size",
+    "appliesTo": "FlowPane, GridPane, TilePane",
+    "default": "0",
+    "description": "The vertical gap between children.",
+    "example": "-fx-vgap: 10;"
+  },
+  "-fx-view-order": {
+    "valueType": "number",
+    "appliesTo": "Node",
+    "default": "0",
+    "description": "Alters the rendering and picking order of a node within its parent without reordering the children list.",
+    "example": "-fx-view-order: 1;"
+  },
+  "-fx-visible": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Node",
+    "default": "true",
+    "description": "Whether the node is visible.",
+    "example": "-fx-visible: false;"
+  },
+  "-fx-wrap-text": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Labeled, TextArea, Tooltip, RichTextArea",
+    "default": "false",
+    "description": "Whether text should wrap when it reaches the edge of the container.",
+    "example": "-fx-wrap-text: true;"
+  },
+  "transition": {
+    "valueType": "string",
+    "appliesTo": "Node",
+    "default": "",
+    "description": "Shorthand for transition-property, transition-duration, transition-timing-function, and transition-delay. First duration is transition-duration, second is transition-delay.",
+    "example": "transition: -fx-opacity 0.5s ease-in-out 0.1s;"
+  },
+  "transition-delay": {
+    "valueType": "duration",
+    "appliesTo": "Node",
+    "default": "0s",
+    "description": "The delay before the transition starts. Negative values cause the transition to start as if already running.",
+    "example": "transition-delay: 0.2s;"
+  },
+  "transition-duration": {
+    "valueType": "duration",
+    "appliesTo": "Node",
+    "default": "0s",
+    "description": "The duration of the transition, not including the optional delay.",
+    "example": "transition-duration: 0.5s;"
+  },
+  "transition-property": {
+    "valueType": "enum",
+    "values": [
+      "none",
+      "all"
+    ],
+    "appliesTo": "Node",
+    "default": "all",
+    "description": "The CSS property to which the transition is applied. Use 'all' for all properties, 'none' to disable, or a specific -fx-* property name.",
+    "example": "transition-property: -fx-opacity;"
+  },
+  "transition-timing-function": {
+    "valueType": "enum",
+    "values": [
+      "ease",
+      "ease-in",
+      "ease-out",
+      "ease-in-out",
+      "linear"
+    ],
+    "appliesTo": "Node",
+    "default": "ease",
+    "description": "The easing function used to calculate intermediate transition values.",
+    "example": "transition-timing-function: ease-in-out;"
+  }
+}

@@ -1,0 +1,14 @@
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+
+import com.dlsc.fxmlkit.fxml.FxmlView;
+#if (${RESOURCE_BUNDLE} && ${RESOURCE_BUNDLE} != "")
+import java.util.ResourceBundle;
+#end
+
+public class ${NAME} extends FxmlView<${CONTROLLER}> {
+#if (${RESOURCE_BUNDLE} && ${RESOURCE_BUNDLE} != "")
+    public ${NAME}() {
+        super(ResourceBundle.getBundle("${RESOURCE_BUNDLE}"));
+    }
+#end
+}

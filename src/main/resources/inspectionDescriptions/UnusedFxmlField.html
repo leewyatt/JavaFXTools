@@ -1,0 +1,11 @@
+<html>
+<body>
+Reports <code>@FXML</code> fields in controller classes that are not referenced by any
+<code>fx:id</code> attribute in the associated FXML files.
+<!-- tooltip end -->
+<p>This inspection only checks controllers that are referenced by at least one FXML file
+via <code>fx:controller</code>. Fields in the controller's superclasses are not checked.</p>
+<p><b>Limitation:</b> Fields referenced only from Java code (not FXML) will also be reported.
+Review before removing.</p>
+</body>
+</html>

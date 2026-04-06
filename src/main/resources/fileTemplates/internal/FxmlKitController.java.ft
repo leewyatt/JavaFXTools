@@ -1,0 +1,20 @@
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+
+import javafx.fxml.FXML;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class ${NAME} {
+
+    @FXML
+    private URL location;
+
+    @FXML
+    private ResourceBundle resources;
+
+    @FXML
+    private void initialize() {
+
+    }
+}

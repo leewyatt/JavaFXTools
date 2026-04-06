@@ -1,0 +1,8 @@
+# CSS property data files
+# No prefix = always load
+# markerClass=filename = load only when markerClass is on classpath
+fx-css-properties.json
+org.controlsfx.control.GridView=controlsfx-css-properties.json
+com.dlsc.gemsfx.DialogPane=gemsfx-css-properties.json
+com.jfoenix.controls.JFXButton=jfoenix-css-properties.json
+org.kordamp.ikonli.Ikon=ikonli-css-properties.json

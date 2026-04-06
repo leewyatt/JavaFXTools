@@ -1,0 +1,1270 @@
+{
+  "_meta": {
+    "library": "GemsFX",
+    "version": "3.10.1",
+    "markerClass": "com.dlsc.gemsfx.DialogPane"
+  },
+  "-fx-active": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "Spacer",
+    "default": "true",
+    "description": "Whether the spacer actively grows to fill available space.",
+    "example": "-fx-active: false;"
+  },
+  "-fx-adding-item-to-history-on-commit": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SearchField",
+    "default": "true",
+    "description": "Whether to add the committed item to the search history.",
+    "example": "-fx-adding-item-to-history-on-commit: false;"
+  },
+  "-fx-adding-item-to-history-on-enter": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SearchField",
+    "default": "true",
+    "description": "Whether to add the item to the search history when Enter is pressed.",
+    "example": "-fx-adding-item-to-history-on-enter: false;"
+  },
+  "-fx-adding-item-to-history-on-focus-lost": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SearchField",
+    "default": "true",
+    "description": "Whether to add the item to the search history when the field loses focus.",
+    "example": "-fx-adding-item-to-history-on-focus-lost: false;"
+  },
+  "-fx-always-center": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "StripView",
+    "default": "true",
+    "description": "Whether the selected item is always centered within the strip.",
+    "example": "-fx-always-center: false;"
+  },
+  "-fx-animate-drawer": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "DrawerStackPane",
+    "default": "true",
+    "description": "Whether the drawer uses animation when opening and closing.",
+    "example": "-fx-animate-drawer: false;"
+  },
+  "-fx-animate-scrolling": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "StripView",
+    "default": "true",
+    "description": "Whether scrolling in the strip view is animated.",
+    "example": "-fx-animate-scrolling: false;"
+  },
+  "-fx-animation-duration": {
+    "valueType": "duration",
+    "appliesTo": "DrawerStackPane, StripView",
+    "default": "250ms",
+    "description": "The duration of the open/close or scroll animation.",
+    "example": "-fx-animation-duration: 300ms;"
+  },
+  "-fx-animation-enabled": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SelectionBox",
+    "default": "false",
+    "description": "Whether selection change animations are enabled.",
+    "example": "-fx-animation-enabled: true;"
+  },
+  "-fx-arrow-indent": {
+    "valueType": "number",
+    "appliesTo": "PopOver",
+    "default": "12",
+    "description": "The indentation of the popover arrow from the corner.",
+    "example": "-fx-arrow-indent: 16;"
+  },
+  "-fx-arrow-size": {
+    "valueType": "number",
+    "appliesTo": "PopOver",
+    "default": "10",
+    "description": "The size of the popover arrow.",
+    "example": "-fx-arrow-size: 14;"
+  },
+  "-fx-auto-commit-on-focus-lost": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SearchField",
+    "default": "true",
+    "description": "Whether the current selection is automatically committed when focus is lost.",
+    "example": "-fx-auto-commit-on-focus-lost: false;"
+  },
+  "-fx-auto-completion-gap": {
+    "valueType": "size",
+    "appliesTo": "SearchField",
+    "default": "1",
+    "description": "The gap between the text field and the auto-completion popup.",
+    "example": "-fx-auto-completion-gap: 4;"
+  },
+  "-fx-auto-domain-completion-enabled": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "EmailField",
+    "default": "true",
+    "description": "Whether automatic email domain completion is enabled.",
+    "example": "-fx-auto-domain-completion-enabled: false;"
+  },
+  "-fx-auto-open-group": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "InfoCenterView",
+    "default": "false",
+    "description": "Whether notification groups are automatically expanded when new notifications arrive.",
+    "example": "-fx-auto-open-group: true;"
+  },
+  "-fx-avatar-arc-size": {
+    "valueType": "number",
+    "appliesTo": "AvatarView",
+    "default": "10",
+    "description": "The arc size used for rounding the corners of square avatars.",
+    "example": "-fx-avatar-arc-size: 20;"
+  },
+  "-fx-avatar-shape": {
+    "valueType": "enum",
+    "values": [
+      "round",
+      "square"
+    ],
+    "appliesTo": "AvatarView",
+    "default": "square",
+    "description": "The shape of the avatar display.",
+    "example": "-fx-avatar-shape: round;"
+  },
+  "-fx-avatar-size": {
+    "valueType": "number",
+    "appliesTo": "AvatarView",
+    "default": "50",
+    "description": "The size (width and height) of the avatar.",
+    "example": "-fx-avatar-size: 80;"
+  },
+  "-fx-background-loading": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SVGImageView",
+    "default": "false",
+    "description": "Whether the SVG image is loaded in the background.",
+    "example": "-fx-background-loading: true;"
+  },
+  "-fx-blocking-opacity": {
+    "valueType": "number",
+    "appliesTo": "GlassPane",
+    "default": "0.5",
+    "description": "The opacity level of the blocking overlay.",
+    "example": "-fx-blocking-opacity: 0.7;"
+  },
+  "-fx-button-display": {
+    "valueType": "enum",
+    "values": [
+      "left",
+      "right",
+      "button-only",
+      "field-only"
+    ],
+    "appliesTo": "CustomComboBox",
+    "default": "right",
+    "description": "The display mode and position of the combo box button.",
+    "example": "-fx-button-display: left;"
+  },
+  "-fx-cell-height": {
+    "valueType": "size",
+    "appliesTo": "TreeNodeView",
+    "default": "30",
+    "description": "The height of each cell in the tree node view.",
+    "example": "-fx-cell-height: 40;"
+  },
+  "-fx-cell-width": {
+    "valueType": "size",
+    "appliesTo": "TreeNodeView",
+    "default": "60",
+    "description": "The width of each cell in the tree node view.",
+    "example": "-fx-cell-width: 80;"
+  },
+  "-fx-clip-shape": {
+    "valueType": "enum",
+    "values": [
+      "circle",
+      "rectangle"
+    ],
+    "appliesTo": "PhotoView",
+    "default": "circle",
+    "description": "The clipping shape used for the photo display.",
+    "example": "-fx-clip-shape: rectangle;"
+  },
+  "-fx-clock-type": {
+    "valueType": "enum",
+    "values": [
+      "twenty-four-hour-clock",
+      "twelve-hour-clock"
+    ],
+    "appliesTo": "TimePicker",
+    "default": "twenty-four-hour-clock",
+    "description": "The clock format used by the time picker.",
+    "example": "-fx-clock-type: twelve-hour-clock;"
+  },
+  "-fx-cols": {
+    "valueType": "integer",
+    "appliesTo": "YearView",
+    "default": "4",
+    "description": "The number of columns in the year view grid.",
+    "example": "-fx-cols: 3;"
+  },
+  "-fx-column-alignment": {
+    "valueType": "enum",
+    "values": [
+      "left",
+      "center",
+      "right"
+    ],
+    "appliesTo": "TreeNodeView",
+    "default": "center",
+    "description": "The horizontal alignment of nodes within a column.",
+    "example": "-fx-column-alignment: left;"
+  },
+  "-fx-content-display": {
+    "valueType": "enum",
+    "values": [
+      "left",
+      "right",
+      "top",
+      "bottom",
+      "center",
+      "graphic-only",
+      "text-only"
+    ],
+    "appliesTo": "ChipView",
+    "default": "left",
+    "description": "The position of the graphic relative to the text in the chip.",
+    "example": "-fx-content-display: right;"
+  },
+  "-fx-corner-radius": {
+    "valueType": "size",
+    "appliesTo": "PopOver",
+    "default": "6",
+    "description": "The corner radius of the popover background.",
+    "example": "-fx-corner-radius: 10;"
+  },
+  "-fx-disable-drag-and-drop": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "MultiColumnListView",
+    "default": "false",
+    "description": "Whether drag and drop between columns is disabled.",
+    "example": "-fx-disable-drag-and-drop: true;"
+  },
+  "-fx-disable-month-dropdown-button": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "false",
+    "description": "Whether the month dropdown button is disabled.",
+    "example": "-fx-disable-month-dropdown-button: true;"
+  },
+  "-fx-disable-next-month-button": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "false",
+    "description": "Whether the next month navigation button is disabled.",
+    "example": "-fx-disable-next-month-button: true;"
+  },
+  "-fx-disable-next-year-button": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "false",
+    "description": "Whether the next year navigation button is disabled.",
+    "example": "-fx-disable-next-year-button: true;"
+  },
+  "-fx-disable-previous-month-button": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "false",
+    "description": "Whether the previous month navigation button is disabled.",
+    "example": "-fx-disable-previous-month-button: true;"
+  },
+  "-fx-disable-previous-year-button": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "false",
+    "description": "Whether the previous year navigation button is disabled.",
+    "example": "-fx-disable-previous-year-button: true;"
+  },
+  "-fx-disable-year-dropdown-button": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "false",
+    "description": "Whether the year dropdown button is disabled.",
+    "example": "-fx-disable-year-dropdown-button: true;"
+  },
+  "-fx-divider-position": {
+    "valueType": "number",
+    "appliesTo": "BeforeAfterView",
+    "default": "0.5",
+    "description": "The position of the divider between the before and after content, from 0.0 to 1.0.",
+    "example": "-fx-divider-position: 0.3;"
+  },
+  "-fx-drawer-side-padding": {
+    "valueType": "size",
+    "appliesTo": "DrawerStackPane",
+    "default": "100",
+    "description": "The side padding of the drawer content area.",
+    "example": "-fx-drawer-side-padding: 50;"
+  },
+  "-fx-drawer-top-padding": {
+    "valueType": "size",
+    "appliesTo": "DrawerStackPane",
+    "default": "20",
+    "description": "The top padding of the drawer content area.",
+    "example": "-fx-drawer-top-padding: 10;"
+  },
+  "-fx-echo-char": {
+    "valueType": "string",
+    "appliesTo": "EnhancedPasswordField",
+    "default": "●",
+    "description": "The character used to mask the password input.",
+    "example": "-fx-echo-char: '*';"
+  },
+  "-fx-editable": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "PhotoView",
+    "default": "true",
+    "description": "Whether the photo can be edited (cropped, zoomed, rotated).",
+    "example": "-fx-editable: false;"
+  },
+  "-fx-expand-duration": {
+    "valueType": "duration",
+    "appliesTo": "InfoCenterView",
+    "default": "300ms",
+    "description": "The duration of the expand/collapse animation for notification groups.",
+    "example": "-fx-expand-duration: 500ms;"
+  },
+  "-fx-fade-in-out": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "DrawerStackPane, GlassPane",
+    "default": "true",
+    "description": "Whether the overlay uses a fade-in/fade-out transition.",
+    "example": "-fx-fade-in-out: false;"
+  },
+  "-fx-fade-in-out-duration": {
+    "valueType": "duration",
+    "appliesTo": "GlassPane",
+    "default": "100ms",
+    "description": "The duration of the fade-in and fade-out transition.",
+    "example": "-fx-fade-in-out-duration: 200ms;"
+  },
+  "-fx-fading-size": {
+    "valueType": "number",
+    "appliesTo": "MaskedView, StripView",
+    "default": "120",
+    "description": "The size of the fading effect at the edges.",
+    "example": "-fx-fading-size: 80;"
+  },
+  "-fx-fill-digits": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "DurationPicker",
+    "default": "true",
+    "description": "Whether numeric fields are zero-padded to fill their width.",
+    "example": "-fx-fill-digits: false;"
+  },
+  "-fx-fill-last-page": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "ItemPagingControlBase",
+    "default": "false",
+    "description": "Whether the last page is filled with items from the previous page to maintain consistent page size.",
+    "example": "-fx-fill-last-page: true;"
+  },
+  "-fx-first-last-page-display-mode": {
+    "valueType": "enum",
+    "values": [
+      "hide",
+      "show-arrow-buttons",
+      "show-page-buttons"
+    ],
+    "appliesTo": "PagingControlBase",
+    "default": "show-page-buttons",
+    "description": "How the first and last page navigation buttons are displayed.",
+    "example": "-fx-first-last-page-display-mode: show-arrow-buttons;"
+  },
+  "-fx-fit-height": {
+    "valueType": "size",
+    "appliesTo": "SVGImageView",
+    "default": "0",
+    "description": "The target height for fitting the SVG image.",
+    "example": "-fx-fit-height: 48;"
+  },
+  "-fx-fit-width": {
+    "valueType": "size",
+    "appliesTo": "SVGImageView",
+    "default": "0",
+    "description": "The target width for fitting the SVG image.",
+    "example": "-fx-fit-width: 48;"
+  },
+  "-fx-format": {
+    "valueType": "enum",
+    "values": [
+      "hours-minutes",
+      "hours-minutes-seconds",
+      "hours-minutes-seconds-millis"
+    ],
+    "appliesTo": "TimePicker",
+    "default": "hours-minutes",
+    "description": "The time format displayed by the time picker.",
+    "example": "-fx-format: hours-minutes-seconds;"
+  },
+  "-fx-gap": {
+    "valueType": "size",
+    "appliesTo": "ResponsivePane",
+    "default": "0",
+    "description": "The gap between the side node and the content node.",
+    "example": "-fx-gap: 10;"
+  },
+  "-fx-hgap": {
+    "valueType": "size",
+    "appliesTo": "StretchingTilePane, TreeNodeView",
+    "default": "0",
+    "description": "The horizontal gap between cells or tiles.",
+    "example": "-fx-hgap: 10;"
+  },
+  "-fx-hide-popup-with-no-choice": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SearchField",
+    "default": "false",
+    "description": "Whether the popup is hidden when there are no matching choices.",
+    "example": "-fx-hide-popup-with-no-choice: true;"
+  },
+  "-fx-hide-popup-with-single-choice": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SearchField",
+    "default": "false",
+    "description": "Whether the popup is hidden when there is only one matching choice.",
+    "example": "-fx-hide-popup-with-single-choice: true;"
+  },
+  "-fx-highlight-fill": {
+    "valueType": "paint",
+    "appliesTo": "TextView",
+    "default": "blue",
+    "description": "The fill color used for text selection highlighting.",
+    "example": "-fx-highlight-fill: #3390ff;"
+  },
+  "-fx-highlight-stroke": {
+    "valueType": "paint",
+    "appliesTo": "TextView",
+    "default": "transparent",
+    "description": "The stroke color used for text selection highlighting.",
+    "example": "-fx-highlight-stroke: #0066cc;"
+  },
+  "-fx-highlight-text-fill": {
+    "valueType": "paint",
+    "appliesTo": "TextView",
+    "default": "white",
+    "description": "The fill color of the selected (highlighted) text.",
+    "example": "-fx-highlight-text-fill: #ffffff;"
+  },
+  "-fx-label-type": {
+    "valueType": "enum",
+    "values": [
+      "none",
+      "short",
+      "long"
+    ],
+    "appliesTo": "DurationPicker",
+    "default": "short",
+    "description": "The type of labels shown for duration fields (none, abbreviated, or full words).",
+    "example": "-fx-label-type: long;"
+  },
+  "-fx-layout-direction": {
+    "valueType": "enum",
+    "values": [
+      "left-to-right",
+      "right-to-left",
+      "top-to-bottom",
+      "bottom-to-top"
+    ],
+    "appliesTo": "TreeNodeView",
+    "default": "top-to-bottom",
+    "description": "The direction in which the tree layout expands.",
+    "example": "-fx-layout-direction: left-to-right;"
+  },
+  "-fx-layout-type": {
+    "valueType": "enum",
+    "values": [
+      "regular",
+      "compact"
+    ],
+    "appliesTo": "TreeNodeView",
+    "default": "regular",
+    "description": "The layout strategy used for arranging tree nodes.",
+    "example": "-fx-layout-type: compact;"
+  },
+  "-fx-length-display-mode": {
+    "valueType": "enum",
+    "values": [
+      "auto",
+      "always-show",
+      "always-hide"
+    ],
+    "appliesTo": "LimitedTextArea",
+    "default": "auto",
+    "description": "When to display the character count indicator.",
+    "example": "-fx-length-display-mode: always-show;"
+  },
+  "-fx-linking-fields": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "DurationPicker, TimePicker",
+    "default": "true",
+    "description": "Whether input fields are linked so that overflow carries over to the next field.",
+    "example": "-fx-linking-fields: false;"
+  },
+  "-fx-loop-selection": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "StripView",
+    "default": "true",
+    "description": "Whether the selection wraps around from the last item to the first.",
+    "example": "-fx-loop-selection: false;"
+  },
+  "-fx-mark-selected-days-of-previous-or-next-month": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "true",
+    "description": "Whether selected days from the previous or next month are visually marked.",
+    "example": "-fx-mark-selected-days-of-previous-or-next-month: false;"
+  },
+  "-fx-max-drawer-height": {
+    "valueType": "size",
+    "appliesTo": "DrawerStackPane",
+    "default": "1.0",
+    "description": "The maximum height of the drawer as a fraction of the available space.",
+    "example": "-fx-max-drawer-height: 0.8;"
+  },
+  "-fx-max-page-indicators-count": {
+    "valueType": "integer",
+    "appliesTo": "PagingControlBase",
+    "default": "5",
+    "description": "The maximum number of page indicator buttons shown.",
+    "example": "-fx-max-page-indicators-count: 7;"
+  },
+  "-fx-max-zoom": {
+    "valueType": "number",
+    "appliesTo": "PhotoView",
+    "default": "5",
+    "description": "The maximum zoom level allowed for the photo.",
+    "example": "-fx-max-zoom: 10;"
+  },
+  "-fx-message-label-strategy": {
+    "valueType": "enum",
+    "values": [
+      "hide",
+      "show-when-needed",
+      "always-show"
+    ],
+    "appliesTo": "PagingControlBase",
+    "default": "always-show",
+    "description": "The strategy for displaying the paging message label.",
+    "example": "-fx-message-label-strategy: show-when-needed;"
+  },
+  "-fx-min-drawer-height": {
+    "valueType": "size",
+    "appliesTo": "DrawerStackPane",
+    "default": "0.1",
+    "description": "The minimum height of the drawer as a fraction of the available space.",
+    "example": "-fx-min-drawer-height: 0.2;"
+  },
+  "-fx-min-segment-size": {
+    "valueType": "number",
+    "appliesTo": "SegmentedBar",
+    "default": "5",
+    "description": "The minimum size of each segment in the bar.",
+    "example": "-fx-min-segment-size: 10;"
+  },
+  "-fx-month-display-mode": {
+    "valueType": "enum",
+    "values": [
+      "text-only",
+      "text-and-dropdown"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "text-only",
+    "description": "How the month label is displayed in the calendar header.",
+    "example": "-fx-month-display-mode: text-and-dropdown;"
+  },
+  "-fx-month-selection-view-enabled": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "true",
+    "description": "Whether the month selection view is available for quick month navigation.",
+    "example": "-fx-month-selection-view-enabled: false;"
+  },
+  "-fx-mouse-transparent": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "GridTableCell",
+    "default": "false",
+    "description": "Whether the cell is transparent to mouse events.",
+    "example": "-fx-mouse-transparent: true;"
+  },
+  "-fx-node-line-gap": {
+    "valueType": "size",
+    "appliesTo": "TreeNodeView",
+    "default": "10",
+    "description": "The gap between tree nodes and their connecting lines.",
+    "example": "-fx-node-line-gap: 15;"
+  },
+  "-fx-notification-spacing": {
+    "valueType": "size",
+    "appliesTo": "InfoCenterView",
+    "default": "10",
+    "description": "The spacing between notifications in the info center.",
+    "example": "-fx-notification-spacing: 15;"
+  },
+  "-fx-orientation": {
+    "valueType": "enum",
+    "values": [
+      "horizontal",
+      "vertical"
+    ],
+    "appliesTo": "BeforeAfterView, DateRangeView, SegmentedBar",
+    "default": "horizontal",
+    "description": "The orientation of the control layout.",
+    "example": "-fx-orientation: vertical;"
+  },
+  "-fx-page-alignment": {
+    "valueType": "enum",
+    "values": [
+      "left",
+      "center",
+      "right"
+    ],
+    "appliesTo": "PagingControlBase",
+    "default": "right",
+    "description": "The horizontal alignment of the paging controls.",
+    "example": "-fx-page-alignment: center;"
+  },
+  "-fx-paging-controls-location": {
+    "valueType": "enum",
+    "values": [
+      "top",
+      "bottom",
+      "left",
+      "right"
+    ],
+    "appliesTo": "ItemPagingControlBase",
+    "default": "bottom",
+    "description": "The location of the paging controls relative to the content.",
+    "example": "-fx-paging-controls-location: top;"
+  },
+  "-fx-preferred-drawer-width": {
+    "valueType": "size",
+    "appliesTo": "DrawerStackPane",
+    "default": "1.7976931348623157E308",
+    "description": "The preferred width of the drawer panel.",
+    "example": "-fx-preferred-drawer-width: 400;"
+  },
+  "-fx-preserve-ratio": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SVGImageView",
+    "default": "true",
+    "description": "Whether the aspect ratio of the SVG image is preserved when resizing.",
+    "example": "-fx-preserve-ratio: false;"
+  },
+  "-fx-presets-location": {
+    "valueType": "enum",
+    "values": [
+      "top",
+      "bottom",
+      "left",
+      "right"
+    ],
+    "appliesTo": "DateRangeView",
+    "default": "left",
+    "description": "The location of the date range presets panel.",
+    "example": "-fx-presets-location: right;"
+  },
+  "-fx-progress-arc-type": {
+    "valueType": "enum",
+    "values": [
+      "open",
+      "chord",
+      "round"
+    ],
+    "appliesTo": "ArcProgressIndicator",
+    "default": "open",
+    "description": "The arc type used to render the progress arc.",
+    "example": "-fx-progress-arc-type: round;"
+  },
+  "-fx-read-only": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SelectionBox",
+    "default": "false",
+    "description": "Whether the selection box is in read-only mode.",
+    "example": "-fx-read-only: true;"
+  },
+  "-fx-required": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "EmailField",
+    "default": "false",
+    "description": "Whether a valid email address is required.",
+    "example": "-fx-required: true;"
+  },
+  "-fx-rollover": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "DurationPicker, TimePicker",
+    "default": "true",
+    "description": "Whether time/duration fields roll over when reaching their maximum or minimum value.",
+    "example": "-fx-rollover: false;"
+  },
+  "-fx-round": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SearchTextField",
+    "default": "false",
+    "description": "Whether the search text field has rounded corners.",
+    "example": "-fx-round: true;"
+  },
+  "-fx-row-alignment": {
+    "valueType": "enum",
+    "values": [
+      "top",
+      "center",
+      "bottom",
+      "baseline"
+    ],
+    "appliesTo": "TreeNodeView",
+    "default": "center",
+    "description": "The vertical alignment of nodes within a row.",
+    "example": "-fx-row-alignment: top;"
+  },
+  "-fx-rows": {
+    "valueType": "integer",
+    "appliesTo": "YearView",
+    "default": "5",
+    "description": "The number of rows in the year view grid.",
+    "example": "-fx-rows: 4;"
+  },
+  "-fx-same-width-page-buttons": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "PagingControlBase",
+    "default": "false",
+    "description": "Whether all page buttons have the same width.",
+    "example": "-fx-same-width-page-buttons: true;"
+  },
+  "-fx-show-all-fade-duration": {
+    "valueType": "duration",
+    "appliesTo": "InfoCenterView",
+    "default": "300ms",
+    "description": "The duration of the fade animation when showing or hiding all notifications.",
+    "example": "-fx-show-all-fade-duration: 500ms;"
+  },
+  "-fx-show-bottom": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "LimitedTextArea",
+    "default": "true",
+    "description": "Whether the bottom area with the character count is visible.",
+    "example": "-fx-show-bottom: false;"
+  },
+  "-fx-show-cancel-and-apply-button": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "DateRangeView",
+    "default": "true",
+    "description": "Whether the cancel and apply buttons are shown.",
+    "example": "-fx-show-cancel-and-apply-button: false;"
+  },
+  "-fx-show-days-of-previous-or-next-month": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "true",
+    "description": "Whether days from the previous and next month are displayed.",
+    "example": "-fx-show-days-of-previous-or-next-month: false;"
+  },
+  "-fx-show-drawer-title": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "DrawerStackPane",
+    "default": "false",
+    "description": "Whether the drawer title bar is visible.",
+    "example": "-fx-show-drawer-title: true;"
+  },
+  "-fx-show-header": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "FilterView",
+    "default": "true",
+    "description": "Whether the filter view header is visible.",
+    "example": "-fx-show-header: false;"
+  },
+  "-fx-show-headers": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "MultiColumnListView",
+    "default": "true",
+    "description": "Whether column headers are displayed.",
+    "example": "-fx-show-headers: false;"
+  },
+  "-fx-show-mail-icon": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "EmailField",
+    "default": "true",
+    "description": "Whether the mail icon is shown inside the email field.",
+    "example": "-fx-show-mail-icon: false;"
+  },
+  "-fx-show-month": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "true",
+    "description": "Whether the month label is shown in the calendar header.",
+    "example": "-fx-show-month: false;"
+  },
+  "-fx-show-month-arrows": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "true",
+    "description": "Whether the month navigation arrows are visible.",
+    "example": "-fx-show-month-arrows: false;"
+  },
+  "-fx-show-page-size-selector": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "PagingControlBase",
+    "default": "true",
+    "description": "Whether the page size selector is shown.",
+    "example": "-fx-show-page-size-selector: false;"
+  },
+  "-fx-show-paging-controls": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "ItemPagingControlBase",
+    "default": "true",
+    "description": "Whether the paging controls are visible.",
+    "example": "-fx-show-paging-controls: false;"
+  },
+  "-fx-show-popup-trigger-button": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "DurationPicker, TimePicker",
+    "default": "true",
+    "description": "Whether the popup trigger button is shown.",
+    "example": "-fx-show-popup-trigger-button: false;"
+  },
+  "-fx-show-presets": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "DateRangeView",
+    "default": "true",
+    "description": "Whether the date range preset options are shown.",
+    "example": "-fx-show-presets: false;"
+  },
+  "-fx-show-previous-next-page-button": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "PagingControlBase",
+    "default": "true",
+    "description": "Whether the previous and next page buttons are shown.",
+    "example": "-fx-show-previous-next-page-button: false;"
+  },
+  "-fx-show-search-icon": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SearchField",
+    "default": "true",
+    "description": "Whether the search icon is displayed in the search field.",
+    "example": "-fx-show-search-icon: false;"
+  },
+  "-fx-show-today": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "true",
+    "description": "Whether today's date is visually highlighted.",
+    "example": "-fx-show-today: false;"
+  },
+  "-fx-show-today-button": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "false",
+    "description": "Whether the 'Today' button is shown for quick navigation.",
+    "example": "-fx-show-today-button: true;"
+  },
+  "-fx-show-validation-icon": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "EmailField",
+    "default": "true",
+    "description": "Whether the validation status icon is shown.",
+    "example": "-fx-show-validation-icon: false;"
+  },
+  "-fx-show-week-numbers": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "false",
+    "description": "Whether week numbers are displayed in the calendar.",
+    "example": "-fx-show-week-numbers: true;"
+  },
+  "-fx-show-year": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView, YearMonthView",
+    "default": "true",
+    "description": "Whether the year label is shown in the header.",
+    "example": "-fx-show-year: false;"
+  },
+  "-fx-side": {
+    "valueType": "enum",
+    "values": [
+      "top",
+      "bottom",
+      "left",
+      "right"
+    ],
+    "appliesTo": "ResponsivePane",
+    "default": "left",
+    "description": "The side where the side node is positioned.",
+    "example": "-fx-side: right;"
+  },
+  "-fx-size": {
+    "valueType": "enum",
+    "values": [
+      "small",
+      "medium",
+      "large"
+    ],
+    "appliesTo": "LoadingPane",
+    "default": "medium",
+    "description": "The size of the loading indicator.",
+    "example": "-fx-size: large;"
+  },
+  "-fx-slide-in-duration": {
+    "valueType": "duration",
+    "appliesTo": "InfoCenterView",
+    "default": "500ms",
+    "description": "The duration of the slide-in animation for new notifications.",
+    "example": "-fx-slide-in-duration: 300ms;"
+  },
+  "-fx-smooth": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "SVGImageView",
+    "default": "true",
+    "description": "Whether smooth filtering is applied when rendering the SVG image.",
+    "example": "-fx-smooth: false;"
+  },
+  "-fx-step-rate-in-minutes": {
+    "valueType": "number",
+    "appliesTo": "TimePicker",
+    "default": "1",
+    "description": "The step rate in minutes for the time picker.",
+    "example": "-fx-step-rate-in-minutes: 15;"
+  },
+  "-fx-style-type": {
+    "valueType": "enum",
+    "values": [
+      "default",
+      "bold",
+      "thin",
+      "sector"
+    ],
+    "appliesTo": "ArcProgressIndicator",
+    "default": "default",
+    "description": "The visual style type of the arc progress indicator.",
+    "example": "-fx-style-type: bold;"
+  },
+  "-fx-supporting-multiple-addresses": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "EmailField",
+    "default": "false",
+    "description": "Whether the field supports entering multiple email addresses.",
+    "example": "-fx-supporting-multiple-addresses: true;"
+  },
+  "-fx-svg-url": {
+    "valueType": "uri",
+    "appliesTo": "SVGImageView",
+    "default": "null",
+    "description": "The URL of the SVG image to display.",
+    "example": "-fx-svg-url: url('icon.svg');"
+  },
+  "-fx-track-arc-type": {
+    "valueType": "enum",
+    "values": [
+      "open",
+      "chord",
+      "round"
+    ],
+    "appliesTo": "ArcProgressIndicator",
+    "default": "chord",
+    "description": "The arc type used to render the background track arc.",
+    "example": "-fx-track-arc-type: open;"
+  },
+  "-fx-transparent": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "InfoCenterView",
+    "default": "false",
+    "description": "Whether the info center background is transparent.",
+    "example": "-fx-transparent: true;"
+  },
+  "-fx-use-scroll-pane": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "ItemPagingControlBase",
+    "default": "false",
+    "description": "Whether a scroll pane wraps the paged content.",
+    "example": "-fx-use-scroll-pane: true;"
+  },
+  "-fx-vgap": {
+    "valueType": "size",
+    "appliesTo": "StretchingTilePane, TreeNodeView",
+    "default": "0",
+    "description": "The vertical gap between cells or tiles.",
+    "example": "-fx-vgap: 10;"
+  },
+  "-fx-warning-threshold": {
+    "valueType": "number",
+    "appliesTo": "LimitedTextArea",
+    "default": "0.9",
+    "description": "The threshold (0.0 to 1.0) at which the character count warning style is applied.",
+    "example": "-fx-warning-threshold: 0.8;"
+  },
+  "-fx-week-number-column-width": {
+    "valueType": "size",
+    "appliesTo": "CalendarView",
+    "default": "16",
+    "description": "The width of the week number column.",
+    "example": "-fx-week-number-column-width: 24;"
+  },
+  "-fx-year-display-mode": {
+    "valueType": "enum",
+    "values": [
+      "text-only",
+      "text-and-spinner",
+      "text-and-dropdown"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "text-only",
+    "description": "How the year label is displayed in the calendar header.",
+    "example": "-fx-year-display-mode: text-and-dropdown;"
+  },
+  "-fx-year-selection-view-enabled": {
+    "valueType": "boolean",
+    "values": [
+      "true",
+      "false"
+    ],
+    "appliesTo": "CalendarView",
+    "default": "true",
+    "description": "Whether the year selection view is available for quick year navigation.",
+    "example": "-fx-year-selection-view-enabled: false;"
+  }
+}

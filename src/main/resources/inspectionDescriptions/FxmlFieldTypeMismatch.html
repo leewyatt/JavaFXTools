@@ -1,0 +1,14 @@
+<html>
+<body>
+Reports <code>@FXML</code> fields in controller classes whose declared type does not match
+the element type in the corresponding FXML file.
+<p>
+For example, if an FXML file declares <code>&lt;TextField fx:id="nameField"/&gt;</code>
+but the controller has <code>@FXML private Label nameField;</code>, this is a type mismatch
+that will cause a <code>ClassCastException</code> at runtime.
+</p>
+<!-- tooltip end -->
+<p>The field type must be the same as the FXML element type, or one of its supertypes.</p>
+<p>Use the quick fix to change the field type to match the FXML declaration.</p>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<html>
+<body>
+Reports CSS class selectors that are not referenced by any <code>styleClass</code>
+attribute in the project's FXML files.
+<!-- tooltip end -->
+<p><b>Limitations:</b></p>
+<ul>
+<li>Only checks class selectors (<code>.xxx</code>), not ID selectors or type selectors.</li>
+<li>Style classes set programmatically via <code>getStyleClass().add("xxx")</code> are not detected.</li>
+<li>May report false positives for selectors used only in Java code.</li>
+</ul>
+</body>
+</html>

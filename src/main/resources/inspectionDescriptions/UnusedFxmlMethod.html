@@ -1,0 +1,10 @@
+<html>
+<body>
+Reports <code>@FXML</code> methods in controller classes that are not referenced by any
+event handler attribute (e.g., <code>onAction="#handleLogin"</code>) in the associated FXML files.
+<!-- tooltip end -->
+<p>The <code>initialize()</code> method is excluded as it is automatically called by FXMLLoader.</p>
+<p><b>Limitation:</b> Methods referenced only from Java code (not FXML) will also be reported.
+Review before removing.</p>
+</body>
+</html>

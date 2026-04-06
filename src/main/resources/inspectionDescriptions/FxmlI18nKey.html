@@ -1,0 +1,13 @@
+<html>
+<body>
+Reports <code>%key</code> references in FXML files where the key is not found
+in any <code>.properties</code> file in the project.
+<p>
+FXML supports internationalization via the <code>%key</code> syntax, where the key
+is looked up in the <code>ResourceBundle</code> associated with the <code>FXMLLoader</code>.
+</p>
+<!-- tooltip end -->
+<p><b>Note:</b> This inspection searches all <code>.properties</code> files in the project.
+If your ResourceBundle is loaded dynamically, false positives may occur.</p>
+</body>
+</html>

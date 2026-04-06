@@ -1,0 +1,11 @@
+<templateSet group="FxmlKit">
+    <template name="fxpost"
+              value="@com.dlsc.fxmlkit.annotations.PostInject&#10;private void afterInject() {&#10;    $END$&#10;}"
+              description="Create a @PostInject callback method"
+              toReformat="true"
+              toShortenFQNames="true">
+        <context>
+            <option name="JAVA_DECLARATION" value="true"/>
+        </context>
+    </template>
+</templateSet>
