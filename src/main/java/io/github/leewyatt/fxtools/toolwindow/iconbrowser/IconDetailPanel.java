@@ -1,17 +1,19 @@
 package io.github.leewyatt.fxtools.toolwindow.iconbrowser;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.ide.BrowserUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import io.github.leewyatt.fxtools.util.FxSvgRenderer;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
@@ -19,7 +21,7 @@ import java.util.List;
 
 /**
  * Bottom panel showing details of the selected icon: square preview on the left,
- * single header row on the right containing name + pack + license badge + Copy button.
+ * single header row on the right containing name + pack + link icon + Copy button.
  *
  * <p>The Copy button adapts to the pack type via {@link IconCopyUtil}:</p>
  * <ul>
@@ -46,12 +48,10 @@ public class IconDetailPanel extends JPanel {
     //         new JBColor(new Color(0xF7F6F2), new Color(0x2F3133));
     private static final JBColor PREVIEW_BG =
             new JBColor(new Color(0xFFFFFF), new Color(0x3B3D3F));
-    private static final JBColor BADGE_BG =
-            new JBColor(new Color(0xE8E7E2), new Color(0x4B4D4F));
 
     // ==================== Components ====================
     private final JPanel previewPanel;
-    /** Left-aligned flow holding name + pack name + optional license badge. */
+    /** Left-aligned flow holding name + pack name + optional link icon. */
     private final JPanel infoFlow;
     private final JBLabel nameLabel;
     private final JBLabel packNameLabel;
@@ -115,7 +115,7 @@ public class IconDetailPanel extends JPanel {
         previewWrapper.add(previewPanel);
         add(previewWrapper, BorderLayout.WEST);
 
-        // ==================== Info flow: name + pack + license ====================
+        // ==================== Info flow: name + pack + link ====================
         infoFlow = new JPanel(new FlowLayout(FlowLayout.LEFT, JBUI.scale(8), 0));
         infoFlow.setOpaque(false);
         infoFlow.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -210,16 +210,28 @@ public class IconDetailPanel extends JPanel {
 
         IconDataService.PackInfo pack = icon.getPack();
 
-        // ---- Info flow: name + pack + license badge ----
+        // ---- Info flow: name + pack + link icon ----
         nameLabel.setText(icon.getName());
         packNameLabel.setText(pack.getName());
-        // Remove any previously-added license badge (index 0 and 1 are the fixed labels)
+        // Remove any previously-added link icon (index 0 and 1 are the fixed labels)
         while (infoFlow.getComponentCount() > 2) {
             infoFlow.remove(infoFlow.getComponentCount() - 1);
         }
-        String license = pack.getLicense();
-        if (license != null && !license.isEmpty()) {
-            infoFlow.add(new LicenseBadge(license));
+        String url = pack.getSourceUrl();
+        if (url != null && !url.isEmpty()) {
+            Icon linkIcon = url.contains("github.com")
+                    ? AllIcons.Vcs.Vendors.Github
+                    : AllIcons.General.Web;
+            JBLabel linkLabel = new JBLabel(linkIcon);
+            linkLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            linkLabel.setToolTipText(url);
+            linkLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    BrowserUtil.browse(url);
+                }
+            });
+            infoFlow.add(linkLabel);
         }
 
         // ---- "Cannot render" hint (second info line) ----
@@ -254,31 +266,6 @@ public class IconDetailPanel extends JPanel {
             return;
         }
         IconCopyUtil.showPopupUnderneath(copyButton, currentIcon, service);
-    }
-
-    // ==================== License Badge ====================
-
-    /** Small rounded-pill label showing a license identifier (e.g. "MIT", "ISC"). */
-    private static final class LicenseBadge extends JLabel {
-        LicenseBadge(@NotNull String text) {
-            super(text);
-            setForeground(UIUtil.getContextHelpForeground());
-            setFont(getFont().deriveFont(getFont().getSize2D() - 1f));
-            setBorder(JBUI.Borders.empty(2, 8));
-            setOpaque(false);
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(BADGE_BG);
-            int arc = JBUI.scale(10);
-            g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arc, arc);
-            g2.dispose();
-            super.paintComponent(g);
-        }
     }
 
     // ==================== SVG preview rendering ====================

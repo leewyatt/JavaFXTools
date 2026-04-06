@@ -324,7 +324,7 @@ public final class IconDataService {
                             int renderable = rp.renderable > 0 ? rp.renderable : rp.total;
                             PackInfo pi = new PackInfo(rp.id, rp.name, rp.file, rp.total, renderable,
                                     rp.license, rp.enumClass, rp.maven, rp.jfxcentralUrl,
-                                    rp.sourceUrl, idx++);
+                                    rp.url, idx++);
                             packs.add(pi);
                             byId.put(pi.getId(), pi);
                         }
@@ -427,7 +427,7 @@ public final class IconDataService {
     }
 
     private static class RawPack {
-        String id, name, file, license, enumClass, maven, jfxcentralUrl, sourceUrl;
+        String id, name, file, license, enumClass, maven, jfxcentralUrl, url;
         int total;
         int renderable;
     }
