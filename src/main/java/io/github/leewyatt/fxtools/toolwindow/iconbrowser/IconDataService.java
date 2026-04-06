@@ -49,12 +49,11 @@ public final class IconDataService {
         private final String license;
         private String enumClass;
         private String maven;
-        private String jfxcentralUrl;
         private final String sourceUrl;
         private final int index;
 
         PackInfo(String id, String name, String file, int total, int renderable, String license,
-                 String enumClass, String maven, String jfxcentralUrl, String sourceUrl, int index) {
+                 String enumClass, String maven, String sourceUrl, int index) {
             this.id = id;
             this.name = name;
             this.files = new ArrayList<>();
@@ -66,7 +65,6 @@ public final class IconDataService {
             this.license = license;
             this.enumClass = nullIfEmpty(enumClass);
             this.maven = nullIfEmpty(maven);
-            this.jfxcentralUrl = nullIfEmpty(jfxcentralUrl);
             this.sourceUrl = nullIfEmpty(sourceUrl);
             this.index = index;
         }
@@ -87,9 +85,6 @@ public final class IconDataService {
             if (this.enumClass == null) {
                 this.enumClass = nullIfEmpty(other.enumClass);
             }
-            if (this.jfxcentralUrl == null) {
-                this.jfxcentralUrl = nullIfEmpty(other.jfxcentralUrl);
-            }
         }
 
         public String getId() { return id; }
@@ -101,7 +96,6 @@ public final class IconDataService {
         public String getLicense() { return license; }
         public @Nullable String getEnumClass() { return enumClass; }
         public @Nullable String getMaven() { return maven; }
-        public @Nullable String getJfxcentralUrl() { return jfxcentralUrl; }
         public @Nullable String getSourceUrl() { return sourceUrl; }
         public int getIndex() { return index; }
 
@@ -345,7 +339,7 @@ public final class IconDataService {
                             // If `renderable` is missing from JSON (legacy data), assume all icons are renderable
                             int renderable = rp.renderable > 0 ? rp.renderable : rp.total;
                             PackInfo pi = new PackInfo(rp.id, rp.name, rp.file, rp.total, renderable,
-                                    rp.license, rp.enumClass, rp.maven, rp.jfxcentralUrl,
+                                    rp.license, rp.enumClass, rp.maven,
                                     rp.url, idx++);
                             packs.add(pi);
                             byId.put(pi.getId(), pi);
@@ -460,7 +454,7 @@ public final class IconDataService {
     }
 
     private static class RawPack {
-        String id, name, file, license, enumClass, maven, jfxcentralUrl, url;
+        String id, name, file, license, enumClass, maven, url;
         int total;
         int renderable;
     }

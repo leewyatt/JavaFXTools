@@ -5,11 +5,7 @@ import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiEnumConstant;
-import com.intellij.psi.PsiIdentifier;
-import com.intellij.psi.PsiReferenceExpression;
+import com.intellij.psi.*;
 import io.github.leewyatt.fxtools.css.completion.FxCssCompletionUtil;
 import io.github.leewyatt.fxtools.css.preview.CssGutterIconCodeHandler;
 import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
@@ -26,13 +22,18 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Shows a gutter preview icon next to Java references to Ikonli icon enum constants
- * (e.g. {@code FontAwesome.HOME}, {@code BootstrapIcons.ARROW_UP}). Clicking the icon
- * opens the same preview popup as the CSS {@code -fx-icon-code} gutter.
+ * Shows gutter preview icons for Ikonli icon references in Java code:
+ * <ul>
+ *   <li>Enum constant references: {@code FontAwesome.HOME}, {@code MaterialDesign.MDI_TAG}</li>
+ *   <li>String literal arguments: {@code new FontIcon("mdi-tag")}, {@code setIconLiteral("fa-home")}</li>
+ * </ul>
+ * Clicking the icon opens the same preview popup as the CSS {@code -fx-icon-code} gutter.
  */
 public class IkonliGutterIconProvider implements LineMarkerProvider {
 
-    /** Rendered icon cache, keyed by {@code packId + ":" + iconName}. */
+    private static final String FONT_ICON_FQN = "org.kordamp.ikonli.javafx.FontIcon";
+
+    /** Rendered icon cache, keyed by literal. */
     private static final ConcurrentHashMap<String, Icon> ICON_CACHE = new ConcurrentHashMap<>();
 
     @Override
@@ -62,29 +63,33 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
             return;
         }
 
-        // elementSet guards against dual-pass collection over the same identifiers
         Set<PsiElement> elementSet = new HashSet<>(elements);
 
         for (PsiElement element : elements) {
             ProgressManager.checkCanceled();
-            if (!(element instanceof PsiIdentifier identifier)) {
-                continue;
-            }
-            if (!elementSet.contains(identifier)) {
+            if (!elementSet.contains(element)) {
                 continue;
             }
 
-            LineMarkerInfo<?> info = buildMarker(identifier, service, availablePacks);
+            LineMarkerInfo<?> info = null;
+            if (element instanceof PsiIdentifier identifier) {
+                info = buildEnumMarker(identifier, service, availablePacks);
+            } else if (element instanceof PsiJavaToken token
+                    && token.getTokenType() == JavaTokenType.STRING_LITERAL) {
+                info = buildStringLiteralMarker(token, service);
+            }
             if (info != null) {
                 result.add(info);
             }
         }
     }
 
+    // ==================== Enum Constant Gutter ====================
+
     @Nullable
-    private static LineMarkerInfo<?> buildMarker(@NotNull PsiIdentifier identifier,
-                                                  @NotNull IconDataService service,
-                                                  @NotNull Set<String> availablePacks) {
+    private static LineMarkerInfo<?> buildEnumMarker(@NotNull PsiIdentifier identifier,
+                                                     @NotNull IconDataService service,
+                                                     @NotNull Set<String> availablePacks) {
         PsiElement parent = identifier.getParent();
         if (!(parent instanceof PsiReferenceExpression refExpr)) {
             return null;
@@ -153,5 +158,102 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
                 handler,
                 CssPreviewIconRenderer.GUTTER_ALIGNMENT,
                 () -> literal);
+    }
+
+    // ==================== String Literal Gutter ====================
+
+    /**
+     * Builds a gutter marker for {@code new FontIcon("mdi-tag")} or
+     * {@code setIconLiteral("mdi-tag")} string arguments.
+     */
+    @Nullable
+    private static LineMarkerInfo<?> buildStringLiteralMarker(
+            @NotNull PsiJavaToken token,
+            @NotNull IconDataService service) {
+        PsiElement parent = token.getParent();
+        if (!(parent instanceof PsiLiteralExpression literalExpr)) {
+            return null;
+        }
+        Object value = literalExpr.getValue();
+        if (!(value instanceof String literalText) || literalText.isEmpty()) {
+            return null;
+        }
+
+        // Check context: must be inside new FontIcon("...") or setIconLiteral("...")
+        if (!isIconLiteralStringContext(literalExpr)) {
+            return null;
+        }
+
+        // Look up the literal in the icon data
+        IconDataService.IconEntry iconEntry = service.getLiteralMap().get(literalText);
+        if (iconEntry == null) {
+            return null;
+        }
+
+        String packId = iconEntry.getPackId();
+        String literal = iconEntry.getLiteral();
+        String pathData;
+        Icon icon;
+        if (iconEntry.isRenderable()) {
+            if (!service.isPackLoaded(packId)) {
+                service.ensurePackLoaded(iconEntry.getPack());
+            }
+            pathData = service.getPath(iconEntry);
+            if (pathData == null) {
+                return null;
+            }
+            icon = ICON_CACHE.computeIfAbsent(literal,
+                    k -> FxCssCompletionUtil.createSvgIcon(pathData));
+            if (icon == null) {
+                return null;
+            }
+        } else {
+            pathData = null;
+            icon = ICON_CACHE.computeIfAbsent("__placeholder__",
+                    k -> io.github.leewyatt.fxtools.toolwindow.iconbrowser
+                            .IconPlaceholder.createIcon(CssPreviewIconRenderer.ICON_SIZE));
+        }
+
+        GutterIconNavigationHandler<PsiElement> handler =
+                (e, elt) -> CssGutterIconCodeHandler.openPreview(e, iconEntry, pathData);
+
+        return new LineMarkerInfo<>(
+                token,
+                token.getTextRange(),
+                icon,
+                psi -> literal,
+                handler,
+                CssPreviewIconRenderer.GUTTER_ALIGNMENT,
+                () -> literal);
+    }
+
+    /**
+     * Returns {@code true} if the string literal is the first argument of
+     * {@code new FontIcon("...")} or a call to {@code setIconLiteral("...")} /
+     * {@code setIconCode("...")}.
+     */
+    private static boolean isIconLiteralStringContext(@NotNull PsiLiteralExpression literal) {
+        PsiElement parent = literal.getParent();
+        if (!(parent instanceof PsiExpressionList argList)) {
+            return false;
+        }
+        PsiExpression[] args = argList.getExpressions();
+        if (args.length == 0 || args[0] != literal) {
+            return false;
+        }
+        PsiElement grandParent = argList.getParent();
+        if (grandParent instanceof PsiNewExpression newExpr) {
+            var classRef = newExpr.getClassReference();
+            if (classRef == null) {
+                return false;
+            }
+            String name = classRef.getReferenceName();
+            return "FontIcon".equals(name);
+        }
+        if (grandParent instanceof PsiMethodCallExpression call) {
+            String name = call.getMethodExpression().getReferenceName();
+            return "setIconLiteral".equals(name);
+        }
+        return false;
     }
 }

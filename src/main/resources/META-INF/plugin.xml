@@ -255,6 +255,8 @@
                                         implementationClass="io.github.leewyatt.fxtools.ikonli.FxmlIconLiteralGutterProvider"/>
         <completion.contributor language="XML"
                                 implementationClass="io.github.leewyatt.fxtools.ikonli.FxmlIconLiteralCompletionContributor"/>
+        <completion.contributor language="JAVA"
+                                implementationClass="io.github.leewyatt.fxtools.ikonli.JavaIconLiteralCompletionContributor"/>
 
         <!-- CSS inspection -->
         <localInspection language="TEXT"
