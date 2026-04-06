@@ -118,25 +118,33 @@ public final class IconDataService {
      * A single icon entry with name, pack reference, and search tags.
      */
     public static final class IconEntry {
+        /** The icon's true Ikonli literal (e.g. {@code "mdi-tag"}), stored as-is from the {@code n} field. */
         private final String name;
         private final PackInfo pack;
         private final String[] tags;
+        /** Java enum constant name (e.g. {@code "MDI_TAG"}), from the {@code e} field. */
+        private final String enumConstantName;
         private final String enumClassOverride;
         private final boolean noPath;
 
         IconEntry(String name, PackInfo pack, String[] tags,
+                  @Nullable String enumConstantName,
                   @Nullable String enumClassOverride, boolean noPath) {
             this.name = name;
             this.pack = pack;
             this.tags = tags;
+            this.enumConstantName = enumConstantName;
             this.enumClassOverride = enumClassOverride;
             this.noPath = noPath;
         }
 
+        /** Returns the {@code n} field value — the true Ikonli literal (e.g. {@code "mdi-tag"}). */
         public String getName() { return name; }
         public PackInfo getPack() { return pack; }
         public String[] getTags() { return tags; }
         public String getPackId() { return pack.getId(); }
+        /** Returns the real Java enum constant name (e.g. {@code "MDI_TAG"}), or null for non-Ikonli icons. */
+        public @Nullable String getEnumConstantName() { return enumConstantName; }
         public @Nullable String getEnumClassOverride() { return enumClassOverride; }
 
         /**
@@ -155,9 +163,9 @@ public final class IconDataService {
         }
 
         /**
-         * Returns the icon literal (packId-name), used as global unique identifier.
+         * Returns the icon literal — the {@code n} field value, globally unique.
          */
-        public String getLiteral() { return pack.getId() + "-" + name; }
+        public String getLiteral() { return name; }
     }
 
     // ==================== State ====================
@@ -172,6 +180,10 @@ public final class IconDataService {
     private Map<String, Set<String>> packEnumClasses = Collections.emptyMap();
     /** enumClass FQCN → packId (reverse lookup for Ikonli gutter icons). */
     private Map<String, String> enumClassToPackId = Collections.emptyMap();
+    /** Reverse lookup: enum constant name → IconEntry, scoped per enumClass FQCN.
+     *  Used by {@link io.github.leewyatt.fxtools.ikonli.IkonliGutterIconProvider} to
+     *  match Java enum references to icon entries without name guessing. */
+    private Map<String, Map<String, IconEntry>> enumConstantIndex = Collections.emptyMap();
     private final Map<String, Map<String, String>> pathCache = new ConcurrentHashMap<>();
 
     private static final Key<com.intellij.psi.util.CachedValue<Set<String>>> AVAILABLE_PACKS_KEY =
@@ -231,6 +243,16 @@ public final class IconDataService {
     @Nullable
     public String getPackIdByEnumClass(@NotNull String enumClassFqcn) {
         return enumClassToPackId.get(enumClassFqcn);
+    }
+
+    /**
+     * Finds an icon entry by its enum class FQCN and enum constant name.
+     * Returns null if no match is found.
+     */
+    @Nullable
+    public IconEntry findByEnumConstant(@NotNull String enumClassFqcn, @NotNull String constantName) {
+        Map<String, IconEntry> byConstant = enumConstantIndex.get(enumClassFqcn);
+        return byConstant != null ? byConstant.get(constantName) : null;
     }
 
     /**
@@ -349,7 +371,7 @@ public final class IconDataService {
                         }
                         String[] tags = ri.t != null ? ri.t.toArray(new String[0]) : new String[0];
                         boolean noPath = ri.np != null && ri.np;
-                        IconEntry entry = new IconEntry(ri.n, pack, tags, ri.ec, noPath);
+                        IconEntry entry = new IconEntry(ri.n, pack, tags, ri.e, ri.ec, noPath);
                         icons.add(entry);
                         litMap.put(entry.getLiteral(), entry);
                     }
@@ -378,11 +400,22 @@ public final class IconDataService {
                     }
                 }
 
+                // Build enumConstantIndex: enumClassFqcn → (constantName → IconEntry)
+                Map<String, Map<String, IconEntry>> ecIndex = new HashMap<>();
+                for (IconEntry icon : icons) {
+                    String ec = icon.getEffectiveEnumClass();
+                    String cn = icon.getEnumConstantName();
+                    if (ec != null && cn != null) {
+                        ecIndex.computeIfAbsent(ec, k -> new HashMap<>()).put(cn, icon);
+                    }
+                }
+
                 this.allPacks = Collections.unmodifiableList(packs);
                 this.packById = Collections.unmodifiableMap(byId);
                 this.allIcons = Collections.unmodifiableList(icons);
                 this.literalMap = Collections.unmodifiableMap(litMap);
                 this.packEnumClasses = Collections.unmodifiableMap(enumClassMap);
+                this.enumConstantIndex = Collections.unmodifiableMap(ecIndex);
                 this.enumClassToPackId = Collections.unmodifiableMap(enumToPack);
 
                 LOG.info("Loaded icon index: " + packs.size() + " packs, " + icons.size() + " icons");
@@ -433,7 +466,7 @@ public final class IconDataService {
     }
 
     private static class RawIcon {
-        String n, p, ec;
+        String n, p, e, ec;
         List<String> t;
         Boolean np; // null when omitted; Boolean (not primitive) so Gson preserves absence
     }

@@ -59,13 +59,13 @@ public final class IconCopyUtil {
         IconDataService.PackInfo pack = icon.getPack();
         if (pack.isIkonli()) {
             String enumClass = icon.getEffectiveEnumClass();
-            if (enumClass != null) {
+            String constantName = icon.getEnumConstantName();
+            if (enumClass != null && constantName != null) {
                 int lastDot = enumClass.lastIndexOf('.');
                 String enumSimple = lastDot >= 0 ? enumClass.substring(lastDot + 1) : enumClass;
-                String constant = icon.getName().toUpperCase().replace('-', '_');
                 items.add(new CopyItem(
                         FxToolsBundle.message("icon.browser.detail.copy.java"),
-                        enumSimple + "." + constant, false));
+                        enumSimple + "." + constantName, false));
             }
             items.add(new CopyItem(
                     FxToolsBundle.message("icon.browser.detail.copy.css"),

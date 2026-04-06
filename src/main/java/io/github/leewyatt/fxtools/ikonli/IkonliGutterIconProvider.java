@@ -3,7 +3,6 @@ package io.github.leewyatt.fxtools.ikonli;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -13,7 +12,6 @@ import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.PsiReferenceExpression;
 import io.github.leewyatt.fxtools.css.completion.FxCssCompletionUtil;
 import io.github.leewyatt.fxtools.css.preview.CssGutterIconCodeHandler;
-import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
 import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
 import io.github.leewyatt.fxtools.toolwindow.iconbrowser.IconDataService;
 import io.github.leewyatt.fxtools.util.FxDetector;
@@ -115,17 +113,13 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
             return null;
         }
 
-        String iconName = toIconName(enumConstant.getName());
-        if (iconName == null) {
-            return null;
-        }
-
-        String literal = packId + "-" + iconName;
-        IconDataService.IconEntry iconEntry = service.getLiteralMap().get(literal);
+        // Direct lookup by real enum constant name — no guessing
+        IconDataService.IconEntry iconEntry = service.findByEnumConstant(fqcn, enumConstant.getName());
         if (iconEntry == null) {
             return null;
         }
 
+        String literal = iconEntry.getLiteral();
         String pathData;
         Icon icon;
         if (iconEntry.isRenderable()) {
@@ -148,9 +142,8 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
                             .IconPlaceholder.createIcon(CssPreviewIconRenderer.ICON_SIZE));
         }
 
-        final String pathRef = pathData;
         GutterIconNavigationHandler<PsiElement> handler =
-                (e, elt) -> CssGutterIconCodeHandler.openPreview(e, iconEntry, pathRef);
+                (e, elt) -> CssGutterIconCodeHandler.openPreview(e, iconEntry, pathData);
 
         return new LineMarkerInfo<>(
                 identifier,
@@ -160,19 +153,5 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
                 handler,
                 CssPreviewIconRenderer.GUTTER_ALIGNMENT,
                 () -> literal);
-    }
-
-    /**
-     * Converts a Java enum constant name to the Ikonli icon name.
-     * Example: {@code ARROW_UP} → {@code arrow-up}, {@code HOME} → {@code home}.
-     *
-     * @return the icon name, or {@code null} if the name is empty
-     */
-    @Nullable
-    private static String toIconName(@Nullable String constantName) {
-        if (constantName == null || constantName.isEmpty()) {
-            return null;
-        }
-        return constantName.toLowerCase().replace('_', '-');
     }
 }
