@@ -196,6 +196,12 @@ Requires Gradle 8.14 and JBR 21 (configured via `gradle.properties`).
 
 ---
 
+## Sponsors
+
+[DLSC](https://www.dlsc.com) · [JFXCentral](https://www.jfxcentral.com)
+
+---
+
 ## License
 
 [MIT License](LICENSE) — Copyright (c) 2022 LeeWyatt
