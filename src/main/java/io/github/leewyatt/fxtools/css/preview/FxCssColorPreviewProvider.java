@@ -80,8 +80,6 @@ public class FxCssColorPreviewProvider implements LineMarkerProvider {
                 continue;
             }
 
-            boolean isPaintList = CssPaintListScanner.isPaintListProperty(propertyName);
-
             PsiElement anchor = file.findElementAt(matcher.start());
             if (anchor == null || !elementSet.contains(anchor)) {
                 continue;
@@ -105,12 +103,9 @@ public class FxCssColorPreviewProvider implements LineMarkerProvider {
                     // Handled by FxCssGradientPreviewProvider — skip in this pass.
                     continue;
                 } else if (FxColorParser.isDirectColor(segText)) {
-                    // In Ultimate, IDEA's built-in CSS gutter already previews single
-                    // direct colors, so we skip to avoid duplicates — but ONLY for
-                    // single-value properties. For paint lists we still emit, because
-                    // IDEA's built-in provider doesn't know about JavaFX multi-paint
-                    // semantics and would at best show just the first value.
-                    if (ULTIMATE_CSS_AVAILABLE && !isPaintList) {
+                    // In Ultimate, IDEA's built-in CSS gutter already previews direct
+                    // colors — skip this segment and let the built-in handle it.
+                    if (ULTIMATE_CSS_AVAILABLE) {
                         continue;
                     }
                     Color color = FxColorParser.parseColor(segText);
