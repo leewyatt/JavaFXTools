@@ -8,8 +8,7 @@ All-in-one JavaFX development toolkit for IntelliJ IDEA — CSS intelligence, gu
 
 Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA **2024.2+** and Java **17+**.
 
-<!-- screenshot: overall plugin overview, showing gutter icons + completion popup in a .css file -->
-![Overview](images/overview.png)
+<img src="images/img.png" alt="Overview" width="600">
 
 ---
 
@@ -24,9 +23,6 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 - CSS variable completion with cross-file resolution
 - CSS transition properties (`transition`, `transition-property`, `transition-duration`, etc.)
 
-<!-- screenshot: CSS completion popup showing -fx-* properties with type info -->
-![CSS Completion](images/css-completion.png)
-
 **Gutter Previews**
 - Color previews — hex, rgb, rgba, hsl, hsla, named colors, `derive()`
 - Gradient previews — `linear-gradient()`, `radial-gradient()`, circle icons
@@ -36,8 +32,7 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 - CSS variable resolution — variables resolved through chains (depth 10) to their final color/gradient/SVG
 - **Multi-value paint support** — `-fx-background-color` and `-fx-border-color` show one icon per paint segment (up to 4)
 
-<!-- screenshot: gutter showing color squares, gradient circles, SVG path icons, effect icons side by side -->
-![Gutter Previews](images/gutter-previews.png)
+<img src="images/img_1.png" alt="Gutter Previews" width="600">
 
 **Click-to-Edit**
 - Click a color icon → opens embedded PaintPicker with real-time write-back
@@ -46,8 +41,7 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 - Click an SVG icon → opens path preview with size controls
 - All edits support single Ctrl+Z undo
 
-<!-- screenshot: PaintPicker popup open from a gutter click, showing color wheel + gradient stops -->
-![PaintPicker](images/paintpicker.png)
+<img src="images/img_5.png" alt="PaintPicker" width="380">
 
 **Inline CSS (Java & FXML)**
 - `setStyle("...")` in Java — gutter previews + click-to-edit + auto-popup completion
@@ -56,8 +50,9 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 - `SVGPath.setContent("...")` — read-only SVG preview
 - Ctrl+Click navigation from inline CSS variables to their `.css` definition site
 
-<!-- screenshot: Java code with setStyle() showing inline gutter icons -->
-![Inline CSS](images/inline-css.png)
+<img src="images/img_3.png" alt="Inline CSS — Effect Editor (Dark)" width="500">
+
+<img src="images/img_4.png" alt="Inline CSS — Effect Editor (Light)" width="500">
 
 ---
 
@@ -70,8 +65,7 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 - Detail panel with preview, icon name, pack name, license info
 - One-click copy: SVG path / Java code / CSS code / Maven / Gradle coordinates
 
-<!-- screenshot: Icon Browser ToolWindow showing grid of icons + detail panel -->
-![Icon Browser](images/icon-browser.png)
+<img src="images/img_2.png" alt="Icon Browser" width="450">
 
 **Code Assistance**
 - `-fx-icon-code` value completion in CSS with SVG preview per candidate
@@ -79,8 +73,6 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 - Java enum constant gutter icons (e.g. `FontAwesome.HOME` shows the icon inline)
 - Classpath-aware: only packs on your project classpath appear in completion
 
-<!-- screenshot: -fx-icon-code completion popup showing icon literals with SVG previews -->
-![Icon Completion](images/icon-completion.png)
 
 ---
 
@@ -101,8 +93,6 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 - Unused @FXML fields and methods detection
 - Invalid resource paths, unused CSS selectors, i18n key validation
 
-<!-- screenshot: FXML editor showing inspection warning with quick fix popup -->
-![FXML Inspections](images/fxml-inspections.png)
 
 ---
 
@@ -116,8 +106,11 @@ A structured MVC pattern for JavaFX with convention-based file resolution.
 - Optional i18n resource bundle configuration with locale selection
 - Live file tree preview showing generated file structure
 
-<!-- screenshot: New FxmlKit View dialog with file cards and tree preview -->
-![FxmlKit Wizard](images/fxmlkit-wizard.png)
+<img src="images/img_6.png" alt="FxmlKit Wizard" width="450">
+
+<img src="images/img_9.png" alt="Resource Bundle — Existing" width="400">
+
+<img src="images/img_10.png" alt="Resource Bundle — Create New" width="400">
 
 **Property Generation** (Alt+Insert / Cmd+N)
 - 10 property types: String, Integer, Long, Float, Double, Boolean, Object, List, Map, Set
@@ -125,6 +118,10 @@ A structured MVC pattern for JavaFX with convention-based file resolution.
 - Lazy initialization option
 - CSS Styleable property generation with `CssMetaData` boilerplate
 - Live code preview in dialog
+
+<img src="images/img_7.png" alt="Property Live Templates" width="500">
+
+<img src="images/img_8.png" alt="Property Options" width="400">
 
 ---
 
