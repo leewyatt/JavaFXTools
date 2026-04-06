@@ -95,13 +95,13 @@ public class FxCssSvgPreviewProvider implements LineMarkerProvider {
                 result.add(new LineMarkerInfo<>(anchor, range, icon,
                         e -> tooltip,
                         (e, elt) -> CssGutterSvgHandler.openPreview(e, file, pd, ms),
-                        GutterIconRenderer.Alignment.LEFT, () -> tooltip));
+                        CssPreviewIconRenderer.GUTTER_ALIGNMENT, () -> tooltip));
             } else if (isFxShape) {
                 Icon errorIcon = CssPreviewIconRenderer.createErrorIcon();
                 String tooltip = FxToolsBundle.message("css.preview.tooltip.shape.invalid", value);
                 TextRange range = TextRange.create(matchStart, matchStart + 1);
                 result.add(new LineMarkerInfo<>(anchor, range, errorIcon,
-                        e -> tooltip, null, GutterIconRenderer.Alignment.LEFT, () -> tooltip));
+                        e -> tooltip, null, CssPreviewIconRenderer.GUTTER_ALIGNMENT, () -> tooltip));
             }
         }
     }

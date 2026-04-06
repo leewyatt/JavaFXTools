@@ -111,7 +111,7 @@ public class FxCssGradientPreviewProvider implements LineMarkerProvider {
                         e -> tooltip,
                         (e, elt) -> CssGutterColorHandler.openEditor(
                                 e, file, segDocStart, segDocEnd, segVText),
-                        GutterIconRenderer.Alignment.LEFT, () -> tooltip));
+                        CssPreviewIconRenderer.GUTTER_ALIGNMENT, () -> tooltip));
             }
         }
     }

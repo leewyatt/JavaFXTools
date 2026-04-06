@@ -6,6 +6,7 @@ import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
+import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.psi.*;
 import com.intellij.psi.NavigatablePsiElement;
@@ -65,7 +66,7 @@ public class ResourceBundleLineMarkerProvider implements LineMarkerProvider {
                 AllIcons.Nodes.ResourceBundle,
                 e -> FxToolsBundle.message("gutter.resource.bundle.tooltip", files.size()),
                 new BundleNavigationHandler(files),
-                GutterIconRenderer.Alignment.LEFT,
+                CssPreviewIconRenderer.GUTTER_ALIGNMENT,
                 () -> FxToolsBundle.message("gutter.resource.bundle.tooltip", files.size())
         );
     }

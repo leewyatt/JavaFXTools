@@ -127,7 +127,7 @@ public class JavaInlineCssLineMarkerProvider implements LineMarkerProvider {
                     icon,
                     e -> tooltip,
                     handler,
-                    GutterIconRenderer.Alignment.LEFT,
+                    CssPreviewIconRenderer.GUTTER_ALIGNMENT,
                     () -> tooltip));
         }
     }
@@ -187,7 +187,7 @@ public class JavaInlineCssLineMarkerProvider implements LineMarkerProvider {
                     result.add(new LineMarkerInfo<>(textBlockToken,
                             new TextRange(docValueStart, docValueEnd), icon,
                             e -> tooltip, handler,
-                            GutterIconRenderer.Alignment.LEFT, () -> tooltip));
+                            CssPreviewIconRenderer.GUTTER_ALIGNMENT, () -> tooltip));
                 }
             }
             lineOffset += line.length() + 1;
@@ -250,7 +250,7 @@ public class JavaInlineCssLineMarkerProvider implements LineMarkerProvider {
                 icon,
                 e -> tooltip,
                 (e, elt) -> CssGutterSvgHandler.openPreviewReadOnly(e, pathData),
-                GutterIconRenderer.Alignment.LEFT,
+                CssPreviewIconRenderer.GUTTER_ALIGNMENT,
                 () -> tooltip));
     }
 

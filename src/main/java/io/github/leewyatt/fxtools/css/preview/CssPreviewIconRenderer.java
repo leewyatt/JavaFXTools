@@ -3,6 +3,7 @@ package io.github.leewyatt.fxtools.css.preview;
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.util.ScalableIcon;
 import com.intellij.ui.JBColor;
@@ -30,7 +31,10 @@ import java.util.regex.Pattern;
 public final class CssPreviewIconRenderer {
 
     /** Logical pixel size for all gutter and completion preview icons. */
-    public static final int ICON_SIZE = 13;
+    public static final int ICON_SIZE = 14;
+
+    /** Gutter icon alignment for all LineMarkerInfo instances created by this plugin. */
+    public static final GutterIconRenderer.Alignment GUTTER_ALIGNMENT = GutterIconRenderer.Alignment.CENTER;
     private static final Color BORDER_COLOR = new JBColor(new Color(180, 180, 180), new Color(100, 100, 100));
     private static final Color ERROR_COLOR = new JBColor(new Color(200, 60, 60), new Color(220, 80, 80));
 

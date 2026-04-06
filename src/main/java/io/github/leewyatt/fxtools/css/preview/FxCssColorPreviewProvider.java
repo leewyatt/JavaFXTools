@@ -145,7 +145,7 @@ public class FxCssColorPreviewProvider implements LineMarkerProvider {
                             e -> tip,
                             (e, elt) -> CssGutterColorHandler.openEditor(
                                     e, file, segDocStart, segDocEnd, segVText),
-                            GutterIconRenderer.Alignment.LEFT, () -> tip));
+                            CssPreviewIconRenderer.GUTTER_ALIGNMENT, () -> tip));
                 }
             }
         }

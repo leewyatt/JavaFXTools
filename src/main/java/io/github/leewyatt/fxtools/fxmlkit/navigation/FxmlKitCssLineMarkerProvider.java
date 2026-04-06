@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
+import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -67,7 +68,7 @@ public class FxmlKitCssLineMarkerProvider implements LineMarkerProvider {
                 AllIcons.FileTypes.Xml,
                 e -> FxToolsBundle.message("navigate.to.fxml"),
                 (mouseEvent, elt) -> FileEditorManager.getInstance(project).openFile(fxmlFile, true),
-                GutterIconRenderer.Alignment.LEFT,
+                CssPreviewIconRenderer.GUTTER_ALIGNMENT,
                 () -> FxToolsBundle.message("navigate.to.fxml")
         );
     }

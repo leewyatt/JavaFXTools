@@ -14,6 +14,7 @@ import com.intellij.psi.PsiReferenceExpression;
 import io.github.leewyatt.fxtools.css.completion.FxCssCompletionUtil;
 import io.github.leewyatt.fxtools.css.preview.CssGutterIconCodeHandler;
 import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
+import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
 import io.github.leewyatt.fxtools.toolwindow.iconbrowser.IconDataService;
 import io.github.leewyatt.fxtools.util.FxDetector;
 import org.jetbrains.annotations.NotNull;
@@ -157,7 +158,7 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
                 icon,
                 psi -> literal,
                 handler,
-                GutterIconRenderer.Alignment.LEFT,
+                CssPreviewIconRenderer.GUTTER_ALIGNMENT,
                 () -> literal);
     }
 

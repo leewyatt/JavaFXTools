@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
+import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -154,7 +155,7 @@ public class FxmlIconLiteralGutterProvider implements LineMarkerProvider {
                 icon,
                 psi -> literal,
                 handler,
-                GutterIconRenderer.Alignment.LEFT,
+                CssPreviewIconRenderer.GUTTER_ALIGNMENT,
                 () -> literal);
     }
 

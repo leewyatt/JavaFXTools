@@ -115,7 +115,7 @@ public class FxmlInlineCssLineMarkerProvider implements LineMarkerProvider {
                     icon,
                     e -> tooltip,
                     handler,
-                    GutterIconRenderer.Alignment.LEFT,
+                    CssPreviewIconRenderer.GUTTER_ALIGNMENT,
                     () -> tooltip));
         }
     }

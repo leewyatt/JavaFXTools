@@ -117,7 +117,7 @@ public class FxCssIconCodePreviewProvider implements LineMarkerProvider {
             result.add(new LineMarkerInfo<>(anchor, range, gutterIcon,
                     e -> tooltip,
                     (e, elt) -> CssGutterIconCodeHandler.openPreview(e, iconRef, pathRef),
-                    GutterIconRenderer.Alignment.LEFT, () -> tooltip));
+                    CssPreviewIconRenderer.GUTTER_ALIGNMENT, () -> tooltip));
         }
     }
 }

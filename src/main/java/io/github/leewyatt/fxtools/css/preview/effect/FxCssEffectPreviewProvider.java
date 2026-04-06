@@ -95,7 +95,7 @@ public class FxCssEffectPreviewProvider implements LineMarkerProvider {
                         e -> tooltip,
                         (e, elt) -> CssGutterEffectHandler.openEditor(
                                 e, file, vStart, vEnd, value),
-                        GutterIconRenderer.Alignment.LEFT, () -> tooltip));
+                        CssPreviewIconRenderer.GUTTER_ALIGNMENT, () -> tooltip));
             }
         }
     }
