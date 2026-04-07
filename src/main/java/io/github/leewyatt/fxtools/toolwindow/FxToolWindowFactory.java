@@ -16,7 +16,7 @@ public class FxToolWindowFactory implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        IconBrowserPanel iconBrowser = new IconBrowserPanel();
+        IconBrowserPanel iconBrowser = new IconBrowserPanel(project);
         Content content = ContentFactory.getInstance().createContent(
                 iconBrowser, FxToolsBundle.message("icon.browser.tab"), false);
         toolWindow.getContentManager().addContent(content);

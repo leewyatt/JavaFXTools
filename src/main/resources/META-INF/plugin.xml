@@ -283,7 +283,7 @@
                                  key="settings.displayName"
                                  bundle="messages.FxToolsBundle"/>
 
-        <!--suppress PluginXmlI18n -- "JavaFX Tools" is a brand name, same in all locales -->
+        <!--suppress PluginXmlI18n "JavaFX Tools" is a brand name, same in all locales -->
         <notificationGroup id="JavaFX Tools"
                            displayType="BALLOON"
                            isLogByDefault="true"/>

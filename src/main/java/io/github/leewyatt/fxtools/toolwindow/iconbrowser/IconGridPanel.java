@@ -40,6 +40,7 @@ public class IconGridPanel extends JPanel {
     private static final int CELL_SIZE = 72;
     private static final int CELL_GAP = 6;
     private static final int CELL_PADDING = 5;
+    private static final int GRID_MARGIN = 10;
     private static final int ICON_RENDER_SIZE = 26;
     private static final int ICON_NAME_GAP = 4;
     private static final int TAG_HPAD = 3;
@@ -219,19 +220,22 @@ public class IconGridPanel extends JPanel {
     private int getGap() { return JBUI.scale(CELL_GAP); }
     private int getPadding() { return JBUI.scale(CELL_PADDING); }
 
+    private int getMargin() { return JBUI.scale(GRID_MARGIN); }
+
     private int getColumns() {
-        int w = getWidth();
+        int w = getWidth() - getMargin() * 2;
         int step = getCellSize() + getGap();
         return Math.max(1, (w + getGap()) / step);
     }
 
     @Override
     public Dimension getPreferredSize() {
+        int margin = getMargin();
         int step = getCellSize() + getGap();
         int parentW = getParent() != null ? getParent().getWidth() : 400;
-        int cols = Math.max(1, (parentW + getGap()) / step);
+        int cols = Math.max(1, (parentW - margin * 2 + getGap()) / step);
         int rows = (int) Math.ceil((double) pageIcons.size() / cols);
-        return new Dimension(cols * step, rows * step);
+        return new Dimension(cols * step + margin * 2, rows * step + margin * 2);
     }
 
     // ==================== Painting ====================
@@ -261,11 +265,12 @@ public class IconGridPanel extends JPanel {
         Font nameFont = UIUtil.getLabelFont().deriveFont((float) JBUI.scale(10));
         Font tagFont = UIUtil.getLabelFont().deriveFont(Font.BOLD, (float) JBUI.scale(9));
 
+        int margin = getMargin();
         for (int i = 0; i < pageIcons.size(); i++) {
             int col = i % cols;
             int row = i / cols;
-            int cx = col * step;
-            int cy = row * step;
+            int cx = margin + col * step;
+            int cy = margin + row * step;
 
             // Hover / selection background
             if (i == selectedIndex) {
@@ -339,15 +344,21 @@ public class IconGridPanel extends JPanel {
     // ==================== Utilities ====================
 
     private int cellIndexAt(Point p) {
+        int margin = getMargin();
+        int mx = p.x - margin;
+        int my = p.y - margin;
+        if (mx < 0 || my < 0) {
+            return -1;
+        }
         int step = getCellSize() + getGap();
         int cols = getColumns();
-        int col = p.x / step;
-        int row = p.y / step;
+        int col = mx / step;
+        int row = my / step;
         if (col >= cols) {
             return -1;
         }
         // Check if click is in the gap area
-        if (p.x % step > getCellSize() || p.y % step > getCellSize()) {
+        if (mx % step > getCellSize() || my % step > getCellSize()) {
             return -1;
         }
         return row * cols + col;

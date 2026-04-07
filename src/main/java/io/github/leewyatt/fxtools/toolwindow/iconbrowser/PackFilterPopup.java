@@ -1,5 +1,6 @@
 package io.github.leewyatt.fxtools.toolwindow.iconbrowser;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.CheckBoxList;
@@ -39,6 +40,7 @@ public class PackFilterPopup {
     public static void show(@NotNull JComponent owner,
                             @NotNull List<IconDataService.PackInfo> allPacks,
                             @NotNull Set<String> selected,
+                            @Nullable Project project,
                             @Nullable Runnable onChanged) {
 
         JPanel content = new JPanel(new BorderLayout());
@@ -80,17 +82,16 @@ public class PackFilterPopup {
         checkList.setCheckBoxListListener((index, value) -> syncAndNotify.run());
 
         // ==================== Bottom Bar ====================
-        JPanel bottomBar = new JPanel(new GridLayout(1, 2, JBUI.scale(8), 0));
-        bottomBar.setBorder(JBUI.Borders.empty(2, 4, 4, 4));
+        JPanel bottomArea = new JPanel();
+        bottomArea.setLayout(new javax.swing.BoxLayout(bottomArea, javax.swing.BoxLayout.Y_AXIS));
+        bottomArea.setBorder(JBUI.Borders.empty(2, 4, 4, 4));
 
-        JButton selectAll = new JButton(FxToolsBundle.message("icon.browser.packs.select.all"));
-        selectAll.addActionListener(e -> {
-            for (int i = 0; i < visiblePacks.size(); i++) {
-                checkList.setItemSelected(visiblePacks.get(i), true);
-            }
-            checkList.repaint();
-            syncAndNotify.run();
-        });
+        // Row 1: Select Project Deps (global operation, closes popup)
+        // Populated after popup is created so we can call popup.cancel()
+
+        // Row 2: Clear / Select All (local operations on visible items)
+        JPanel localRow = new JPanel(new GridLayout(1, 2, JBUI.scale(8), 0));
+        localRow.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
 
         JButton clearAll = new JButton(FxToolsBundle.message("icon.browser.packs.clear"));
         clearAll.addActionListener(e -> {
@@ -101,10 +102,20 @@ public class PackFilterPopup {
             syncAndNotify.run();
         });
 
-        bottomBar.add(clearAll);
-        bottomBar.add(selectAll);
+        JButton selectAll = new JButton(FxToolsBundle.message("icon.browser.packs.select.all"));
+        selectAll.addActionListener(e -> {
+            for (int i = 0; i < visiblePacks.size(); i++) {
+                checkList.setItemSelected(visiblePacks.get(i), true);
+            }
+            checkList.repaint();
+            syncAndNotify.run();
+        });
 
-        content.add(bottomBar, BorderLayout.SOUTH);
+        localRow.add(clearAll);
+        localRow.add(selectAll);
+        bottomArea.add(localRow);
+
+        content.add(bottomArea, BorderLayout.SOUTH);
 
         // ==================== Filter Logic ====================
         filterField.addDocumentListener(new com.intellij.ui.DocumentAdapter() {
@@ -138,6 +149,31 @@ public class PackFilterPopup {
                         com.intellij.icons.AllIcons.Actions.Close,
                         com.intellij.icons.AllIcons.Actions.CloseHovered))
                 .createPopup();
+
+        // Row 1: Select Project Deps (needs popup reference to close)
+        if (project != null) {
+            JButton depsButton = new JButton(FxToolsBundle.message("icon.browser.packs.deps"));
+            depsButton.setToolTipText(FxToolsBundle.message("icon.browser.packs.deps.tooltip"));
+            depsButton.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            depsButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, depsButton.getPreferredSize().height));
+            depsButton.addActionListener(e -> {
+                Set<String> available = IconDataService.getAvailablePacks(project);
+                selected.clear();
+                selected.addAll(available);
+                if (onChanged != null) {
+                    onChanged.run();
+                }
+                popup.cancel();
+            });
+            // Insert deps button + separator before localRow
+            bottomArea.add(depsButton, 0);
+            javax.swing.JSeparator separator = new javax.swing.JSeparator();
+            separator.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+            bottomArea.add(javax.swing.Box.createVerticalStrut(JBUI.scale(4)), 1);
+            bottomArea.add(separator, 2);
+            bottomArea.add(javax.swing.Box.createVerticalStrut(JBUI.scale(4)), 3);
+        }
 
         popup.showUnderneathOf(owner);
     }
