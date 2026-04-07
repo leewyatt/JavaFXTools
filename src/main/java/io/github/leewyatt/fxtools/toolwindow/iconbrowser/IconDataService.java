@@ -23,11 +23,10 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Application-level service that manages icon pack data.
- * Loads icon-packs.json lazily on first access, decompresses .json.gz path data on demand.
+ * Loads icon-packs.json lazily on first access, loads per-pack path data on demand.
  */
 @Service(Service.Level.APP)
 public final class IconDataService {
@@ -431,8 +430,7 @@ public final class IconDataService {
                     LOG.warn("Pack data file not found: " + filePath);
                     continue;
                 }
-                try (InputStream gis = new GZIPInputStream(raw);
-                     Reader reader = new InputStreamReader(gis, StandardCharsets.UTF_8)) {
+                try (Reader reader = new InputStreamReader(raw, StandardCharsets.UTF_8)) {
                     Map<String, String> paths = gson.fromJson(reader, mapType);
                     if (paths != null) {
                         merged.putAll(paths);
