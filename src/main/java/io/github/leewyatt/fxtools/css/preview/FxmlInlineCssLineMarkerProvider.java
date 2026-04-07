@@ -99,6 +99,9 @@ public class FxmlInlineCssLineMarkerProvider implements LineMarkerProvider {
         int contentEnd = contentStart + cssText.length();
 
         for (InlineCssGutterUtil.PreviewMatch match : matches) {
+            if (!InlineCssGutterUtil.isMatchTypeEnabled(match.getType())) {
+                continue;
+            }
             Icon icon = InlineCssGutterUtil.createIcon(match, file.getProject(), allVars);
             if (icon == null) {
                 continue;

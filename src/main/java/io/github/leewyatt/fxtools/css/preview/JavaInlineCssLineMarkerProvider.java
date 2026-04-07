@@ -111,6 +111,9 @@ public class JavaInlineCssLineMarkerProvider implements LineMarkerProvider {
         int contentEnd = literal.getTextRange().getEndOffset() - 1;
 
         for (InlineCssGutterUtil.PreviewMatch match : matches) {
+            if (!InlineCssGutterUtil.isMatchTypeEnabled(match.getType())) {
+                continue;
+            }
             Icon icon = InlineCssGutterUtil.createIcon(match, file.getProject(), allVars);
             if (icon == null) {
                 continue;
@@ -172,6 +175,9 @@ public class JavaInlineCssLineMarkerProvider implements LineMarkerProvider {
                         InlineCssGutterUtil.findAllPreviewables(line, allVars);
                 int docLineStart = docContentStart + lineOffset;
                 for (InlineCssGutterUtil.PreviewMatch match : matches) {
+                    if (!InlineCssGutterUtil.isMatchTypeEnabled(match.getType())) {
+                        continue;
+                    }
                     Icon icon = InlineCssGutterUtil.createIcon(match, file.getProject(), allVars);
                     if (icon == null) {
                         continue;

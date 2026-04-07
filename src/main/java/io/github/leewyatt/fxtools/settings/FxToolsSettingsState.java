@@ -10,6 +10,10 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Application-level persistent settings for the JavaFX Tools plugin.
+ * <p>
+ * Gutter preview toggles are stored per-category. The master "enable all"
+ * state is derived from the 4 sub-toggles at the UI layer (three-state
+ * checkbox) and is NOT persisted separately.
  */
 @State(
         name = "FxToolsSettings",
@@ -20,8 +24,11 @@ public final class FxToolsSettingsState
         implements PersistentStateComponent<FxToolsSettingsState> {
 
     public boolean enableLinksNotification = true;
-    public boolean enableGutterPreviews = true;
-    public boolean enableIkonliCompletion = true;
+    public boolean enableColorGutterPreviews = true;
+    public boolean enableEffectGutterPreviews = true;
+    public boolean enableShapeGutterPreviews = true;
+    public boolean enableIkonliGutterPreviews = true;
+    public int gutterIconScale = 100;
 
     public static FxToolsSettingsState getInstance() {
         return ApplicationManager.getApplication().getService(FxToolsSettingsState.class);

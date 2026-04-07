@@ -15,10 +15,10 @@ import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.psi.xml.XmlToken;
 import com.intellij.psi.xml.XmlTokenType;
-import io.github.leewyatt.fxtools.css.completion.FxCssCompletionUtil;
 import io.github.leewyatt.fxtools.css.preview.CssGutterIconCodeHandler;
 import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
 import io.github.leewyatt.fxtools.toolwindow.iconbrowser.IconDataService;
+import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
 import io.github.leewyatt.fxtools.util.FxDetector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +48,7 @@ public class FxmlIconLiteralGutterProvider implements LineMarkerProvider {
     @Override
     public void collectSlowLineMarkers(@NotNull List<? extends PsiElement> elements,
                                        @NotNull Collection<? super LineMarkerInfo<?>> result) {
-        if (elements.isEmpty()) {
+        if (elements.isEmpty() || !FxToolsSettingsState.getInstance().enableIkonliGutterPreviews) {
             return;
         }
         PsiFile file = elements.get(0).getContainingFile();
@@ -127,7 +127,7 @@ public class FxmlIconLiteralGutterProvider implements LineMarkerProvider {
                 return null;
             }
             icon = ICON_CACHE.computeIfAbsent(literal,
-                    k -> FxCssCompletionUtil.createSvgIcon(pathData));
+                    k -> CssPreviewIconRenderer.createSvgIcon(pathData, com.intellij.ui.JBColor.foreground()));
             if (icon == null) {
                 return null;
             }
@@ -135,7 +135,7 @@ public class FxmlIconLiteralGutterProvider implements LineMarkerProvider {
             pathData = null;
             icon = ICON_CACHE.computeIfAbsent("__placeholder__",
                     k -> io.github.leewyatt.fxtools.toolwindow.iconbrowser
-                            .IconPlaceholder.createIcon(CssPreviewIconRenderer.ICON_SIZE));
+                            .IconPlaceholder.createIcon(CssPreviewIconRenderer.getGutterIconSize()));
         }
 
         // Anchor on a leaf token of the attribute value (plugin best-practice:

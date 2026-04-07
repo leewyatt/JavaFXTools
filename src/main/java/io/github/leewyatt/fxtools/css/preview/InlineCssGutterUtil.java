@@ -5,6 +5,7 @@ import com.intellij.ui.JBColor;
 import io.github.leewyatt.fxtools.css.index.FxCssPropertyIndex;
 import io.github.leewyatt.fxtools.css.preview.effect.EffectConfig;
 import io.github.leewyatt.fxtools.css.preview.effect.FxEffectParser;
+import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
 import io.github.leewyatt.fxtools.toolwindow.iconbrowser.IconDataService;
 import io.github.leewyatt.fxtools.util.FxColorParser;
 import io.github.leewyatt.fxtools.util.FxGradientParser;
@@ -74,6 +75,26 @@ public final class InlineCssGutterUtil {
     }
 
     private InlineCssGutterUtil() {
+    }
+
+    /**
+     * Returns {@code true} if the given match type is enabled in the current settings.
+     */
+    public static boolean isMatchTypeEnabled(@NotNull MatchType type) {
+        FxToolsSettingsState settings = FxToolsSettingsState.getInstance();
+        switch (type) {
+            case COLOR:
+            case GRADIENT:
+                return settings.enableColorGutterPreviews;
+            case EFFECT:
+                return settings.enableEffectGutterPreviews;
+            case SVG_PATH:
+                return settings.enableShapeGutterPreviews;
+            case ICON_CODE:
+                return settings.enableIkonliGutterPreviews;
+            default:
+                return true;
+        }
     }
 
     /**
@@ -395,7 +416,7 @@ public final class InlineCssGutterUtil {
         }
         if (!icon.isRenderable()) {
             return io.github.leewyatt.fxtools.toolwindow.iconbrowser
-                    .IconPlaceholder.createIcon(CssPreviewIconRenderer.ICON_SIZE);
+                    .IconPlaceholder.createIcon(CssPreviewIconRenderer.getGutterIconSize());
         }
         if (!service.isPackLoaded(icon.getPackId())) {
             service.ensurePackLoaded(icon.getPack());

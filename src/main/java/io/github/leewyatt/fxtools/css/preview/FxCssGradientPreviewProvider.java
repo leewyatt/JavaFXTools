@@ -12,6 +12,7 @@ import com.intellij.psi.PsiFile;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import io.github.leewyatt.fxtools.css.index.FxCssPropertyIndex;
 import io.github.leewyatt.fxtools.util.FxColorParser;
+import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
 import io.github.leewyatt.fxtools.util.FxDetector;
 import io.github.leewyatt.fxtools.util.FxGradientParser;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +41,7 @@ public class FxCssGradientPreviewProvider implements LineMarkerProvider {
     @Override
     public void collectSlowLineMarkers(@NotNull List<? extends PsiElement> elements,
                                         @NotNull Collection<? super LineMarkerInfo<?>> result) {
-        if (elements.isEmpty()) {
+        if (elements.isEmpty() || !FxToolsSettingsState.getInstance().enableColorGutterPreviews) {
             return;
         }
         PsiFile file = elements.get(0).getContainingFile();

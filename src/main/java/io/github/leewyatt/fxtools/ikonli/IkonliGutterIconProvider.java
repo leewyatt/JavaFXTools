@@ -6,10 +6,10 @@ import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import io.github.leewyatt.fxtools.css.completion.FxCssCompletionUtil;
 import io.github.leewyatt.fxtools.css.preview.CssGutterIconCodeHandler;
 import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
 import io.github.leewyatt.fxtools.toolwindow.iconbrowser.IconDataService;
+import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
 import io.github.leewyatt.fxtools.util.FxDetector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +44,7 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
     @Override
     public void collectSlowLineMarkers(@NotNull List<? extends PsiElement> elements,
                                        @NotNull Collection<? super LineMarkerInfo<?>> result) {
-        if (elements.isEmpty()) {
+        if (elements.isEmpty() || !FxToolsSettingsState.getInstance().enableIkonliGutterPreviews) {
             return;
         }
         Project project = elements.get(0).getProject();
@@ -136,7 +136,7 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
                 return null;
             }
             icon = ICON_CACHE.computeIfAbsent(literal,
-                    k -> FxCssCompletionUtil.createSvgIcon(pathData));
+                    k -> CssPreviewIconRenderer.createSvgIcon(pathData, com.intellij.ui.JBColor.foreground()));
             if (icon == null) {
                 return null;
             }
@@ -144,7 +144,7 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
             pathData = null;
             icon = ICON_CACHE.computeIfAbsent("__placeholder__",
                     k -> io.github.leewyatt.fxtools.toolwindow.iconbrowser
-                            .IconPlaceholder.createIcon(CssPreviewIconRenderer.ICON_SIZE));
+                            .IconPlaceholder.createIcon(CssPreviewIconRenderer.getGutterIconSize()));
         }
 
         GutterIconNavigationHandler<PsiElement> handler =
@@ -203,7 +203,7 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
                 return null;
             }
             icon = ICON_CACHE.computeIfAbsent(literal,
-                    k -> FxCssCompletionUtil.createSvgIcon(pathData));
+                    k -> CssPreviewIconRenderer.createSvgIcon(pathData, com.intellij.ui.JBColor.foreground()));
             if (icon == null) {
                 return null;
             }
@@ -211,7 +211,7 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
             pathData = null;
             icon = ICON_CACHE.computeIfAbsent("__placeholder__",
                     k -> io.github.leewyatt.fxtools.toolwindow.iconbrowser
-                            .IconPlaceholder.createIcon(CssPreviewIconRenderer.ICON_SIZE));
+                            .IconPlaceholder.createIcon(CssPreviewIconRenderer.getGutterIconSize()));
         }
 
         GutterIconNavigationHandler<PsiElement> handler =

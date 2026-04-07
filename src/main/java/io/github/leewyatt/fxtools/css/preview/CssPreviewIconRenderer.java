@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.util.ScalableIcon;
 import com.intellij.ui.JBColor;
+import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
 import io.github.leewyatt.fxtools.css.preview.effect.EffectConfig;
 import io.github.leewyatt.fxtools.css.preview.effect.EffectType;
 import io.github.leewyatt.fxtools.util.FxSvgRenderer;
@@ -30,8 +31,15 @@ import java.util.regex.Pattern;
  */
 public final class CssPreviewIconRenderer {
 
-    /** Logical pixel size for all gutter and completion preview icons. */
+    /** Base logical pixel size for all gutter and completion preview icons. */
     public static final int ICON_SIZE = 14;
+
+    /**
+     * Returns the effective gutter icon size, applying the user's scale setting.
+     */
+    public static int getGutterIconSize() {
+        return Math.round(ICON_SIZE * FxToolsSettingsState.getInstance().gutterIconScale / 100f);
+    }
 
     /** Gutter icon alignment for all LineMarkerInfo instances created by this plugin. */
     public static final GutterIconRenderer.Alignment GUTTER_ALIGNMENT = GutterIconRenderer.Alignment.CENTER;
@@ -307,18 +315,19 @@ public final class CssPreviewIconRenderer {
 
         @Override
         public int getIconWidth() {
-            return Math.round(ICON_SIZE * scale * lastZoom);
+            return Math.round(getGutterIconSize() * scale * lastZoom);
         }
 
         @Override
         public int getIconHeight() {
-            return Math.round(ICON_SIZE * scale * lastZoom);
+            return Math.round(getGutterIconSize() * scale * lastZoom);
         }
 
         @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
             lastZoom = getEditorZoom(c);
-            float effectiveScale = scale * lastZoom;
+            float settingsScale = FxToolsSettingsState.getInstance().gutterIconScale / 100f;
+            float effectiveScale = scale * lastZoom * settingsScale;
 
             Graphics2D g2 = (Graphics2D) g.create();
             g2.translate(x, y);

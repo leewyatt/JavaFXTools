@@ -11,6 +11,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.ui.JBColor;
 import io.github.leewyatt.fxtools.toolwindow.iconbrowser.IconDataService;
+import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
 import io.github.leewyatt.fxtools.util.FxDetector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +44,7 @@ public class FxCssIconCodePreviewProvider implements LineMarkerProvider {
     @Override
     public void collectSlowLineMarkers(@NotNull List<? extends PsiElement> elements,
                                         @NotNull Collection<? super LineMarkerInfo<?>> result) {
-        if (elements.isEmpty()) {
+        if (elements.isEmpty() || !FxToolsSettingsState.getInstance().enableIkonliGutterPreviews) {
             return;
         }
         PsiFile file = elements.get(0).getContainingFile();
@@ -107,7 +108,7 @@ public class FxCssIconCodePreviewProvider implements LineMarkerProvider {
                 }
             } else {
                 gutterIcon = io.github.leewyatt.fxtools.toolwindow.iconbrowser
-                        .IconPlaceholder.createIcon(CssPreviewIconRenderer.ICON_SIZE);
+                        .IconPlaceholder.createIcon(CssPreviewIconRenderer.getGutterIconSize());
             }
 
             String tooltip = icon.getPack().getName() + " — " + literal;

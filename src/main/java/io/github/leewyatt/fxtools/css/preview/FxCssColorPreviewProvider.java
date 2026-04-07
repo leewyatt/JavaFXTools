@@ -14,6 +14,7 @@ import com.intellij.psi.PsiFile;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import io.github.leewyatt.fxtools.css.index.FxCssPropertyIndex;
 import io.github.leewyatt.fxtools.util.FxColorParser;
+import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
 import io.github.leewyatt.fxtools.util.FxDetector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +46,7 @@ public class FxCssColorPreviewProvider implements LineMarkerProvider {
     @Override
     public void collectSlowLineMarkers(@NotNull List<? extends PsiElement> elements,
                                         @NotNull Collection<? super LineMarkerInfo<?>> result) {
-        if (elements.isEmpty()) {
+        if (elements.isEmpty() || !FxToolsSettingsState.getInstance().enableColorGutterPreviews) {
             return;
         }
         PsiFile file = elements.get(0).getContainingFile();
