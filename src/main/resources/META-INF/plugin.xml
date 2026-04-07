@@ -272,8 +272,21 @@
                     secondary="true"
                     factoryClass="io.github.leewyatt.fxtools.toolwindow.FxToolWindowFactory"
                     icon="/icons/javaFxToolWindow.svg"/>
-        <!-- IconDataService and FxCssModificationTracker are auto-registered via @Service annotation -->
+        <!-- IconDataService, FxCssModificationTracker, FxToolsSettingsState,
+             JfxLinksNotifierState, JfxLinksNotifierService are auto-registered via @Service annotation -->
         <postStartupActivity implementation="io.github.leewyatt.fxtools.util.FxClasspathListener"/>
+        <postStartupActivity implementation="io.github.leewyatt.fxtools.notification.JfxLinksStartupActivity"/>
+
+        <applicationConfigurable parentId="tools"
+                                 instance="io.github.leewyatt.fxtools.settings.FxToolsSettingsConfigurable"
+                                 id="fxtools.settings"
+                                 key="settings.displayName"
+                                 bundle="messages.FxToolsBundle"/>
+
+        <!--suppress PluginXmlI18n -- "JavaFX Tools" is a brand name, same in all locales -->
+        <notificationGroup id="JavaFX Tools"
+                           displayType="BALLOON"
+                           isLogByDefault="true"/>
         <copyPastePreProcessor implementation="io.github.leewyatt.fxtools.action.FontFacePasteProcessor"/>
     </extensions>
 
