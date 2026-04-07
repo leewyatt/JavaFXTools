@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 public final class JfxLinksNotifierService implements Disposable {
 
     private static final String RSS_URL = "https://www.jfx-central.com/lotw/rss.xml";
-    private static final int INITIAL_DELAY_SECONDS = 20;
+    private static final int INITIAL_DELAY_SECONDS = 10;
 
     private ScheduledFuture<?> scheduledTask;
 
