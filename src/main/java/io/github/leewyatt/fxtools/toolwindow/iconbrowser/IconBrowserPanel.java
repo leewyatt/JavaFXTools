@@ -80,8 +80,12 @@ public class IconBrowserPanel extends JPanel {
                 java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
                 g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
                         java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(JBColor.border());
                 int arc = JBUI.scale(6);
+                // Fill background (theme-aware text field color)
+                g2.setColor(UIUtil.getTextFieldBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), arc, arc);
+                // Border
+                g2.setColor(JBColor.border());
                 g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arc, arc);
                 g2.dispose();
             }
