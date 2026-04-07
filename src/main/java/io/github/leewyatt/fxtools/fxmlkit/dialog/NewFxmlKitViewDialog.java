@@ -630,25 +630,21 @@ public class NewFxmlKitViewDialog extends DialogWrapper {
             g2.draw(new RoundRectangle2D.Float(0, 0, w - 1, h - 1, outerRadius, outerRadius));
 
             int half = w / 2;
-            Font normalFont = getFont().deriveFont((float) JBUI.scale(13));
-            Font boldFont = normalFont.deriveFont(Font.BOLD);
+            Font boldFont = getFont().deriveFont(Font.BOLD, (float) JBUI.scale(13));
+            g2.setFont(boldFont);
 
             for (int i = 0; i < 2; i++) {
                 int x0 = i == 0 ? pad : half + 1;
                 int segW = i == 0 ? (half - pad) : (w - half - pad - 1);
 
-                FontMetrics fm;
+                FontMetrics fm = g2.getFontMetrics(boldFont);
                 if (i == selectedIndex) {
                     g2.setColor(getDefaultButtonBackground());
                     g2.fill(new RoundRectangle2D.Float(x0, pad, segW, h - pad * 2,
                             innerRadius, innerRadius));
-                    g2.setFont(boldFont);
-                    g2.setColor(JBColor.WHITE);
-                    fm = g2.getFontMetrics(boldFont);
+                    g2.setColor(Color.WHITE);
                 } else {
-                    g2.setFont(normalFont);
-                    g2.setColor(UIUtil.getLabelDisabledForeground());
-                    fm = g2.getFontMetrics(normalFont);
+                    g2.setColor(UIUtil.getLabelForeground());
                 }
 
                 int textW = fm.stringWidth(labels[i]);
@@ -670,6 +666,7 @@ public class NewFxmlKitViewDialog extends DialogWrapper {
      */
     private static class FileTypeCard extends JPanel {
         private boolean selected;
+        private boolean hovered;
         private String label;
         private final Color accentColor;
         private final FileIconType iconType;
@@ -695,6 +692,18 @@ public class NewFxmlKitViewDialog extends DialogWrapper {
                         if (onSelectionChanged != null) {
                             onSelectionChanged.run();
                         }
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        hovered = true;
+                        repaint();
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        hovered = false;
+                        repaint();
                     }
                 });
             }
@@ -730,11 +739,12 @@ public class NewFxmlKitViewDialog extends DialogWrapper {
             int h = getHeight();
             int radius = JBUI.scale(6);
             boolean active = selected || mandatory;
+            boolean highlighted = active || hovered;
 
-            // Card background and border (uniform for all cards)
+            // Card background and border
             g2.setColor(UIUtil.getTextFieldBackground());
             g2.fill(new RoundRectangle2D.Float(0, 0, w, h, radius, radius));
-            g2.setColor(active ? accentColor : getBorderColor());
+            g2.setColor(highlighted ? accentColor : getBorderColor());
             g2.draw(new RoundRectangle2D.Float(0, 0, w - 1, h - 1, radius, radius));
 
             // Check indicator (top-right) — only for optional cards
@@ -763,13 +773,13 @@ public class NewFxmlKitViewDialog extends DialogWrapper {
             }
 
             // File icon in center
-            Color iconColor = active ? accentColor : UIUtil.getLabelDisabledForeground();
+            Color iconColor = highlighted ? accentColor : UIUtil.getLabelDisabledForeground();
             drawFileIcon(g2, w, h, iconColor);
 
             // Label at bottom
             Font labelFont = getFont().deriveFont((float) JBUI.scale(11));
             g2.setFont(labelFont);
-            g2.setColor(active ? UIUtil.getLabelForeground() : UIUtil.getLabelDisabledForeground());
+            g2.setColor(highlighted ? UIUtil.getLabelForeground() : UIUtil.getLabelDisabledForeground());
             FontMetrics fm = g2.getFontMetrics();
             int textW = fm.stringWidth(label);
             g2.drawString(label, (w - textW) / 2, h - JBUI.scale(8));
