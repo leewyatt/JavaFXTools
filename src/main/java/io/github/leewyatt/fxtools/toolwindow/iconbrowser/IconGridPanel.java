@@ -118,13 +118,8 @@ public class IconGridPanel extends JPanel {
                     if (selectionListener != null) {
                         selectionListener.onIconSelected(pageIcons.get(idx));
                     }
-                } else {
-                    selectedIndex = -1;
-                    if (selectionListener != null) {
-                        selectionListener.onIconSelected(null);
-                    }
+                    repaint();
                 }
-                repaint();
             }
 
             @Override
