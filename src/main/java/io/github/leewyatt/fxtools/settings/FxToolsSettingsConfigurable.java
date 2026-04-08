@@ -1,11 +1,14 @@
 package io.github.leewyatt.fxtools.settings;
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
+import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.ComboBox;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.ui.IdeBorderFactory;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.JBUI;
@@ -17,6 +20,8 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Settings page under Settings &gt; Tools &gt; JavaFX Tools.
@@ -135,6 +140,9 @@ public class FxToolsSettingsConfigurable implements Configurable {
         syncMasterFromSubs();
 
         mainPanel.add(gutterSection);
+
+        // ==================== About Section ====================
+        mainPanel.add(createAboutSection());
 
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.add(mainPanel, BorderLayout.NORTH);
@@ -279,6 +287,110 @@ public class FxToolsSettingsConfigurable implements Configurable {
             }
         }
         iconSizeCombo.setSelectedIndex(2);
+    }
+
+    // ==================== About Section ====================
+
+    private static final String URL_GITHUB = "https://github.com/leewyatt";
+    private static final String URL_BLUESKY = "https://bsky.app/profile/leewyatt.bsky.social";
+    private static final String URL_YOUTUBE = "https://www.youtube.com/@leewyatt2298";
+    private static final String URL_BILIBILI = "https://space.bilibili.com/397562730";
+
+    private JPanel createAboutSection() {
+        JPanel section = createSection(FxToolsBundle.message("settings.section.about"));
+
+        // ---- Header: plugin icon + name + version ----
+        JPanel headerRow = new JPanel(new FlowLayout(FlowLayout.LEFT, JBUI.scale(8), 0));
+        headerRow.setOpaque(false);
+        headerRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        Icon pluginIcon = IconLoader.getIcon("/META-INF/pluginIcon.svg", getClass());
+        JBLabel iconLabel = new JBLabel(pluginIcon);
+        headerRow.add(iconLabel);
+
+        JPanel namePanel = new JPanel();
+        namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.Y_AXIS));
+        namePanel.setOpaque(false);
+
+        JBLabel nameLabel = new JBLabel("JavaFX Tools");
+        nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD, (float) JBUI.scale(14)));
+        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        namePanel.add(nameLabel);
+
+        JBLabel versionLabel = new JBLabel(FxToolsBundle.message("settings.about.version") + " · " + FxToolsBundle.message("settings.about.author"));
+        versionLabel.setForeground(UIUtil.getContextHelpForeground());
+        versionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        namePanel.add(versionLabel);
+
+        headerRow.add(namePanel);
+        section.add(headerRow);
+        section.add(Box.createVerticalStrut(JBUI.scale(12)));
+
+        // ---- Connect links (single row) ----
+        JPanel linksRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        linksRow.setOpaque(false);
+        linksRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        String[][] links = {
+                {FxToolsBundle.message("settings.about.github"), URL_GITHUB},
+                {FxToolsBundle.message("settings.about.bluesky"), URL_BLUESKY},
+                {FxToolsBundle.message("settings.about.youtube"), URL_YOUTUBE},
+                {FxToolsBundle.message("settings.about.bilibili"), URL_BILIBILI},
+                {FxToolsBundle.message("settings.about.email"), "mailto:leewyatt7788@gmail.com"},
+        };
+        for (int i = 0; i < links.length; i++) {
+            if (i > 0) {
+                JBLabel sep = new JBLabel(" · ");
+                sep.setForeground(UIUtil.getContextHelpForeground());
+                linksRow.add(sep);
+            }
+            linksRow.add(createHyperlinkLabel(links[i][0], links[i][1]));
+        }
+
+        section.add(linksRow);
+        section.add(Box.createVerticalStrut(JBUI.scale(12)));
+
+        // ---- Available for JavaFX work ----
+        JPanel availPanel = new JPanel();
+        availPanel.setLayout(new BoxLayout(availPanel, BoxLayout.Y_AXIS));
+        availPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        availPanel.setOpaque(true);
+        availPanel.setBackground(new JBColor(new Color(0xEBF2FC), new Color(0x2D3548)));
+        availPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(
+                        new JBColor(new Color(0xC4D7F2), new Color(0x3D4A66)), 1, true),
+                JBUI.Borders.empty(10, 12)));
+
+        JBLabel availTitle = new JBLabel(
+                FxToolsBundle.message("settings.about.available.title"));
+        availTitle.setFont(availTitle.getFont().deriveFont(Font.BOLD));
+        availTitle.setForeground(new JBColor(new Color(0x2160C4), new Color(0x6BA3F5)));
+        availTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        availPanel.add(availTitle);
+        availPanel.add(Box.createVerticalStrut(JBUI.scale(4)));
+
+        JBLabel availDesc = new JBLabel(
+                FxToolsBundle.message("settings.about.available.desc"));
+        availDesc.setForeground(new JBColor(new Color(0x4A6A9A), new Color(0x9BB3D4)));
+        availDesc.setAlignmentX(Component.LEFT_ALIGNMENT);
+        availPanel.add(availDesc);
+
+        section.add(availPanel);
+        section.add(Box.createVerticalStrut(JBUI.scale(12)));
+
+        return section;
+    }
+
+    private JBLabel createHyperlinkLabel(String text, String url) {
+        JBLabel label = new JBLabel("<html><a href=''>" + text + "</a></html>");
+        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                BrowserUtil.browse(url);
+            }
+        });
+        return label;
     }
 
     // ==================== UI Helpers ====================
