@@ -1026,6 +1026,28 @@ public final class FxCssCompletionUtil {
                 AutoPopupController.getInstance(proj).scheduleAutoPopup(ed);
             };
 
+    /**
+     * Checks whether a semicolon should be appended after a completed value.
+     * Scans forward from the offset, skipping whitespace:
+     * <ul>
+     *   <li>{@code ;} — already present, skip past it</li>
+     *   <li>{@code }} or end of text — value is complete, add {@code ;}</li>
+     *   <li>any other character ({@code )}, {@code ,}, letter, etc.) — more content follows, don't add</li>
+     * </ul>
+     *
+     * @return {@code true} if there is trailing content after the offset
+     *         (the caller should NOT insert a semicolon)
+     */
+    private static boolean hasTrailingContent(@NotNull CharSequence text, int offset) {
+        for (int i = offset; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (!Character.isWhitespace(c)) {
+                return c != ';' && c != '}';
+            }
+        }
+        return false;
+    }
+
     /** For .css files: ensures space after colon, inserts ";" after value. */
     public static final InsertHandler<LookupElement> CSS_VALUE_INSERT_HANDLER =
             (ctx, item) -> {
@@ -1038,6 +1060,10 @@ public final class FxCssCompletionUtil {
                     start++;
                 }
                 int tail = ctx.getTailOffset();
+                if (hasTrailingContent(doc.getCharsSequence(), tail)) {
+                    ed.getCaretModel().moveToOffset(tail);
+                    return;
+                }
                 String after = tail < doc.getTextLength()
                         ? doc.getText(TextRange.create(tail, Math.min(tail + 1, doc.getTextLength())))
                         : "";
@@ -1078,6 +1104,10 @@ public final class FxCssCompletionUtil {
                     start++;
                 }
                 int tail = ctx.getTailOffset();
+                if (hasTrailingContent(doc.getCharsSequence(), tail)) {
+                    ed.getCaretModel().moveToOffset(tail);
+                    return;
+                }
                 String after = tail < doc.getTextLength()
                         ? doc.getText(TextRange.create(tail, Math.min(tail + 1, doc.getTextLength())))
                         : "";
