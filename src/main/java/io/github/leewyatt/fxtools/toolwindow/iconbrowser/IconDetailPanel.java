@@ -2,6 +2,7 @@ package io.github.leewyatt.fxtools.toolwindow.iconbrowser;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.BrowserUtil;
+import com.intellij.openapi.project.Project;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.JBUI;
@@ -64,6 +65,8 @@ public class IconDetailPanel extends JPanel {
     private IconDataService.IconEntry currentIcon;
     @Nullable
     private IconDataService service;
+    @Nullable
+    private Project project;
 
     public IconDetailPanel() {
         setLayout(new BorderLayout(JBUI.scale(14), 0));
@@ -198,8 +201,10 @@ public class IconDetailPanel extends JPanel {
     // ==================== Public API ====================
 
     public void showIcon(@Nullable IconDataService.IconEntry icon,
-                         @Nullable IconDataService service) {
+                         @Nullable IconDataService service,
+                         @Nullable Project project) {
         this.currentIcon = icon;
+        this.project = project;
         this.service = service;
 
         if (icon == null) {
@@ -238,7 +243,7 @@ public class IconDetailPanel extends JPanel {
         cannotRenderHint.setVisible(!icon.isRenderable());
 
         // ---- Copy button / no-path hint state ----
-        List<IconCopyUtil.CopyItem> items = IconCopyUtil.buildItems(icon, service);
+        List<IconCopyUtil.CopyItem> items = IconCopyUtil.buildItems(icon, service, project);
         if (items.isEmpty()) {
             copyButton.setVisible(false);
             noPathHint.setVisible(true);
@@ -265,7 +270,7 @@ public class IconDetailPanel extends JPanel {
         if (currentIcon == null) {
             return;
         }
-        IconCopyUtil.showPopupUnderneath(copyButton, currentIcon, service);
+        IconCopyUtil.showPopupUnderneath(copyButton, currentIcon, service, project);
     }
 
     // ==================== SVG preview rendering ====================

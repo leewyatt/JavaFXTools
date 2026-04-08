@@ -215,7 +215,7 @@ public class IconBrowserPanel extends JPanel {
         add(detailPanel, BorderLayout.SOUTH);
 
         // Wire grid selection to detail panel (after both are initialized)
-        gridPanel.setSelectionListener(icon -> detailPanel.showIcon(icon, IconDataService.getInstance()));
+        gridPanel.setSelectionListener(icon -> detailPanel.showIcon(icon, IconDataService.getInstance(), project));
 
         // ==================== Initial Data Load ====================
         loadDataAsync();
@@ -300,7 +300,7 @@ public class IconBrowserPanel extends JPanel {
 
         // Pagination
         paginationBar.setTotalItems(currentResults.size());
-        detailPanel.showIcon(null, null);
+        detailPanel.showIcon(null, null, null);
         loadCurrentPage();
     }
 
@@ -310,7 +310,7 @@ public class IconBrowserPanel extends JPanel {
 
     private void loadCurrentPage() {
         if (currentResults.isEmpty()) {
-            gridPanel.setPageData(Collections.emptyList(), IconDataService.getInstance(), false);
+            gridPanel.setPageData(Collections.emptyList(), IconDataService.getInstance(), project, false);
             return;
         }
 
@@ -333,7 +333,7 @@ public class IconBrowserPanel extends JPanel {
         boolean allLoaded = neededPacks.stream().allMatch(service::isPackLoaded);
 
         // Show grid immediately (with or without icons)
-        gridPanel.setPageData(pageItems, service, showTags);
+        gridPanel.setPageData(pageItems, service, project, showTags);
         gridScrollPane.getVerticalScrollBar().setValue(0);
 
         if (!allLoaded) {
@@ -348,7 +348,7 @@ public class IconBrowserPanel extends JPanel {
                     }
                 }
                 SwingUtilities.invokeLater(() ->
-                        gridPanel.setPageData(finalPageItems, service, finalShowTags));
+                        gridPanel.setPageData(finalPageItems, service, project, finalShowTags));
             });
         }
     }

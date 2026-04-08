@@ -5,8 +5,10 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.ide.CopyPasteManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.awt.RelativePoint;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import org.jetbrains.annotations.NotNull;
@@ -38,16 +40,45 @@ public final class IconCopyUtil {
     public record CopyItem(@NotNull String label, @NotNull String value, boolean separatorBefore) {
     }
 
+    // ==================== Build System Detection ====================
+
+    private enum BuildSystem { MAVEN, GRADLE, NONE }
+
+    private static BuildSystem detectBuildSystem(@Nullable Project project) {
+        if (project == null) {
+            return BuildSystem.NONE;
+        }
+        String basePath = project.getBasePath();
+        if (basePath == null) {
+            return BuildSystem.NONE;
+        }
+        VirtualFile baseDir = com.intellij.openapi.vfs.LocalFileSystem.getInstance()
+                .findFileByPath(basePath);
+        if (baseDir == null) {
+            return BuildSystem.NONE;
+        }
+        // Check Gradle first — Gradle projects sometimes also have pom.xml
+        if (baseDir.findChild("build.gradle") != null
+                || baseDir.findChild("build.gradle.kts") != null) {
+            return BuildSystem.GRADLE;
+        }
+        if (baseDir.findChild("pom.xml") != null) {
+            return BuildSystem.MAVEN;
+        }
+        return BuildSystem.NONE;
+    }
+
     // ==================== Building ====================
 
     /**
      * Builds the copy items for an icon. Non-Ikonli packs contribute only "Copy path"
-     * (if path data is loaded); Ikonli packs additionally contribute Java/CSS/Maven/Gradle
-     * snippets, with a separator before Maven to visually group code vs dependency entries.
+     * (if path data is loaded); Ikonli packs additionally contribute Java/CSS and
+     * a single dependency entry (Maven or Gradle, detected from project build files).
      */
     @NotNull
     public static List<CopyItem> buildItems(@NotNull IconDataService.IconEntry icon,
-                                             @Nullable IconDataService service) {
+                                             @Nullable IconDataService service,
+                                             @Nullable Project project) {
         List<CopyItem> items = new ArrayList<>();
         String pathData = service != null ? service.getPath(icon) : null;
         if (pathData != null) {
@@ -74,17 +105,32 @@ public final class IconCopyUtil {
             if (pack.getMaven() != null && service != null) {
                 String[] parts = pack.getMaven().split(":");
                 String version = service.getIkonliVersion();
-                if (parts.length == 2) {
+                BuildSystem buildSystem = detectBuildSystem(project);
+                if (buildSystem == BuildSystem.MAVEN && parts.length == 2) {
                     String maven = "<dependency>\n    <groupId>" + parts[0] + "</groupId>\n"
                             + "    <artifactId>" + parts[1] + "</artifactId>\n"
                             + "    <version>" + version + "</version>\n</dependency>";
                     items.add(new CopyItem(
                             FxToolsBundle.message("icon.browser.detail.copy.maven"),
                             maven, true));
+                } else if (buildSystem == BuildSystem.GRADLE) {
+                    items.add(new CopyItem(
+                            FxToolsBundle.message("icon.browser.detail.copy.gradle"),
+                            "implementation '" + pack.getMaven() + ":" + version + "'", true));
+                } else {
+                    // Unknown build system — show both
+                    if (parts.length == 2) {
+                        String maven = "<dependency>\n    <groupId>" + parts[0] + "</groupId>\n"
+                                + "    <artifactId>" + parts[1] + "</artifactId>\n"
+                                + "    <version>" + version + "</version>\n</dependency>";
+                        items.add(new CopyItem(
+                                FxToolsBundle.message("icon.browser.detail.copy.maven"),
+                                maven, true));
+                    }
+                    items.add(new CopyItem(
+                            FxToolsBundle.message("icon.browser.detail.copy.gradle"),
+                            "implementation '" + pack.getMaven() + ":" + version + "'", false));
                 }
-                items.add(new CopyItem(
-                        FxToolsBundle.message("icon.browser.detail.copy.gradle"),
-                        "implementation '" + pack.getMaven() + ":" + version + "'", false));
             }
         }
         return items;
@@ -99,8 +145,9 @@ public final class IconCopyUtil {
      */
     public static void showPopupUnderneath(@NotNull Component anchor,
                                             @NotNull IconDataService.IconEntry icon,
-                                            @Nullable IconDataService service) {
-        List<CopyItem> items = buildItems(icon, service);
+                                            @Nullable IconDataService service,
+                                            @Nullable Project project) {
+        List<CopyItem> items = buildItems(icon, service, project);
         if (items.isEmpty()) {
             return;
         }
@@ -118,8 +165,9 @@ public final class IconCopyUtil {
     public static void showPopupAt(@NotNull Component anchor,
                                     @NotNull IconDataService.IconEntry icon,
                                     @Nullable IconDataService service,
+                                    @Nullable Project project,
                                     int x, int y) {
-        List<CopyItem> items = buildItems(icon, service);
+        List<CopyItem> items = buildItems(icon, service, project);
         if (items.isEmpty()) {
             return;
         }

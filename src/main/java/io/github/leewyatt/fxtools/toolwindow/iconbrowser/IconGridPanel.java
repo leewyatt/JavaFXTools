@@ -1,5 +1,6 @@
 package io.github.leewyatt.fxtools.toolwindow.iconbrowser;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.scale.JBUIScale;
 import com.intellij.util.ui.JBUI;
@@ -83,6 +84,8 @@ public class IconGridPanel extends JPanel {
 
     private List<IconDataService.IconEntry> pageIcons = Collections.emptyList();
     private IconDataService service;
+    @Nullable
+    private Project project;
     private boolean showPackTags;
     private int selectedIndex = -1;
     private int hoverIndex = -1;
@@ -186,7 +189,7 @@ public class IconGridPanel extends JPanel {
         }
         repaint();
 
-        IconCopyUtil.showPopupAt(this, pageIcons.get(idx), service, e.getX(), e.getY());
+        IconCopyUtil.showPopupAt(this, pageIcons.get(idx), service, project, e.getX(), e.getY());
     }
 
     // ==================== Public API ====================
@@ -197,9 +200,11 @@ public class IconGridPanel extends JPanel {
 
     public void setPageData(@NotNull List<IconDataService.IconEntry> icons,
                             @NotNull IconDataService service,
+                            @Nullable Project project,
                             boolean showPackTags) {
         this.pageIcons = icons;
         this.service = service;
+        this.project = project;
         this.showPackTags = showPackTags;
         this.selectedIndex = -1;
         this.hoverIndex = -1;
