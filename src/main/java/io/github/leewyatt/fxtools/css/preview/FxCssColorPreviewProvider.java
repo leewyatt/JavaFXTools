@@ -122,12 +122,11 @@ public class FxCssColorPreviewProvider implements LineMarkerProvider {
                         continue;
                     }
                     if (resolved.size() == 1) {
-                        icon = CssPreviewIconRenderer.createCircleIcon(resolved.get(0).getColor());
+                        icon = CssPreviewIconRenderer.createSquareIcon(resolved.get(0).getColor());
                         tooltip = FxToolsBundle.message("css.preview.tooltip.resolved",
                                 segText, resolved.get(0).getHexValue());
                     } else {
-                        icon = CssPreviewIconRenderer.createHalfCircleIcon(
-                                resolved.get(0).getColor(), resolved.get(1).getColor());
+                        icon = CssPreviewIconRenderer.createSquareIcon(resolved.get(0).getColor());
                         tooltip = FxToolsBundle.message("css.preview.tooltip.multi",
                                 segText, resolved.size());
                     }

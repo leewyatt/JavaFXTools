@@ -94,12 +94,12 @@ public class FxCssGradientPreviewProvider implements LineMarkerProvider {
                 if (gradientExpr == null) {
                     continue;
                 }
-                Paint paint = parseGradientPaint(gradientExpr);
+                Paint paint = parseGradientPaint(gradientExpr, allVars);
                 if (paint == null) {
                     continue;
                 }
 
-                Icon icon = CssPreviewIconRenderer.createGradientCircleIcon(paint);
+                Icon icon = CssPreviewIconRenderer.createGradientIcon(paint);
                 String tooltip = FxToolsBundle.message("css.preview.tooltip.gradient",
                         summarizeGradient(gradientExpr));
                 // 1-char marker range offset by segment index so each marker is distinct;
@@ -164,20 +164,22 @@ public class FxCssGradientPreviewProvider implements LineMarkerProvider {
     }
 
     /**
-     * Parses a gradient expression string to an AWT Paint.
+     * Parses a gradient expression string to an AWT Paint,
+     * resolving color variable references from the in-memory map.
      */
     @Nullable
-    private static Paint parseGradientPaint(@NotNull String gradientExpr) {
+    private static Paint parseGradientPaint(@NotNull String gradientExpr,
+                                            @Nullable Map<String, List<String>> allVars) {
         String lower = gradientExpr.trim().toLowerCase();
         if (lower.startsWith("linear-gradient")) {
             FxGradientParser.LinearGradientInfo info =
-                    FxGradientParser.parseLinearGradient(gradientExpr, null, null);
+                    FxGradientParser.parseLinearGradient(gradientExpr, allVars);
             if (info != null && info.getStops().size() >= 2) {
                 return info.toAwtPaint(16, 16);
             }
         } else if (lower.startsWith("radial-gradient")) {
             FxGradientParser.RadialGradientInfo info =
-                    FxGradientParser.parseRadialGradient(gradientExpr, null, null);
+                    FxGradientParser.parseRadialGradient(gradientExpr, allVars);
             if (info != null && info.getStops().size() >= 2) {
                 return info.toAwtPaint(16, 16);
             }

@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.util.regex.Matcher;
@@ -97,75 +96,22 @@ public final class CssPreviewIconRenderer {
     }
 
     /**
-     * Circle icon for indirect reference with single definition.
+     * Square icon filled with gradient.
      */
     @NotNull
-    public static Icon createCircleIcon(@NotNull Color color) {
+    public static Icon createGradientIcon(@NotNull Paint paint) {
         return new BasePreviewIcon() {
             @Override
             protected void paint(@NotNull Graphics2D g2) {
-                g2.setColor(color);
-                g2.fillOval(0, 0, ICON_SIZE, ICON_SIZE);
-                g2.setColor(BORDER_COLOR);
-                g2.drawOval(0, 0, ICON_SIZE - 1, ICON_SIZE - 1);
-            }
-
-            @Override
-            protected @NotNull BasePreviewIcon copyWithScale(float newScale) {
-                BasePreviewIcon icon = (BasePreviewIcon) createCircleIcon(color);
-                icon.setScale(newScale);
-                return icon;
-            }
-        };
-    }
-
-    /**
-     * Half-circle icon for indirect reference with multiple definitions.
-     */
-    @NotNull
-    public static Icon createHalfCircleIcon(@NotNull Color left, @NotNull Color right) {
-        return new BasePreviewIcon() {
-            @Override
-            protected void paint(@NotNull Graphics2D g2) {
-                int half = ICON_SIZE / 2;
-                g2.setClip(new Ellipse2D.Float(0, 0, ICON_SIZE, ICON_SIZE));
-                g2.setColor(left);
-                g2.fillRect(0, 0, half, ICON_SIZE);
-                g2.setColor(right);
-                g2.fillRect(half, 0, ICON_SIZE - half, ICON_SIZE);
-                g2.setClip(null);
-                g2.setColor(BORDER_COLOR);
-                g2.drawOval(0, 0, ICON_SIZE - 1, ICON_SIZE - 1);
-            }
-
-            @Override
-            protected @NotNull BasePreviewIcon copyWithScale(float newScale) {
-                BasePreviewIcon icon = (BasePreviewIcon) createHalfCircleIcon(left, right);
-                icon.setScale(newScale);
-                return icon;
-            }
-        };
-    }
-
-    /**
-     * Circle icon filled with gradient.
-     */
-    @NotNull
-    public static Icon createGradientCircleIcon(@NotNull Paint paint) {
-        return new BasePreviewIcon() {
-            @Override
-            protected void paint(@NotNull Graphics2D g2) {
-                g2.setClip(new Ellipse2D.Float(0, 0, ICON_SIZE, ICON_SIZE));
                 g2.setPaint(paint);
-                g2.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
-                g2.setClip(null);
+                g2.fillRect(1, 1, ICON_SIZE - 2, ICON_SIZE - 2);
                 g2.setColor(BORDER_COLOR);
-                g2.drawOval(0, 0, ICON_SIZE - 1, ICON_SIZE - 1);
+                g2.drawRect(0, 0, ICON_SIZE - 1, ICON_SIZE - 1);
             }
 
             @Override
             protected @NotNull BasePreviewIcon copyWithScale(float newScale) {
-                BasePreviewIcon icon = (BasePreviewIcon) createGradientCircleIcon(paint);
+                BasePreviewIcon icon = (BasePreviewIcon) createGradientIcon(paint);
                 icon.setScale(newScale);
                 return icon;
             }

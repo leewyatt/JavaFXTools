@@ -285,11 +285,8 @@ public final class InlineCssGutterUtil {
                 if (match.variableRef) {
                     List<FxColorParser.ResolvedColor> resolved =
                             FxColorParser.resolveVariableColors(match.value, allVars);
-                    if (resolved.size() == 1) {
-                        return CssPreviewIconRenderer.createCircleIcon(resolved.get(0).getColor());
-                    } else if (resolved.size() >= 2) {
-                        return CssPreviewIconRenderer.createHalfCircleIcon(
-                                resolved.get(0).getColor(), resolved.get(1).getColor());
+                    if (resolved.size() >= 1) {
+                        return CssPreviewIconRenderer.createSquareIcon(resolved.get(0).getColor());
                     }
                     return null;
                 }
@@ -306,18 +303,18 @@ public final class InlineCssGutterUtil {
                 String v = match.value.toLowerCase();
                 if (v.startsWith("linear-gradient")) {
                     FxGradientParser.LinearGradientInfo info =
-                            FxGradientParser.parseLinearGradient(match.value, null, null);
+                            FxGradientParser.parseLinearGradient(match.value, allVars);
                     if (info != null && info.getStops().size() >= 2) {
                         paint = info.toAwtPaint(16, 16);
                     }
                 } else if (v.startsWith("radial-gradient")) {
                     FxGradientParser.RadialGradientInfo info =
-                            FxGradientParser.parseRadialGradient(match.value, null, null);
+                            FxGradientParser.parseRadialGradient(match.value, allVars);
                     if (info != null && info.getStops().size() >= 2) {
                         paint = info.toAwtPaint(16, 16);
                     }
                 }
-                return paint != null ? CssPreviewIconRenderer.createGradientCircleIcon(paint) : null;
+                return paint != null ? CssPreviewIconRenderer.createGradientIcon(paint) : null;
             }
             case SVG_PATH -> {
                 return CssPreviewIconRenderer.createSvgIcon(match.value, JBColor.foreground());

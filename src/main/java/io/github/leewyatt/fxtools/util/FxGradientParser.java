@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.MultipleGradientPaint.CycleMethod;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -149,12 +150,29 @@ public final class FxGradientParser {
     }
 
     /**
+     * Parses a linear-gradient() CSS value, resolving color variables from the in-memory map.
+     */
+    @Nullable
+    public static LinearGradientInfo parseLinearGradient(@NotNull String value,
+                                                         @Nullable Map<String, List<String>> allVars) {
+        return parseLinearGradientImpl(value, null, null, allVars);
+    }
+
+    /**
      * Parses a linear-gradient() CSS value.
      */
     @Nullable
     public static LinearGradientInfo parseLinearGradient(@NotNull String value,
                                                          @Nullable Project project,
                                                          @Nullable GlobalSearchScope scope) {
+        return parseLinearGradientImpl(value, project, scope, null);
+    }
+
+    @Nullable
+    private static LinearGradientInfo parseLinearGradientImpl(@NotNull String value,
+                                                              @Nullable Project project,
+                                                              @Nullable GlobalSearchScope scope,
+                                                              @Nullable Map<String, List<String>> allVars) {
         Matcher m = LINEAR_GRADIENT_PATTERN.matcher(value.trim());
         if (!m.matches()) {
             return null;
@@ -201,12 +219,21 @@ public final class FxGradientParser {
             }
         }
 
-        List<Stop> stops = parseColorStops(parts, colorStartIndex, project, scope);
+        List<Stop> stops = parseColorStops(parts, colorStartIndex, project, scope, allVars);
         if (stops.size() < 2) {
             return null;
         }
 
         return new LinearGradientInfo(startX, startY, endX, endY, stops, proportional);
+    }
+
+    /**
+     * Parses a radial-gradient() CSS value, resolving color variables from the in-memory map.
+     */
+    @Nullable
+    public static RadialGradientInfo parseRadialGradient(@NotNull String value,
+                                                          @Nullable Map<String, List<String>> allVars) {
+        return parseRadialGradientImpl(value, null, null, allVars);
     }
 
     /**
@@ -216,6 +243,14 @@ public final class FxGradientParser {
     public static RadialGradientInfo parseRadialGradient(@NotNull String value,
                                                           @Nullable Project project,
                                                           @Nullable GlobalSearchScope scope) {
+        return parseRadialGradientImpl(value, project, scope, null);
+    }
+
+    @Nullable
+    private static RadialGradientInfo parseRadialGradientImpl(@NotNull String value,
+                                                               @Nullable Project project,
+                                                               @Nullable GlobalSearchScope scope,
+                                                               @Nullable Map<String, List<String>> allVars) {
         Matcher m = RADIAL_GRADIENT_PATTERN.matcher(value.trim());
         if (!m.matches()) {
             return null;
@@ -257,7 +292,7 @@ public final class FxGradientParser {
             }
         }
 
-        List<Stop> stops = parseColorStops(parts, colorStartIndex, project, scope);
+        List<Stop> stops = parseColorStops(parts, colorStartIndex, project, scope, allVars);
         if (stops.size() < 2) {
             return null;
         }
@@ -269,7 +304,8 @@ public final class FxGradientParser {
     @NotNull
     private static List<Stop> parseColorStops(@NotNull List<String> parts, int startIndex,
                                               @Nullable Project project,
-                                              @Nullable GlobalSearchScope scope) {
+                                              @Nullable GlobalSearchScope scope,
+                                              @Nullable Map<String, List<String>> allVars) {
         List<Stop> stops = new ArrayList<>();
         List<String> colorParts = parts.subList(startIndex, parts.size());
 
@@ -296,8 +332,12 @@ public final class FxGradientParser {
             }
 
             Color color = FxColorParser.parseColor(colorStr);
-            if (color == null && project != null && scope != null && colorStr.startsWith("-")) {
-                color = FxColorParser.resolveVariableColor(colorStr, project, scope);
+            if (color == null && colorStr.startsWith("-")) {
+                if (allVars != null) {
+                    color = FxColorParser.resolveVariableColor(colorStr, allVars);
+                } else if (project != null && scope != null) {
+                    color = FxColorParser.resolveVariableColor(colorStr, project, scope);
+                }
             }
             if (color == null) {
                 color = Color.GRAY;
