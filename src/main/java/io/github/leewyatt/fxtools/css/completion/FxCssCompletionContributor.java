@@ -75,6 +75,9 @@ public class FxCssCompletionContributor extends CompletionContributor {
                     ? FxCssPropertyTable.getProperty(propName, project) : null;
             FxCssCompletionUtil.addValueCompletions(info, propName, parameters, cssResult,
                     FxCssCompletionUtil.CSS_VALUE_INSERT_HANDLER);
+            // Prevent IntelliJ's word completion from adding file-level tokens
+            // (e.g. property names like "-fx-show-bottom" appearing as value candidates)
+            cssResult.stopHere();
         }
     }
 }

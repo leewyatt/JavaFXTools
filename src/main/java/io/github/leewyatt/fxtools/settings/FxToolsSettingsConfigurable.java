@@ -141,6 +141,9 @@ public class FxToolsSettingsConfigurable implements Configurable {
 
         mainPanel.add(gutterSection);
 
+        // ==================== Sponsors Section ====================
+        mainPanel.add(createSponsorsSection());
+
         // ==================== About Section ====================
         mainPanel.add(createAboutSection());
 
@@ -295,6 +298,25 @@ public class FxToolsSettingsConfigurable implements Configurable {
     private static final String URL_BLUESKY = "https://bsky.app/profile/leewyatt.bsky.social";
     private static final String URL_YOUTUBE = "https://www.youtube.com/@leewyatt2298";
     private static final String URL_BILIBILI = "https://space.bilibili.com/397562730";
+    private static final String URL_DLSC = "https://www.dlsc.com";
+    private static final String URL_JFXCENTRAL = "https://www.jfxcentral.com";
+
+    private JPanel createSponsorsSection() {
+        JPanel section = createSection(FxToolsBundle.message("settings.about.sponsors"));
+
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        row.setOpaque(false);
+        row.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        row.add(createHyperlinkLabel("DLSC", URL_DLSC));
+        JBLabel sep = new JBLabel(" \u00B7 ");
+        sep.setForeground(UIUtil.getContextHelpForeground());
+        row.add(sep);
+        row.add(createHyperlinkLabel("JFXCentral", URL_JFXCENTRAL));
+
+        section.add(row);
+        return section;
+    }
 
     private JPanel createAboutSection() {
         JPanel section = createSection(FxToolsBundle.message("settings.section.about"));

@@ -57,7 +57,8 @@ public class GradientPickerStop extends JPanel {
 
     private static final JBColor STOP_BG = new JBColor(Color.WHITE, new Color(200, 200, 200));
     private static final Color STOP_BORDER = JBColor.border();
-    private static final JBColor SELECTION_COLOR = new JBColor(new Color(220, 50, 50), new Color(240, 70, 70));
+    private static final JBColor SELECTED_BORDER = new JBColor(new Color(0x3574F0), new Color(0x548AF7));
+    private static final JBColor SELECTION_COLOR = new JBColor(new Color(0x3574F0), new Color(0x548AF7));
 
     private final double min;
     private final double max;
@@ -204,9 +205,15 @@ public class GradientPickerStop extends JPanel {
         int rectY = 0;
         g2.setColor(STOP_BG);
         g2.fillRect(rectX, rectY, rectSize, rectSize);
-        g2.setColor(STOP_BORDER);
-        g2.setStroke(new BasicStroke(1f));
-        g2.drawRect(rectX, rectY, rectSize, rectSize);
+        if (selected) {
+            g2.setColor(SELECTED_BORDER);
+            g2.setStroke(new BasicStroke(2f));
+            g2.drawRect(rectX, rectY, rectSize, rectSize);
+        } else {
+            g2.setColor(STOP_BORDER);
+            g2.setStroke(new BasicStroke(1f));
+            g2.drawRect(rectX, rectY, rectSize, rectSize);
+        }
 
         // Draw color chip inside
         int chipX = (w - CHIP_SIZE) / 2;

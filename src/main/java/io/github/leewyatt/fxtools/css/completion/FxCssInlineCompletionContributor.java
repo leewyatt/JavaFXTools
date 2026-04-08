@@ -83,6 +83,7 @@ public class FxCssInlineCompletionContributor extends CompletionContributor {
                     ? FxCssPropertyTable.getProperty(propName, parameters.getOriginalFile().getProject()) : null;
             FxCssCompletionUtil.addValueCompletions(info, propName, parameters, cssResult,
                     FxCssCompletionUtil.INLINE_VALUE_INSERT_HANDLER);
+            cssResult.stopHere();
         }
     }
 

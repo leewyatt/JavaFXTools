@@ -516,13 +516,20 @@ public class GradientPicker extends JPanel {
         removeAllStops();
         float[] fractions = linear.getFractions();
         Color[] colors = linear.getColors();
+        GradientPickerStop firstStop = null;
         for (int i = 0; i < fractions.length; i++) {
-            addStop(0.0, 1.0, fractions[i], colors[i]);
+            GradientPickerStop stop = addStop(0.0, 1.0, fractions[i], colors[i]);
+            if (i == 0) {
+                firstStop = stop;
+            }
         }
 
         setMode(PaintMode.LINEAR);
         updatePreview(linear);
         updating = false;
+        if (firstStop != null) {
+            onStopSelected(firstStop);
+        }
     }
 
     /**
@@ -553,13 +560,20 @@ public class GradientPicker extends JPanel {
         removeAllStops();
         float[] fractions = radial.getFractions();
         Color[] colors = radial.getColors();
+        GradientPickerStop firstStop = null;
         for (int i = 0; i < fractions.length; i++) {
-            addStop(0.0, 1.0, fractions[i], colors[i]);
+            GradientPickerStop stop = addStop(0.0, 1.0, fractions[i], colors[i]);
+            if (i == 0) {
+                firstStop = stop;
+            }
         }
 
         setMode(PaintMode.RADIAL);
         updatePreview(radial);
         updating = false;
+        if (firstStop != null) {
+            onStopSelected(firstStop);
+        }
     }
 
     public void updatePreview(Paint paint) {
@@ -637,8 +651,13 @@ public class GradientPicker extends JPanel {
         if (selected == null) {
             return;
         }
+        int idx = gradientPickerStops.indexOf(selected);
         removeStop(selected);
-        // No auto-select — user must click a stop to select it
+        // Auto-select adjacent stop: prefer right neighbor, fall back to left
+        if (!gradientPickerStops.isEmpty()) {
+            int selectIdx = Math.min(idx, gradientPickerStops.size() - 1);
+            onStopSelected(gradientPickerStops.get(selectIdx));
+        }
         onStopChanged();
     }
 
