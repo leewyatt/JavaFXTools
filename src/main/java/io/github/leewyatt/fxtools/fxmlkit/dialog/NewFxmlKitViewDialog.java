@@ -164,7 +164,6 @@ public class NewFxmlKitViewDialog extends DialogWrapper {
                     updatePreview();
                 }
             } else {
-                i18nConfig = null;
                 summaryBar.setVisible(false);
                 updatePreview();
             }
