@@ -10,3 +10,4 @@ gen
 /.devdoc/
 /.intellijPlatform/
 /build/
+.DS_Store
