@@ -241,6 +241,12 @@ public final class FxCssCompletionUtil {
                 .withTailText("  Radial gradient", true)
                 .withInsertHandler(insertHandler);
         result.addElement(PrioritizedLookupElement.withPriority(radial, 299));
+
+        LookupElementBuilder color = LookupElementBuilder.create("#000000")
+                .withIcon(createColorIcon(Color.BLACK))
+                .withTailText("  Color", true)
+                .withInsertHandler(insertHandler);
+        result.addElement(PrioritizedLookupElement.withPriority(color, 298));
     }
 
     private static void addBooleanValues(@NotNull CompletionResultSet result,
@@ -1107,7 +1113,7 @@ public final class FxCssCompletionUtil {
                     start++;
                 }
                 int tail = ctx.getTailOffset();
-                if (hasTrailingContent(doc.getCharsSequence(), tail)) {
+                if (hasInlineTrailingContent(doc.getCharsSequence(), tail)) {
                     ed.getCaretModel().moveToOffset(tail);
                     return;
                 }
@@ -1121,4 +1127,20 @@ public final class FxCssCompletionUtil {
                     ed.getCaretModel().moveToOffset(tail + 1);
                 }
             };
+
+    /**
+     * Checks whether there is meaningful CSS content after the offset in an inline context.
+     * Closing quotes ({@code "}, {@code '}, {@code \"}) are treated as string boundaries,
+     * not as trailing CSS content.
+     */
+    private static boolean hasInlineTrailingContent(@NotNull CharSequence text, int offset) {
+        for (int i = offset; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (!Character.isWhitespace(c)) {
+                // String boundary or semicolon or brace = no trailing CSS content
+                return c != ';' && c != '}' && c != '"' && c != '\'' && c != '\\';
+            }
+        }
+        return false;
+    }
 }
