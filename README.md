@@ -4,7 +4,7 @@
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/com.itcodebox.fxtools.id)](https://plugins.jetbrains.com/plugin/14287-javafx-tools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-All-in-one JavaFX development toolkit for IntelliJ IDEA — CSS intelligence, gutter previews, FXML code assistance, Ikonli icon browsing, and FxmlKit integration.
+All-in-one JavaFX development toolkit for IntelliJ IDEA — CSS intelligence, gutter previews, FXML code assistance, Ikonli icon browsing, SVG path extraction, and FxmlKit integration.
 
 Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA **2024.2+** and Java **17+**.
 
@@ -22,10 +22,11 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 - Quick Documentation (F1) for all properties with multi-library source attribution
 - CSS variable completion with cross-file resolution
 - CSS transition properties (`transition`, `transition-property`, `transition-duration`, etc.)
+- `-fx-cursor` value completion with visual cursor shape icons
 
 **Gutter Previews**
 - Color previews — hex, rgb, rgba, hsl, hsla, named colors, `derive()`
-- Gradient previews — `linear-gradient()`, `radial-gradient()`, circle icons
+- Gradient previews — `linear-gradient()`, `radial-gradient()`
 - SVG path previews — `-fx-shape` rendered as scaled path icons
 - Effect previews — `dropshadow()`, `innershadow()` with blur visualization
 - Ikonli icon previews — `-fx-icon-code` rendered as SVG gutter icons
@@ -35,10 +36,10 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 <img src="screenshots/img_1.png" alt="Gutter Previews" width="600">
 
 **Click-to-Edit**
-- Click a color icon → opens embedded PaintPicker with real-time write-back
-- Click a gradient icon → opens PaintPicker in gradient mode
-- Click an effect icon → opens Effect Editor (DropShadow / InnerShadow with 4 blur types)
-- Click an SVG icon → opens path preview with size controls
+- Click a color icon -> opens embedded PaintPicker with real-time write-back
+- Click a gradient icon -> opens PaintPicker in gradient mode
+- Click an effect icon -> opens Effect Editor (DropShadow / InnerShadow with 4 blur types)
+- Click an SVG icon -> opens path preview with size controls
 - All edits support single Ctrl+Z undo
 
 <img src="screenshots/img_5.png" alt="PaintPicker" width="380">
@@ -59,11 +60,12 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 ### Ikonli Icon Integration
 
 **Icon Browser ToolWindow**
-- 84 icon packs, 55,000+ icons from the [Ikonli](https://github.com/kordamp/ikonli) library
+- 114 icon packs, 63,000+ icons from the [Ikonli](https://github.com/kordamp/ikonli) library
 - Search across all packs with fuzzy keyword matching
 - Pack filter for narrowing results
-- Detail panel with preview, icon name, pack name, license info
+- Detail panel with preview, icon name, pack name, and source link
 - One-click copy: SVG path / Java code / CSS code / Maven / Gradle coordinates
+- Double-click an icon to insert its SVG path data at the editor cursor
 
 <img src="screenshots/img_2.png" alt="Icon Browser" width="450">
 
@@ -76,20 +78,35 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 
 ---
 
+### SVG Path Extractor
+
+**ToolWindow Panel**
+- Drop or open an SVG file to extract and merge path data
+- Side-by-side preview: original SVG vs extracted path
+- Convert basic shapes (rect, circle, ellipse, line, polyline, polygon) to path data
+- Normalize coordinates to a target size with configurable precision
+- One-click copy of the extracted path string
+
+**Right-click Actions**
+- **Copy SVG Path Data** — right-click .svg files in the project view to copy merged path data to clipboard (multi-select supported)
+- **Open in SVG Path Extractor** — opens the file in the SVG Path Extractor ToolWindow panel
+
+---
+
 ### FXML Code Assistance
 
 **Navigation**
-- Bidirectional View ↔ FXML ↔ CSS navigation via gutter icons
-- Controller ↔ FXML navigation (works in all JavaFX projects, not just FxmlKit)
+- Bidirectional View <-> FXML <-> CSS navigation via gutter icons
+- Controller <-> FXML navigation (works in all JavaFX projects, not just FxmlKit)
 - `@FxmlPath` annotation: Ctrl+Click, completion, rename refactoring
 - Resource path navigation for `<Image url="..."/>`, `<fx:include source="..."/>`
 - `%key` i18n navigation to `.properties` files (with `com.intellij.properties` plugin)
 
-**Inspections & Quick Fixes** (13 inspections)
-- Missing FXML / Controller / CSS files → Create File quick fix
-- fx:id field not found in controller → Create Field quick fix with type inference
-- Event handler method not found → Create Method quick fix (33 event types)
-- @FXML field type mismatch → Change Type quick fix
+**Inspections & Quick Fixes** (14 inspections)
+- Missing FXML / Controller / CSS files -> Create File quick fix
+- fx:id field not found in controller -> Create Field quick fix with type inference
+- Event handler method not found -> Create Method quick fix (33 event types)
+- @FXML field type mismatch -> Change Type quick fix
 - Unused @FXML fields and methods detection
 - Invalid resource paths, unused CSS selectors, i18n key validation
 
@@ -100,7 +117,7 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 
 A structured MVC pattern for JavaFX with convention-based file resolution.
 
-**New → FxmlKit View wizard**
+**New -> FxmlKit View wizard**
 - Creates View + ViewProvider + Controller + FXML + CSS files from a single dialog
 - Segmented view type selector (View / ViewProvider)
 - Optional i18n resource bundle configuration with locale selection
@@ -125,11 +142,22 @@ A structured MVC pattern for JavaFX with convention-based file resolution.
 
 ---
 
-### Font File Actions
+### Font & SVG File Actions
 
-- **Right-click .ttf/.otf** → Copy Font Family Name / Copy @font-face CSS
+- **Right-click .ttf/.otf** -> Copy Font Family Name / Copy @font-face CSS
+- **Right-click .svg** -> Copy SVG Path Data / Open in SVG Path Extractor
 - **Smart paste**: @font-face blocks auto-resolve relative paths when pasted into CSS files
 - Multi-file selection supported
+
+---
+
+### Settings
+
+Settings -> Tools -> JavaFX Tools
+
+- **Gutter Previews** — toggle gutter preview icons on/off, adjust icon size (50%~150%)
+- **Icon Browser** — toggle double-click icon insertion
+- **Notifications** — JFX-Central weekly digest notification
 
 ---
 
@@ -137,14 +165,14 @@ A structured MVC pattern for JavaFX with convention-based file resolution.
 
 **From JetBrains Marketplace:**
 
-1. Open IntelliJ IDEA → Settings → Plugins → Marketplace
+1. Open IntelliJ IDEA -> Settings -> Plugins -> Marketplace
 2. Search for **"JavaFX Tools"**
 3. Click Install, restart IDE
 
 **Manual installation:**
 
 1. Download the latest release `.zip` from [Releases](https://github.com/leewyatt/JavaFXTools/releases)
-2. Settings → Plugins → ⚙️ → Install Plugin from Disk → select the `.zip`
+2. Settings -> Plugins -> gear icon -> Install Plugin from Disk -> select the `.zip`
 
 ---
 

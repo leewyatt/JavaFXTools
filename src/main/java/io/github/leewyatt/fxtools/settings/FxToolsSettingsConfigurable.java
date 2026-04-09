@@ -107,11 +107,11 @@ public class FxToolsSettingsConfigurable implements Configurable {
 
         mainPanel.add(gutterSection);
 
-        // ==================== Sponsors Section ====================
-        mainPanel.add(createSponsorsSection());
-
         // ==================== About Section ====================
         mainPanel.add(createAboutSection());
+
+        // ==================== Sponsors Section ====================
+        mainPanel.add(createSponsorsSection());
 
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.add(mainPanel, BorderLayout.NORTH);
