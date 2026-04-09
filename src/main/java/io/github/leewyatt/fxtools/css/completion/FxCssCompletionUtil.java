@@ -6,6 +6,7 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
@@ -794,6 +795,8 @@ public final class FxCssCompletionUtil {
             if (radial != null) {
                 return radial.toAwtPaint(ICON_SIZE, ICON_SIZE);
             }
+        } catch (ProcessCanceledException pce) {
+            throw pce;
         } catch (Exception ignored) {
             // Malformed gradient — fall through to null
         }

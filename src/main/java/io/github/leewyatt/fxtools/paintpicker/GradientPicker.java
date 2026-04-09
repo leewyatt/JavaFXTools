@@ -38,7 +38,7 @@ import io.github.leewyatt.fxtools.paintpicker.datamodel.PaintMode;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
+import com.intellij.openapi.ui.ComboBox;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
@@ -92,7 +92,7 @@ public class GradientPicker extends JPanel {
 
     // Shared controls
     private final JBCheckBox proportionalCheckbox;
-    private final JComboBox<CycleMethodItem> cycleMethodCombo;
+    private final ComboBox<CycleMethodItem> cycleMethodCombo;
 
     // Radial-specific controls
     private final JPanel radialContainer;
@@ -290,7 +290,7 @@ public class GradientPicker extends JPanel {
         cycleLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         paramsPanel.add(cycleLabel, gbc);
 
-        cycleMethodCombo = new JComboBox<>(new CycleMethodItem[]{
+        cycleMethodCombo = new ComboBox<>(new CycleMethodItem[]{
                 new CycleMethodItem(MultipleGradientPaint.CycleMethod.NO_CYCLE),
                 new CycleMethodItem(MultipleGradientPaint.CycleMethod.REFLECT),
                 new CycleMethodItem(MultipleGradientPaint.CycleMethod.REPEAT)
@@ -480,14 +480,6 @@ public class GradientPicker extends JPanel {
                     new Point2D.Float(fx, fy),
                     fractions, colors, cycleMethod);
         }
-    }
-
-    public boolean isGradientStopsEmpty() {
-        return gradientPickerStops.isEmpty();
-    }
-
-    public List<GradientPickerStop> getGradientStops() {
-        return gradientPickerStops;
     }
 
     public GradientPickerStop getSelectedStop() {

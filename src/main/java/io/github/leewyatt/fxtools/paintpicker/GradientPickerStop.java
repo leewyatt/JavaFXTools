@@ -144,7 +144,8 @@ public class GradientPickerStop extends JPanel {
         if (trackWidth <= 0) {
             return;
         }
-        double availablePixels = trackWidth - (STOP_WIDTH + edgeMargin);
+        int scaledWidth = JBUI.scale(STOP_WIDTH);
+        double availablePixels = trackWidth - (scaledWidth + edgeMargin);
         double range = max - min;
         double stopValue = clamp(min, offset, max);
         int pixelX = (int) ((availablePixels / range) * stopValue);
@@ -159,7 +160,8 @@ public class GradientPickerStop extends JPanel {
             return;
         }
         double trackWidth = getParent().getWidth();
-        double availablePixels = trackWidth - (STOP_WIDTH + edgeMargin);
+        int scaledWidth = JBUI.scale(STOP_WIDTH);
+        double availablePixels = trackWidth - (scaledWidth + edgeMargin);
         double range = max - min;
         offset = clamp(min, min + (getX() * (range / availablePixels)), max);
     }
@@ -181,7 +183,7 @@ public class GradientPickerStop extends JPanel {
         double dragDelta = e.getXOnScreen() - startDragX;
         double newX = origX + dragDelta;
         double trackWidth = getParent().getWidth();
-        newX = clamp(edgeMargin, newX, trackWidth - (STOP_WIDTH + edgeMargin));
+        newX = clamp(edgeMargin, newX, trackWidth - (JBUI.scale(STOP_WIDTH) + edgeMargin));
         setLocation((int) newX, 0);
         pixelsToValue();
         gradientPicker.onStopChanged();

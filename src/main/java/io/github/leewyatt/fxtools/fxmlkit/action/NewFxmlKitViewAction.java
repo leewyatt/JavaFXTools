@@ -9,6 +9,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.module.Module;
@@ -171,6 +172,8 @@ public class NewFxmlKitViewAction extends AnAction {
                             FileEditorManager.getInstance(project).openFile(
                                     psiFile.getVirtualFile(), true);
                         }
+                    } catch (ProcessCanceledException pce) {
+                        throw pce;
                     } catch (Exception ex) {
                         LOG.error("Failed to create FxmlKit view files", ex);
                     }

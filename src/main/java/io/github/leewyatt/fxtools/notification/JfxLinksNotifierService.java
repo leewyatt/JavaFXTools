@@ -44,7 +44,7 @@ public final class JfxLinksNotifierService implements Disposable {
     private static final String RSS_URL = "https://www.jfx-central.com/lotw/rss.xml";
     private static final int INITIAL_DELAY_SECONDS = 10;
 
-    private ScheduledFuture<?> scheduledTask;
+    private volatile ScheduledFuture<?> scheduledTask;
 
     public static JfxLinksNotifierService getInstance() {
         return ApplicationManager.getApplication().getService(JfxLinksNotifierService.class);
@@ -53,6 +53,10 @@ public final class JfxLinksNotifierService implements Disposable {
     public void start() {
         if (!FxToolsSettingsState.getInstance().enableLinksNotification) {
             return;
+        }
+        ScheduledFuture<?> existing = scheduledTask;
+        if (existing != null) {
+            existing.cancel(false);
         }
         scheduleNextCheck(INITIAL_DELAY_SECONDS);
     }

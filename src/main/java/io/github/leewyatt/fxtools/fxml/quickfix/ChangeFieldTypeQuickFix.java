@@ -3,6 +3,7 @@ package io.github.leewyatt.fxtools.fxml.quickfix;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -52,6 +53,8 @@ public class ChangeFieldTypeQuickFix implements LocalQuickFix {
                 PsiTypeElement newTypeElement = factory.createTypeElementFromText(typeText, field);
                 PsiElement replaced = typeElement.replace(newTypeElement);
                 JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
+            } catch (ProcessCanceledException pce) {
+                throw pce;
             } catch (Exception ex) {
                 LOG.error("Failed to change field type", ex);
             }

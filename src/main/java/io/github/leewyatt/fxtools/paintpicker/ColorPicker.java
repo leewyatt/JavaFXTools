@@ -622,7 +622,12 @@ public class ColorPicker extends JPanel {
             return text;
         }
         String alphaText = alpha_textfield.getText().isEmpty() ? "1" : alpha_textfield.getText();
-        int alphaValue = (int) Math.round(Double.parseDouble(alphaText) * 255);
+        int alphaValue;
+        try {
+            alphaValue = (int) Math.round(Double.parseDouble(alphaText) * 255);
+        } catch (NumberFormatException e) {
+            alphaValue = 255;
+        }
         String s = Integer.toHexString(alphaValue).toUpperCase();
         return text + (s.length() == 1 ? "0" + s : s);
     }
@@ -658,7 +663,12 @@ public class ColorPicker extends JPanel {
             textField.setText("0");
             return 0;
         }
-        int value = (int) Double.parseDouble(text);
+        int value;
+        try {
+            value = (int) Double.parseDouble(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
         if (value > 255) {
             textField.setText("255");
             return 255;
@@ -676,7 +686,12 @@ public class ColorPicker extends JPanel {
             textField.setText("0");
             return 0;
         }
-        int value = (int) Double.parseDouble(text);
+        int value;
+        try {
+            value = (int) Double.parseDouble(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
         if (value > max) {
             textField.setText(String.valueOf((int) max));
             return max;
@@ -694,7 +709,12 @@ public class ColorPicker extends JPanel {
             alpha_textfield.setText("0");
             return 0;
         }
-        double value = Double.parseDouble(text);
+        double value;
+        try {
+            value = Double.parseDouble(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
         if (value > 1.0) {
             alpha_textfield.setText("1.0");
             return 1.0;

@@ -4,6 +4,7 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
@@ -75,6 +76,8 @@ public class CreateEventHandlerQuickFix implements LocalQuickFix {
                                 new OpenFileDescriptor(project, vf, added.getTextOffset()), true);
                     }
                 }
+            } catch (ProcessCanceledException pce) {
+                throw pce;
             } catch (Exception ex) {
                 LOG.error("Failed to create event handler method", ex);
             }

@@ -267,7 +267,6 @@ public final class CssGutterColorHandler {
         }
     }
 
-    @Nullable
     @NotNull
     private static String formatOffset(double offset) {
         if (offset == (int) offset) {

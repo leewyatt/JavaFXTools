@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -464,7 +465,7 @@ public final class SvgPathExtractor {
             return Long.toString((long) value);
         }
         // Up to 4 decimal places, strip trailing zeros
-        String s = String.format("%.4f", value);
+        String s = String.format(Locale.US, "%.4f", value);
         s = s.contains(".") ? s.replaceAll("0+$", "").replaceAll("\\.$", "") : s;
         return s;
     }

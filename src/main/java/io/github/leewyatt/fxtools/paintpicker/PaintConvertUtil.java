@@ -48,51 +48,6 @@ public final class PaintConvertUtil {
         return "";
     }
 
-    public static String convertPaintToJavaCode(Paint paint) {
-        return convertPaintToJavaCode(paint, true);
-    }
-
-    public static String convertPaintToJavaCode(Paint paint, boolean withDeclaration) {
-        StringBuilder sb = new StringBuilder();
-        if (withDeclaration) {
-            if (paint instanceof LinearGradientPaint) {
-                sb.append("LinearGradientPaint paint = ");
-            } else if (paint instanceof RadialGradientPaint) {
-                sb.append("RadialGradientPaint paint = ");
-            } else if (paint instanceof Color) {
-                sb.append("Color paint = ");
-            }
-        }
-        if (paint instanceof LinearGradientPaint lg) {
-            float[] fractions = lg.getFractions();
-            Color[] colors = lg.getColors();
-            sb.append("new LinearGradientPaint(").append(System.lineSeparator())
-                    .append("new Point2D.Float(").append(round(lg.getStartPoint().getX())).append("f, ")
-                    .append(round(lg.getStartPoint().getY())).append("f), ")
-                    .append("new Point2D.Float(").append(round(lg.getEndPoint().getX())).append("f, ")
-                    .append(round(lg.getEndPoint().getY())).append("f),").append(System.lineSeparator())
-                    .append(fractionsToString(fractions)).append(",").append(System.lineSeparator())
-                    .append(colorsToString(colors)).append(",").append(System.lineSeparator())
-                    .append(cycleMethodToStr(lg.getCycleMethod())).append(")");
-        } else if (paint instanceof RadialGradientPaint rg) {
-            float[] fractions = rg.getFractions();
-            Color[] colors = rg.getColors();
-            sb.append("new RadialGradientPaint(").append(System.lineSeparator())
-                    .append("new Point2D.Float(").append(round(rg.getCenterPoint().getX())).append("f, ")
-                    .append(round(rg.getCenterPoint().getY())).append("f), ")
-                    .append(round(rg.getRadius())).append("f,").append(System.lineSeparator())
-                    .append(fractionsToString(fractions)).append(",").append(System.lineSeparator())
-                    .append(colorsToString(colors)).append(",").append(System.lineSeparator())
-                    .append(cycleMethodToStr(rg.getCycleMethod())).append(")");
-        } else if (paint instanceof Color color) {
-            sb.append(colorToJavaStr(color));
-        }
-        if (withDeclaration) {
-            sb.append(";");
-        }
-        return sb.toString();
-    }
-
     private static void appendCycleMethodAndStops(StringBuilder sb,
                                                    MultipleGradientPaint.CycleMethod cycleMethod,
                                                    float[] fractions, Color[] colors) {
@@ -108,36 +63,6 @@ public final class PaintConvertUtil {
             }
         }
         sb.append(")");
-    }
-
-    private static String cycleMethodToStr(MultipleGradientPaint.CycleMethod cm) {
-        return switch (cm) {
-            case REFLECT -> "MultipleGradientPaint.CycleMethod.REFLECT";
-            case REPEAT -> "MultipleGradientPaint.CycleMethod.REPEAT";
-            default -> "MultipleGradientPaint.CycleMethod.NO_CYCLE";
-        };
-    }
-
-    private static String fractionsToString(float[] fractions) {
-        StringBuilder sb = new StringBuilder("new float[]{");
-        for (int i = 0; i < fractions.length; i++) {
-            sb.append(round(fractions[i])).append("f");
-            if (i < fractions.length - 1) { sb.append(", "); }
-        }
-        return sb.append("}").toString();
-    }
-
-    private static String colorsToString(Color[] colors) {
-        StringBuilder sb = new StringBuilder("new Color[]{");
-        for (int i = 0; i < colors.length; i++) {
-            sb.append(colorToJavaStr(colors[i]));
-            if (i < colors.length - 1) { sb.append(", "); }
-        }
-        return sb.append("}").toString();
-    }
-
-    private static String colorToJavaStr(Color c) {
-        return String.format("new Color(%d, %d, %d, %d)", c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
     }
 
     private static String lenToStr(double num, boolean proportional) {

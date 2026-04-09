@@ -1,6 +1,7 @@
 package io.github.leewyatt.fxtools.css.preview.effect;
 
 import java.awt.Color;
+import java.util.Locale;
 
 /**
  * Data model for DropShadow / InnerShadow effect parameters.
@@ -190,10 +191,10 @@ public class EffectConfig {
 
     private static String colorToJavaString(Color c) {
         if (c.getAlpha() == 255) {
-            return String.format("Color.color(%.4f, %.4f, %.4f)",
+            return String.format(Locale.US, "Color.color(%.4f, %.4f, %.4f)",
                     c.getRed() / 255.0, c.getGreen() / 255.0, c.getBlue() / 255.0);
         }
-        return String.format("Color.color(%.4f, %.4f, %.4f, %.4f)",
+        return String.format(Locale.US, "Color.color(%.4f, %.4f, %.4f, %.4f)",
                 c.getRed() / 255.0, c.getGreen() / 255.0, c.getBlue() / 255.0, c.getAlpha() / 255.0);
     }
 

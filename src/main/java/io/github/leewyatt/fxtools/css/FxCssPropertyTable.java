@@ -3,6 +3,7 @@ package io.github.leewyatt.fxtools.css;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -264,6 +265,8 @@ public final class FxCssPropertyTable {
         try {
             return JavaPsiFacade.getInstance(project)
                     .findClass(fqcn, GlobalSearchScope.allScope(project)) != null;
+        } catch (ProcessCanceledException pce) {
+            throw pce;
         } catch (Exception e) {
             return false;
         }

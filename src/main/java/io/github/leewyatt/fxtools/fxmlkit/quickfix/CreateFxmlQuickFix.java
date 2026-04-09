@@ -7,6 +7,7 @@ import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.ide.fileTemplates.FileTemplateUtil;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -73,6 +74,8 @@ public class CreateFxmlQuickFix implements LocalQuickFix {
                     FileEditorManager.getInstance(project).openFile(
                             ((PsiFile) created).getVirtualFile(), true);
                 }
+            } catch (ProcessCanceledException pce) {
+                throw pce;
             } catch (Exception ex) {
                 LOG.error("Failed to create FXML file", ex);
             }

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -278,7 +279,7 @@ public final class SvgPathTransformer {
             return Long.toString(Math.round(value));
         }
         // Format with specified precision, strip trailing zeros
-        String fmt = String.format(FMT_CACHE[Math.min(precision, 9)], value);
+        String fmt = String.format(Locale.US, FMT_CACHE[Math.min(precision, 9)], value);
         if (fmt.contains(".")) {
             fmt = fmt.replaceAll("0+$", "");
             fmt = fmt.replaceAll("\\.$", "");

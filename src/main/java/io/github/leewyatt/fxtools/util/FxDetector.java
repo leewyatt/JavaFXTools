@@ -1,10 +1,12 @@
 package io.github.leewyatt.fxtools.util;
 
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -15,7 +17,7 @@ import java.util.WeakHashMap;
 public final class FxDetector {
 
     private static final String JAVAFX_MARKER_CLASS = "javafx.scene.Node";
-    private static final Map<Project, Boolean> CACHE = new WeakHashMap<>();
+    private static final Map<Project, Boolean> CACHE = Collections.synchronizedMap(new WeakHashMap<>());
 
     private FxDetector() {
     }
@@ -42,6 +44,8 @@ public final class FxDetector {
         try {
             return JavaPsiFacade.getInstance(project)
                     .findClass(JAVAFX_MARKER_CLASS, GlobalSearchScope.allScope(project)) != null;
+        } catch (ProcessCanceledException pce) {
+            throw pce;
         } catch (Exception e) {
             return false;
         }
