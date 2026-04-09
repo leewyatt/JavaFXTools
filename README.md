@@ -8,7 +8,7 @@ All-in-one JavaFX development toolkit for IntelliJ IDEA — CSS intelligence, gu
 
 Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA **2024.2+** and Java **17+**.
 
-<img src="images/img.png" alt="Overview" width="600">
+<img src="screenshots/img.png" alt="Overview" width="600">
 
 ---
 
@@ -32,7 +32,7 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 - CSS variable resolution — variables resolved through chains (depth 10) to their final color/gradient/SVG
 - **Multi-value paint support** — `-fx-background-color` and `-fx-border-color` show one icon per paint segment (up to 4)
 
-<img src="images/img_1.png" alt="Gutter Previews" width="600">
+<img src="screenshots/img_1.png" alt="Gutter Previews" width="600">
 
 **Click-to-Edit**
 - Click a color icon → opens embedded PaintPicker with real-time write-back
@@ -41,7 +41,7 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 - Click an SVG icon → opens path preview with size controls
 - All edits support single Ctrl+Z undo
 
-<img src="images/img_5.png" alt="PaintPicker" width="380">
+<img src="screenshots/img_5.png" alt="PaintPicker" width="380">
 
 **Inline CSS (Java & FXML)**
 - `setStyle("...")` in Java — gutter previews + click-to-edit + auto-popup completion
@@ -50,9 +50,9 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 - `SVGPath.setContent("...")` — read-only SVG preview
 - Ctrl+Click navigation from inline CSS variables to their `.css` definition site
 
-<img src="images/img_3.png" alt="Inline CSS — Effect Editor (Dark)" width="500">
+<img src="screenshots/img_3.png" alt="Inline CSS — Effect Editor (Dark)" width="500">
 
-<img src="images/img_4.png" alt="Inline CSS — Effect Editor (Light)" width="500">
+<img src="screenshots/img_4.png" alt="Inline CSS — Effect Editor (Light)" width="500">
 
 ---
 
@@ -65,7 +65,7 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 - Detail panel with preview, icon name, pack name, license info
 - One-click copy: SVG path / Java code / CSS code / Maven / Gradle coordinates
 
-<img src="images/img_2.png" alt="Icon Browser" width="450">
+<img src="screenshots/img_2.png" alt="Icon Browser" width="450">
 
 **Code Assistance**
 - `-fx-icon-code` value completion in CSS with SVG preview per candidate
@@ -106,11 +106,11 @@ A structured MVC pattern for JavaFX with convention-based file resolution.
 - Optional i18n resource bundle configuration with locale selection
 - Live file tree preview showing generated file structure
 
-<img src="images/img_6.png" alt="FxmlKit Wizard" width="450">
+<img src="screenshots/img_6.png" alt="FxmlKit Wizard" width="450">
 
-<img src="images/img_9.png" alt="Resource Bundle — Existing" width="400">
+<img src="screenshots/img_9.png" alt="Resource Bundle — Existing" width="400">
 
-<img src="images/img_10.png" alt="Resource Bundle — Create New" width="400">
+<img src="screenshots/img_10.png" alt="Resource Bundle — Create New" width="400">
 
 **Property Generation** (Alt+Insert / Cmd+N)
 - 10 property types: String, Integer, Long, Float, Double, Boolean, Object, List, Map, Set
@@ -119,9 +119,9 @@ A structured MVC pattern for JavaFX with convention-based file resolution.
 - CSS Styleable property generation with `CssMetaData` boilerplate
 - Live code preview in dialog
 
-<img src="images/img_7.png" alt="Property Live Templates" width="500">
+<img src="screenshots/img_7.png" alt="Property Live Templates" width="500">
 
-<img src="images/img_8.png" alt="Property Options" width="400">
+<img src="screenshots/img_8.png" alt="Property Options" width="400">
 
 ---
 
