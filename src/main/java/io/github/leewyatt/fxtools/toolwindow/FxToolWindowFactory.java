@@ -7,6 +7,7 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import io.github.leewyatt.fxtools.toolwindow.iconbrowser.IconBrowserPanel;
+import io.github.leewyatt.fxtools.toolwindow.svgtool.SvgPathToolPanel;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,9 +17,16 @@ public class FxToolWindowFactory implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        ContentFactory cf = ContentFactory.getInstance();
+
         IconBrowserPanel iconBrowser = new IconBrowserPanel(project);
-        Content content = ContentFactory.getInstance().createContent(
+        Content iconContent = cf.createContent(
                 iconBrowser, FxToolsBundle.message("icon.browser.tab"), false);
-        toolWindow.getContentManager().addContent(content);
+        toolWindow.getContentManager().addContent(iconContent);
+
+        SvgPathToolPanel svgTool = new SvgPathToolPanel(project);
+        Content svgContent = cf.createContent(
+                svgTool, FxToolsBundle.message("svg.tool.tab"), false);
+        toolWindow.getContentManager().addContent(svgContent);
     }
 }
