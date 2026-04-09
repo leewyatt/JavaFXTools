@@ -31,8 +31,9 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
-import javax.swing.Timer;
 import java.awt.BasicStroke;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -360,9 +361,9 @@ public class SvgPathToolPanel extends JPanel {
         zone.setPreferredSize(new Dimension(100, h));
         zone.setMaximumSize(new Dimension(Short.MAX_VALUE, h));
         setupDropTarget(zone);
-        zone.addMouseListener(new java.awt.event.MouseAdapter() {
+        zone.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 openSvgFile();
             }
         });
@@ -692,11 +693,6 @@ public class SvgPathToolPanel extends JPanel {
         String text = outputArea.getText();
         if (text != null && !text.isBlank()) {
             CopyPasteManager.getInstance().setContents(new StringSelection(text));
-            String original = copyButton.getText();
-            copyButton.setText(FxToolsBundle.message("svg.tool.copied"));
-            Timer timer = new Timer(1500, e -> copyButton.setText(original));
-            timer.setRepeats(false);
-            timer.start();
         }
     }
 
