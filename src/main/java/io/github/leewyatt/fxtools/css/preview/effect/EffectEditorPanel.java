@@ -636,9 +636,9 @@ public class EffectEditorPanel extends JPanel {
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             setPreferredSize(new Dimension(-1, JBUI.scale(30)));
             setMaximumSize(new Dimension(Short.MAX_VALUE, JBUI.scale(30)));
-            addMouseListener(new java.awt.event.MouseAdapter() {
+            addMouseListener(new MouseAdapter() {
                 @Override
-                public void mousePressed(java.awt.event.MouseEvent e) {
+                public void mousePressed(MouseEvent e) {
                     int segW = getWidth() / labels.length;
                     int idx = Math.min(e.getX() / segW, labels.length - 1);
                     if (idx != selectedIndex) {

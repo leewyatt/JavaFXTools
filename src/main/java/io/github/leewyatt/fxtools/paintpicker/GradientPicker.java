@@ -43,6 +43,8 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -168,11 +170,11 @@ public class GradientPicker extends JPanel {
                 onTrackPressed(e);
             }
         });
-        trackPane.addKeyListener(new java.awt.event.KeyAdapter() {
+        trackPane.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyPressed(java.awt.event.KeyEvent e) {
-                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_DELETE
-                        || e.getKeyCode() == java.awt.event.KeyEvent.VK_BACK_SPACE) {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE
+                        || e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
                     deleteSelectedStop();
                     e.consume();
                 }

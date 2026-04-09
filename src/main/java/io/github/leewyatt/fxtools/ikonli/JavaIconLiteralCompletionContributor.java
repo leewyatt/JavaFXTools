@@ -7,6 +7,7 @@ import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.PlainPrefixMatcher;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiExpressionList;
@@ -125,7 +126,7 @@ public class JavaIconLiteralCompletionContributor extends CompletionContributor 
             return false;
         }
         PsiElement resolved = classRef.resolve();
-        if (resolved instanceof com.intellij.psi.PsiClass psiClass) {
+        if (resolved instanceof PsiClass psiClass) {
             return InheritanceUtil.isInheritor(psiClass, FONT_ICON_FQN)
                     || FONT_ICON_FQN.equals(psiClass.getQualifiedName());
         }

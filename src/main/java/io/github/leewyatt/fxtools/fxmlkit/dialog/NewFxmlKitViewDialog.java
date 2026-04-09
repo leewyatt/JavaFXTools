@@ -8,6 +8,7 @@ import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
@@ -236,8 +237,8 @@ public class NewFxmlKitViewDialog extends DialogWrapper {
         panel.add(summaryBar, "growx, gapbottom " + gap + ", hidemode 3");
 
         // Area 4: File tree preview (wrapped in scroll pane, fills remaining space)
-        com.intellij.ui.components.JBScrollPane scrollPane =
-                new com.intellij.ui.components.JBScrollPane(treePreview);
+        JBScrollPane scrollPane =
+                new JBScrollPane(treePreview);
         scrollPane.setBorder(JBUI.Borders.empty());
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);

@@ -5,6 +5,7 @@ import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -164,9 +166,9 @@ public class FxmlInlineCssLineMarkerProvider implements LineMarkerProvider {
      * Resolves an Ikonli icon literal and opens the preview popup. For {@code np: true}
      * icons a placeholder preview is shown with a "cannot render" hint.
      */
-    private static void openIconCodePreview(@NotNull java.awt.event.MouseEvent mouseEvent,
+    private static void openIconCodePreview(@NotNull MouseEvent mouseEvent,
                                             @NotNull String literal,
-                                            @NotNull com.intellij.openapi.project.Project project) {
+                                            @NotNull Project project) {
         IconDataService service = IconDataService.getInstance();
         if (!service.isLoaded()) {
             return;

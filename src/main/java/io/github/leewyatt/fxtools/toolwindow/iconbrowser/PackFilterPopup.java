@@ -14,7 +14,9 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -91,7 +93,7 @@ public class PackFilterPopup {
 
         // Row 2: Clear / Select All (local operations on visible items)
         JPanel localRow = new JPanel(new GridLayout(1, 2, JBUI.scale(8), 0));
-        localRow.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        localRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JButton clearAll = new JButton(FxToolsBundle.message("icon.browser.packs.clear"));
         clearAll.addActionListener(e -> {
@@ -154,7 +156,7 @@ public class PackFilterPopup {
         if (project != null) {
             JButton depsButton = new JButton(FxToolsBundle.message("icon.browser.packs.deps"));
             depsButton.setToolTipText(FxToolsBundle.message("icon.browser.packs.deps.tooltip"));
-            depsButton.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            depsButton.setAlignmentX(Component.LEFT_ALIGNMENT);
             depsButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, depsButton.getPreferredSize().height));
             depsButton.addActionListener(e -> {
                 Set<String> available = IconDataService.getAvailablePacks(project);
@@ -167,8 +169,8 @@ public class PackFilterPopup {
             });
             // Insert deps button + separator before localRow
             bottomArea.add(depsButton, 0);
-            javax.swing.JSeparator separator = new javax.swing.JSeparator();
-            separator.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            JSeparator separator = new JSeparator();
+            separator.setAlignmentX(Component.LEFT_ALIGNMENT);
             separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
             bottomArea.add(javax.swing.Box.createVerticalStrut(JBUI.scale(4)), 1);
             bottomArea.add(separator, 2);

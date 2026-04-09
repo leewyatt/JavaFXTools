@@ -3,6 +3,7 @@ package io.github.leewyatt.fxtools.css.completion;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralExpression;
+import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
 import io.github.leewyatt.fxtools.css.FxCssPropertyTable;
 import org.jetbrains.annotations.NotNull;
@@ -173,7 +174,7 @@ public class FxCssInlineCompletionContributor extends CompletionContributor {
 
     private static boolean isStyleAttribute(@NotNull XmlAttributeValue attrValue) {
         PsiElement parent = attrValue.getParent();
-        if (parent instanceof com.intellij.psi.xml.XmlAttribute attr) {
+        if (parent instanceof XmlAttribute attr) {
             return "style".equalsIgnoreCase(attr.getName());
         }
         return false;

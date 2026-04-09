@@ -8,6 +8,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLiteralExpression;
+import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
 import org.jetbrains.annotations.NotNull;
 
@@ -69,7 +70,7 @@ public class FxCssInlineTypedHandler extends TypedHandlerDelegate {
         while (current != null) {
             if (current instanceof XmlAttributeValue attrVal) {
                 PsiElement parent = attrVal.getParent();
-                if (parent instanceof com.intellij.psi.xml.XmlAttribute attr) {
+                if (parent instanceof XmlAttribute attr) {
                     return "style".equalsIgnoreCase(attr.getName());
                 }
                 return false;

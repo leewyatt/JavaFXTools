@@ -20,9 +20,14 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Cursor;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -99,15 +104,15 @@ public class IconBrowserPanel extends JPanel implements Disposable {
         packButton.setBorderPainted(false);
         packButton.setContentAreaFilled(false);
         packButton.setFocusable(false);
-        packButton.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+        packButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         packButton.addActionListener(e -> showPackFilter());
 
         // Arrow-down indicator to the right of pack button
         JBLabel arrowLabel = new JBLabel(AllIcons.General.ArrowDown);
-        arrowLabel.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
-        arrowLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+        arrowLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        arrowLabel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 showPackFilter();
             }
         });
@@ -116,7 +121,7 @@ public class IconBrowserPanel extends JPanel implements Disposable {
         JPanel separatorPanel = new JPanel(new BorderLayout());
         separatorPanel.setOpaque(false);
         separatorPanel.setBorder(JBUI.Borders.empty(4, 0));
-        javax.swing.JSeparator sep = new javax.swing.JSeparator(javax.swing.SwingConstants.VERTICAL);
+        javax.swing.JSeparator sep = new JSeparator(SwingConstants.VERTICAL);
         separatorPanel.add(sep);
 
         JPanel packArea = new JPanel(new BorderLayout());

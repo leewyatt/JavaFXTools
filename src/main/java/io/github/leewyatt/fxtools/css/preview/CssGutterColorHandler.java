@@ -11,6 +11,8 @@ import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ui.JBUI;
 import io.github.leewyatt.fxtools.paintpicker.PaintConvertUtil;
@@ -102,9 +104,9 @@ public final class CssGutterColorHandler {
         });
 
         // Wrap in a scroll pane with fixed size and padding
-        picker.setBorder(com.intellij.util.ui.JBUI.Borders.empty(6));
-        com.intellij.ui.components.JBScrollPane scrollPane =
-                new com.intellij.ui.components.JBScrollPane(picker);
+        picker.setBorder(JBUI.Borders.empty(6));
+        JBScrollPane scrollPane =
+                new JBScrollPane(picker);
         scrollPane.setBorder(null);
         scrollPane.setPreferredSize(new Dimension(JBUI.scale(420), JBUI.scale(665)));
 
@@ -144,8 +146,8 @@ public final class CssGutterColorHandler {
 
         // Variable reference — resolve to color or gradient
         if (FxColorParser.isVariableReference(trimmed)) {
-            com.intellij.psi.search.GlobalSearchScope scope =
-                    com.intellij.psi.search.GlobalSearchScope.allScope(project);
+            GlobalSearchScope scope =
+                    GlobalSearchScope.allScope(project);
             Color resolved = FxColorParser.resolveVariableColor(trimmed, project, scope);
             if (resolved != null) {
                 return resolved;
@@ -162,7 +164,7 @@ public final class CssGutterColorHandler {
         if (trimmed.toLowerCase().startsWith("linear-gradient")) {
             FxGradientParser.LinearGradientInfo info =
                     FxGradientParser.parseLinearGradient(trimmed, project,
-                            com.intellij.psi.search.GlobalSearchScope.allScope(project));
+                            GlobalSearchScope.allScope(project));
             if (info != null && info.getStops().size() >= 2) {
                 return toProportionalLinearPaint(info);
             }
@@ -172,7 +174,7 @@ public final class CssGutterColorHandler {
         if (trimmed.toLowerCase().startsWith("radial-gradient")) {
             FxGradientParser.RadialGradientInfo info =
                     FxGradientParser.parseRadialGradient(trimmed, project,
-                            com.intellij.psi.search.GlobalSearchScope.allScope(project));
+                            GlobalSearchScope.allScope(project));
             if (info != null && info.getStops().size() >= 2) {
                 return toProportionalRadialPaint(info);
             }
@@ -186,7 +188,7 @@ public final class CssGutterColorHandler {
     @Nullable
     private static String resolveGradientVariable(@NotNull String varName,
                                                     @NotNull Project project,
-                                                    @NotNull com.intellij.psi.search.GlobalSearchScope scope,
+                                                    @NotNull GlobalSearchScope scope,
                                                     @NotNull Set<String> visited,
                                                     int depth) {
         if (depth >= MAX_GRADIENT_RESOLVE_DEPTH || !visited.add(varName)) {
