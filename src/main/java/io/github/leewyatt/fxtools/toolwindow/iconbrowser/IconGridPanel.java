@@ -218,9 +218,13 @@ public class IconGridPanel extends JPanel {
         boolean needSemicolon = isCss && !hasSemicolonAfter(docText, offset);
         String textToInsert = "\"" + pathData + "\"" + (needSemicolon ? ";" : "");
 
+        String quotedPath = "\"" + pathData + "\"";
         WriteCommandAction.runWriteCommandAction(project, () ->
                 editor.getDocument().insertString(offset, textToInsert));
+        // Select the quoted path (without trailing semicolon)
+        editor.getSelectionModel().setSelection(offset, offset + quotedPath.length());
         editor.getCaretModel().moveToOffset(offset + textToInsert.length());
+        editor.getScrollingModel().scrollToCaret(com.intellij.openapi.editor.ScrollType.MAKE_VISIBLE);
     }
 
     /**

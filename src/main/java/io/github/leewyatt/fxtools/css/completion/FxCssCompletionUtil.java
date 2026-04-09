@@ -100,18 +100,6 @@ public final class FxCssCompletionUtil {
             result.addElement(PrioritizedLookupElement.withPriority(builder, 100));
         }
 
-        // Project custom properties (from cached snapshot)
-        Map<String, List<String>> allVars = FxCssPropertyIndex.getAllVariables(project);
-        for (String name : allVars.keySet()) {
-            if (builtInNames.contains(name)) {
-                continue;
-            }
-            LookupElementBuilder builder = LookupElementBuilder.create(name)
-                    .withIcon(AllIcons.Nodes.Variable)
-                    .withTailText("  (project)", true)
-                    .withInsertHandler(insertHandler);
-            result.addElement(PrioritizedLookupElement.withPriority(builder, 50));
-        }
     }
 
     // ---- Property value completion (type-aware) ----
