@@ -254,7 +254,6 @@ public class I18nConfigDialog extends DialogWrapper {
 
     private static void updateCardBorder(JPanel card, boolean selected) {
         int borderWidth = JBUI.scale(1);
-        int radius = JBUI.scale(6);
         if (selected) {
             card.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(SELECTED_BUNDLE_BORDER, borderWidth),

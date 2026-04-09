@@ -266,7 +266,6 @@ public class GradientPicker extends JPanel {
         previewGrid.add(bottomSliderPanel, gbc);
 
         add(previewGrid);
-        // add(Box.createVerticalStrut(JBUI.scale(1)));
 
         // ---- Unified settings panel (GridBagLayout, 3 columns) ----
         // Col 0: labels (fixed width, right-aligned)

@@ -92,10 +92,6 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             }
         });
 
-        ActionListener updateAction = e -> {
-            updateGenericFieldsVisibility();
-            updatePreview();
-        };
         typeCombo.addActionListener(e -> {
             updateGenericFieldsVisibility();
             updateStyleableVisibility();

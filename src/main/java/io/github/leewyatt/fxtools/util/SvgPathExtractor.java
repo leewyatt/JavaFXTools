@@ -98,11 +98,7 @@ public final class SvgPathExtractor {
     @Nullable
     public static String extract(@NotNull File file, boolean convertShapes) {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(file);
+            Document doc = createDocumentBuilder().parse(file);
             return extractFromDocument(doc, convertShapes);
         } catch (Exception e) {
             return null;
@@ -119,11 +115,7 @@ public final class SvgPathExtractor {
     @Nullable
     public static String extract(@NotNull String svgContent, boolean convertShapes) {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(
+            Document doc = createDocumentBuilder().parse(
                     new ByteArrayInputStream(svgContent.getBytes(StandardCharsets.UTF_8)));
             return extractFromDocument(doc, convertShapes);
         } catch (Exception e) {
@@ -140,11 +132,7 @@ public final class SvgPathExtractor {
     @Nullable
     public static SvgAnalysis analyze(@NotNull String svgContent) {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(
+            Document doc = createDocumentBuilder().parse(
                     new ByteArrayInputStream(svgContent.getBytes(StandardCharsets.UTF_8)));
             Map<ShapeType, Integer> counts = new EnumMap<>(ShapeType.class);
             boolean[] strokeOnly = {false};
@@ -200,6 +188,14 @@ public final class SvgPathExtractor {
     }
 
     @Nullable
+    @NotNull
+    private static DocumentBuilder createDocumentBuilder() throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(false);
+        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        return factory.newDocumentBuilder();
+    }
+
     private static String extractFromDocument(@NotNull Document doc, boolean convertShapes) {
         List<String> paths = new ArrayList<>();
         collectPaths(doc.getDocumentElement(), convertShapes, paths);

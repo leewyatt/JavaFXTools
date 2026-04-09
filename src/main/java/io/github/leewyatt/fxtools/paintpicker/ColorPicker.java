@@ -757,6 +757,8 @@ public class ColorPicker extends JPanel {
         return updateUI(hue, saturation, brightness, alpha);
     }
 
+    private static final DecimalFormat ALPHA_FORMAT = new DecimalFormat("0.##");
+
     private Color updateUI(double hue, double saturation, double brightness, double alpha) {
         updating = true;
 
@@ -777,9 +779,8 @@ public class ColorPicker extends JPanel {
 
         // Set text field values
         hue_textfield.setText(String.valueOf((int) hue));
-        DecimalFormat format = new DecimalFormat("0.##");
-        saturation_textfield.setText(format.format(saturation * 100));
-        brightness_textfield.setText(format.format(brightness * 100));
+        saturation_textfield.setText(ALPHA_FORMAT.format(saturation * 100));
+        brightness_textfield.setText(ALPHA_FORMAT.format(brightness * 100));
 
         double alpha_rounded = round(alpha, 100);
         alpha_textfield.setText(Double.toString(alpha_rounded));

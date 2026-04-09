@@ -166,7 +166,6 @@ public final class IconDataService {
     private volatile boolean loaded;
     private String ikonliVersion = "";
     private List<PackInfo> allPacks = Collections.emptyList();
-    private Map<String, PackInfo> packById = Collections.emptyMap();
     private List<IconEntry> allIcons = Collections.emptyList();
     private Map<String, IconEntry> literalMap = Collections.emptyMap();
     /** packId → all enumClass FQCNs (pack-level + icon-level overrides). */
@@ -404,7 +403,6 @@ public final class IconDataService {
                 }
 
                 this.allPacks = Collections.unmodifiableList(packs);
-                this.packById = Collections.unmodifiableMap(byId);
                 this.allIcons = Collections.unmodifiableList(icons);
                 this.literalMap = Collections.unmodifiableMap(litMap);
                 this.packEnumClasses = Collections.unmodifiableMap(enumClassMap);

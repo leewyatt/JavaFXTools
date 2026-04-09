@@ -540,9 +540,6 @@ public final class CssGutterSvgHandler {
     }
 
     /**
-     * Custom panel that renders an SVG path centered and scaled.
-     */
-    /**
      * Custom painted lock/unlock icon.
      */
     private static class LockIcon implements Icon {

@@ -331,7 +331,6 @@ public class SvgPathToolPanel extends JPanel {
         scroll.getVerticalScrollBar().setUnitIncrement(JBUI.scale(16));
         add(scroll, BorderLayout.CENTER);
 
-        setFileLoaded(false);
     }
 
     // ==================== Drop Zone ====================
@@ -459,13 +458,6 @@ public class SvgPathToolPanel extends JPanel {
         return card;
     }
 
-    // ==================== Visibility ====================
-
-    @SuppressWarnings("unused")
-    private void setFileLoaded(boolean loaded) {
-        // All sections always visible
-    }
-
     // ==================== File Opening ====================
 
     private void openSvgFile() {
@@ -497,7 +489,6 @@ public class SvgPathToolPanel extends JPanel {
         currentSvgContent = content;
         currentAnalysis = SvgPathExtractor.analyze(content);
         originalPreview.setSvgFile(file);
-        setFileLoaded(true);
         updateResult();
     }
 
@@ -507,7 +498,6 @@ public class SvgPathToolPanel extends JPanel {
         originalPreview.setSvgFile(null);
         extractedPreview.setPathData(null);
         outputArea.setText(FxToolsBundle.message("svg.tool.read.error"));
-        setFileLoaded(true);
     }
 
     // ==================== Drag & Drop ====================

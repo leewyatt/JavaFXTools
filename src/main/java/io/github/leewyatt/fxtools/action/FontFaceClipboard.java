@@ -16,7 +16,7 @@ import java.util.Map;
  */
 final class FontFaceClipboard {
 
-    private static Map<String, String> fontFilePaths = Collections.emptyMap();
+    private static volatile Map<String, String> fontFilePaths = Collections.emptyMap();
 
     private FontFaceClipboard() {
     }

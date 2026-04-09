@@ -96,15 +96,6 @@ public final class FxPropCodeGenerator {
             return styleableClass != null;
         }
 
-        @Nullable
-        static PropType fromAbbrev(@NotNull String abbrev) {
-            for (PropType t : values()) {
-                if (t.abbrev.equals(abbrev)) {
-                    return t;
-                }
-            }
-            return null;
-        }
     }
 
     /**

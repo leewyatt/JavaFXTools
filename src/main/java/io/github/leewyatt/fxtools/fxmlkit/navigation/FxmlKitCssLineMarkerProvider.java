@@ -3,7 +3,6 @@ package io.github.leewyatt.fxtools.fxmlkit.navigation;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;

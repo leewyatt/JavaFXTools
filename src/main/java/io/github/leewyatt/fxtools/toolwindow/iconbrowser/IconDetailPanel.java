@@ -45,8 +45,6 @@ public class IconDetailPanel extends JPanel {
     // ==================== Colors ====================
     private static final JBColor ICON_COLOR =
             new JBColor(new Color(0x3C3C3C), new Color(0xCCCCCC));
-    // private static final JBColor CARD_BG =
-    //         new JBColor(new Color(0xF7F6F2), new Color(0x2F3133));
     private static final JBColor PREVIEW_BG =
             new JBColor(new Color(0xFFFFFF), new Color(0x3B3D3F));
 

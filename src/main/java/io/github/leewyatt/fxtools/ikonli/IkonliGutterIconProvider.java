@@ -31,8 +31,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class IkonliGutterIconProvider implements LineMarkerProvider {
 
-    private static final String FONT_ICON_FQN = "org.kordamp.ikonli.javafx.FontIcon";
-
     /** Rendered icon cache, keyed by literal. */
     private static final ConcurrentHashMap<String, Icon> ICON_CACHE = new ConcurrentHashMap<>();
 

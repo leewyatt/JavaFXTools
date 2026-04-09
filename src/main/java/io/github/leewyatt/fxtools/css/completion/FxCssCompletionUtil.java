@@ -106,13 +106,6 @@ public final class FxCssCompletionUtil {
 
     // ---- Property value completion (type-aware) ----
 
-    public static void addValueCompletions(@Nullable FxCssPropertyTable.PropertyInfo info,
-                                            @NotNull CompletionParameters parameters,
-                                            @NotNull CompletionResultSet result,
-                                            @NotNull InsertHandler<LookupElement> valueInsertHandler) {
-        addValueCompletions(info, null, parameters, result, valueInsertHandler);
-    }
-
     /**
      * Adds value completions with type inference for custom properties.
      *

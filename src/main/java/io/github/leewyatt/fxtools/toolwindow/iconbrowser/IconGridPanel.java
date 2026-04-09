@@ -104,9 +104,6 @@ public class IconGridPanel extends JPanel {
     public IconGridPanel() {
         setOpaque(true);
         setBackground(new JBColor(Color.WHITE, new Color(0x2B2D30)));
-        setBorder(JBUI.Borders.compound(
-                JBUI.Borders.customLine(JBColor.border(), 1, 0, 1, 0),
-                JBUI.Borders.empty(JBUIScale.scale(10))));
         setBorder(JBUI.Borders.empty(JBUIScale.scale(20)));
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
@@ -297,7 +294,7 @@ public class IconGridPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(new JBColor(Color.WHITE, new Color(0x2B2D30)));
+        g.setColor(getBackground());
         g.fillRect(0, 0, getWidth(), getHeight());
 
         if (pageIcons.isEmpty() || service == null) {
