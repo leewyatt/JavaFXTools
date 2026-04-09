@@ -138,8 +138,9 @@ public final class FxCssCompletionUtil {
                             : "  " + src.getAppliesTo();
                     for (String value : src.getValues()) {
                         if (addedValues.add(value)) {
+                            Icon valueIcon = resolveEnumValueIcon(propName, value);
                             LookupElementBuilder builder = LookupElementBuilder.create(value)
-                                    .withIcon(AllIcons.Nodes.Property)
+                                    .withIcon(valueIcon)
                                     .withTailText(srcTail, true)
                                     .withInsertHandler(valueInsertHandler);
                             result.addElement(PrioritizedLookupElement.withPriority(builder, 200));
@@ -726,6 +727,23 @@ public final class FxCssCompletionUtil {
             }
         }
         return null;
+    }
+
+    // ==================== Enum Value Icons ====================
+
+    /**
+     * Returns a visual icon for a predefined enum value, or the default property icon
+     * if no specialized icon exists for this property/value combination.
+     */
+    @NotNull
+    private static Icon resolveEnumValueIcon(@Nullable String propName, @NotNull String value) {
+        if ("-fx-cursor".equals(propName)) {
+            Icon icon = CssCursorIcons.getIcon(value);
+            if (icon != null) {
+                return icon;
+            }
+        }
+        return AllIcons.Nodes.Property;
     }
 
     private static final int ICON_SIZE = CssPreviewIconRenderer.ICON_SIZE;

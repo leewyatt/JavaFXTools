@@ -23,6 +23,20 @@
     <li><b>Icon Browser</b> — 100+ icon packs, 63,000+ icons. Search, filter,
     preview, and one-click copy (SVG path / Java / CSS / Maven / Gradle).
     FXML <code>iconLiteral</code> completion and preview.</li>
+
+    <li><b>SVG Path Extractor</b> — ToolWindow panel for extracting, merging,
+    and normalizing SVG path data. Converts shapes to paths, configurable precision
+    and target size. Right-click .svg files to copy path data or open in the extractor.</li>
+
+    <li><b>FXML Assistance</b> — 13 inspections with quick fixes (missing files,
+    type mismatch, unused fields/methods), fx:id and event handler generation,
+    resource path navigation, i18n %key completion.</li>
+
+    <li><b>Property Generation</b> — 10 JavaFX property types with ReadOnly, Lazy,
+    and CSS Styleable (CssMetaData boilerplate) options via Generate menu.</li>
+
+    <li><b>Font Actions</b> — Right-click .ttf/.otf to copy font family name or
+    @font-face CSS. Smart paste resolves relative paths automatically.</li>
 </ul>
 
 <p><b>Sponsors</b></p>
@@ -50,6 +64,7 @@
   <li><b>FxmlKit wizard</b> — New → FxmlKit View with i18n resource bundle support</li>
   <li><b>Property generation</b> — 10 types, ReadOnly, Lazy, CSS Styleable with CssMetaData boilerplate</li>
   <li><b>Font actions</b> — Copy Font Family Name, Copy @font-face CSS, smart paste with relative path resolution</li>
+  <li><b>SVG actions</b> — Right-click .svg files: Copy SVG Path Data, Open in SVG Path Extractor</li>
   <li><b>CSS transition properties</b> — <code>transition</code>, <code>transition-property</code>, <code>transition-duration</code>, etc.</li>
 </ul>
 
