@@ -1,12 +1,14 @@
 # JavaFX Tools
 
-[![Version](https://img.shields.io/jetbrains/plugin/v/com.itcodebox.fxtools.id?label=version)](https://plugins.jetbrains.com/plugin/14287-javafx-tools)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/com.itcodebox.fxtools.id)](https://plugins.jetbrains.com/plugin/14287-javafx-tools)
+[![Version](https://img.shields.io/jetbrains/plugin/v/com.itcodebox.fxtools.id?label=version)](https://plugins.jetbrains.com/plugin/17514-javafx-tools)
+[![Downloads](https://img.shields.io/jetbrains/plugin/d/com.itcodebox.fxtools.id)](https://plugins.jetbrains.com/plugin/17514-javafx-tools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 All-in-one JavaFX development toolkit for IntelliJ IDEA — CSS intelligence, gutter previews, FXML code assistance, Ikonli icon browsing, SVG path extraction, and FxmlKit integration.
 
 Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA **2024.2+** and Java **17+**.
+
+<a href="https://plugins.jetbrains.com/plugin/17514-javafx-tools"><img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F_Install_from-JetBrains_Marketplace-orange?style=for-the-badge&logo=jetbrains" alt="Install from JetBrains Marketplace"></a>
 
 <img src="screenshots/img.png" alt="Overview" width="600">
 
