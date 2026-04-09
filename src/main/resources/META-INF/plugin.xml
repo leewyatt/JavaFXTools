@@ -58,9 +58,9 @@
   <li><b>Click-to-edit</b> — embedded PaintPicker (color &amp; gradient), Effect Editor (dropshadow/innershadow), SVG preview with size controls</li>
   <li><b>Multi-value paint</b> — <code>-fx-background-color</code> and <code>-fx-border-color</code> show per-segment icons</li>
   <li><b>Inline CSS support</b> — full preview, editing, completion, and variable navigation in <code>setStyle()</code> and FXML <code>style=""</code></li>
-  <li><b>Icon Browser ToolWindow</b> — 84 Ikonli packs, 55,000+ icons with search, filter, and copy</li>
+  <li><b>Icon Browser ToolWindow</b> — 114 Ikonli packs, 63,000+ icons with search, filter, and copy</li>
   <li><b>Ikonli code assistance</b> — <code>-fx-icon-code</code> / <code>iconLiteral</code> completion, Java enum gutter icons</li>
-  <li><b>13 FXML inspections</b> — missing files, type mismatch, unused fields/methods, with quick fixes</li>
+  <li><b>14 code inspections</b> — missing files, type mismatch, unused fields/methods, i18n keys, unused CSS selectors, with quick fixes</li>
   <li><b>FxmlKit wizard</b> — New → FxmlKit View with i18n resource bundle support</li>
   <li><b>Property generation</b> — 10 types, ReadOnly, Lazy, CSS Styleable with CssMetaData boilerplate</li>
   <li><b>Font actions</b> — Copy Font Family Name, Copy @font-face CSS, smart paste with relative path resolution</li>

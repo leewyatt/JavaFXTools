@@ -5,6 +5,7 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
+import com.intellij.ui.JBColor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.editor.Editor;
@@ -758,7 +759,7 @@ public final class FxCssCompletionUtil {
                 g2.translate(x, y);
                 g2.setColor(color);
                 g2.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
-                g2.setColor(Color.GRAY);
+                g2.setColor(JBColor.border());
                 g2.drawRect(0, 0, ICON_SIZE - 1, ICON_SIZE - 1);
                 g2.dispose();
             }
@@ -812,7 +813,7 @@ public final class FxCssCompletionUtil {
                 g2.translate(x, y);
                 g2.setPaint(paint);
                 g2.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
-                g2.setColor(Color.GRAY);
+                g2.setColor(JBColor.border());
                 g2.drawRect(0, 0, ICON_SIZE - 1, ICON_SIZE - 1);
                 g2.dispose();
             }

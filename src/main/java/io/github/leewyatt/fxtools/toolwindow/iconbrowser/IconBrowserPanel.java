@@ -1,6 +1,7 @@
 package io.github.leewyatt.fxtools.toolwindow.iconbrowser;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
@@ -32,7 +33,7 @@ import java.util.Set;
  * Main container panel for the Icon Browser tool window.
  * Manages toolbar, grid, pagination, and detail panel.
  */
-public class IconBrowserPanel extends JPanel {
+public class IconBrowserPanel extends JPanel implements Disposable {
 
     private static final String SEARCH_HISTORY_KEY = "fxtools.iconbrowser.search.history";
     private static final int SEARCH_DEBOUNCE_MS = 300;
@@ -139,7 +140,7 @@ public class IconBrowserPanel extends JPanel {
         searchField.setOpaque(false);
 
         Alarm searchAlarm = new Alarm(Alarm.ThreadToUse.SWING_THREAD);
-        Disposer.register(ApplicationManager.getApplication(), searchAlarm);
+        Disposer.register(this, searchAlarm);
 
         searchField.addDocumentListener(new com.intellij.ui.DocumentAdapter() {
             @Override
@@ -439,5 +440,9 @@ public class IconBrowserPanel extends JPanel {
             packs.add(icon.getPackId());
         }
         return packs.size();
+    }
+
+    @Override
+    public void dispose() {
     }
 }

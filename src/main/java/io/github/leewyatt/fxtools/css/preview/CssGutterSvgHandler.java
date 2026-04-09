@@ -44,6 +44,7 @@ public final class CssGutterSvgHandler {
     private static final DecimalFormat FMT = new DecimalFormat("0.###");
     private static final Color SVG_FILL = new JBColor(Color.DARK_GRAY, Color.LIGHT_GRAY);
     private static final Color PREVIEW_BG = new JBColor(new Color(240, 240, 240), new Color(60, 60, 60));
+    private static final Pattern INDENT_PATTERN = Pattern.compile("\\n([ \\t]+)\\S");
     private static final Pattern PROPERTY_PATTERN =
             Pattern.compile("([\\w-]+)\\s*:\\s*([^;{}]+?)\\s*;");
 
@@ -517,7 +518,7 @@ public final class CssGutterSvgHandler {
      */
     @NotNull
     private static String detectIndent(@NotNull String block) {
-        Matcher m = Pattern.compile("\\n([ \\t]+)\\S").matcher(block);
+        Matcher m = INDENT_PATTERN.matcher(block);
         if (m.find()) {
             return m.group(1);
         }
