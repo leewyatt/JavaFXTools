@@ -483,6 +483,16 @@ public class SvgPathToolPanel extends JPanel {
         }
     }
 
+    /**
+     * Loads an SVG file into the panel, updating preview and output.
+     *
+     * @param file    the SVG file (used for original preview rendering)
+     * @param content the SVG file content as a string
+     */
+    public void loadFile(@NotNull File file, @NotNull String content) {
+        loadSvgFromFile(file, content);
+    }
+
     private void loadSvgFromFile(@NotNull File file, @NotNull String content) {
         currentSvgContent = content;
         currentAnalysis = SvgPathExtractor.analyze(content);

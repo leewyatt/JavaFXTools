@@ -313,5 +313,15 @@
                 class="io.github.leewyatt.fxtools.action.CopyFontFaceCssAction">
             <add-to-group group-id="CutCopyPasteGroup" anchor="last"/>
         </action>
+
+        <action id="JavaFX.CopySvgPathData"
+                class="io.github.leewyatt.fxtools.action.CopySvgPathDataAction">
+            <add-to-group group-id="CutCopyPasteGroup" anchor="last"/>
+        </action>
+
+        <action id="JavaFX.OpenInSvgPathExtractor"
+                class="io.github.leewyatt.fxtools.action.OpenInSvgPathExtractorAction">
+            <add-to-group group-id="CutCopyPasteGroup" anchor="last"/>
+        </action>
     </actions>
 </idea-plugin>
