@@ -81,20 +81,7 @@ public final class InlineCssGutterUtil {
      * Returns {@code true} if the given match type is enabled in the current settings.
      */
     public static boolean isMatchTypeEnabled(@NotNull MatchType type) {
-        FxToolsSettingsState settings = FxToolsSettingsState.getInstance();
-        switch (type) {
-            case COLOR:
-            case GRADIENT:
-                return settings.enableColorGutterPreviews;
-            case EFFECT:
-                return settings.enableEffectGutterPreviews;
-            case SVG_PATH:
-                return settings.enableShapeGutterPreviews;
-            case ICON_CODE:
-                return settings.enableIkonliGutterPreviews;
-            default:
-                return true;
-        }
+        return FxToolsSettingsState.getInstance().enableGutterPreviews;
     }
 
     /**

@@ -40,7 +40,7 @@ public class FxCssEffectPreviewProvider implements LineMarkerProvider {
     @Override
     public void collectSlowLineMarkers(@NotNull List<? extends PsiElement> elements,
                                         @NotNull Collection<? super LineMarkerInfo<?>> result) {
-        if (elements.isEmpty() || !FxToolsSettingsState.getInstance().enableEffectGutterPreviews) {
+        if (elements.isEmpty() || !FxToolsSettingsState.getInstance().enableGutterPreviews) {
             return;
         }
         PsiFile file = elements.get(0).getContainingFile();

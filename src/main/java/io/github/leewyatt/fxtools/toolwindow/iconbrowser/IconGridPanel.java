@@ -1,7 +1,11 @@
 package io.github.leewyatt.fxtools.toolwindow.iconbrowser;
 
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.JBColor;
+import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
 import com.intellij.ui.scale.JBUIScale;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
@@ -108,8 +112,6 @@ public class IconGridPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.isPopupTrigger() || SwingUtilities.isRightMouseButton(e)) {
-                    // Right-click is handled via mousePressed/mouseReleased (popup trigger);
-                    // don't double-process here.
                     return;
                 }
                 int idx = cellIndexAt(e.getPoint());
@@ -119,6 +121,9 @@ public class IconGridPanel extends JPanel {
                         selectionListener.onIconSelected(pageIcons.get(idx));
                     }
                     repaint();
+                    if (e.getClickCount() == 2) {
+                        insertPathAtCaret(pageIcons.get(idx));
+                    }
                 }
             }
 
@@ -185,6 +190,53 @@ public class IconGridPanel extends JPanel {
         repaint();
 
         IconCopyUtil.showPopupAt(this, pageIcons.get(idx), service, project, e.getX(), e.getY());
+    }
+
+    // ==================== Double-click Insert ====================
+
+    private void insertPathAtCaret(@NotNull IconDataService.IconEntry icon) {
+        if (project == null || !FxToolsSettingsState.getInstance().enableDoubleClickInsert) {
+            return;
+        }
+        String pathData = service.getPath(icon);
+        if (pathData == null || pathData.isBlank()) {
+            return;
+        }
+        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+        if (editor == null || !editor.getCaretModel().isUpToDate()) {
+            return;
+        }
+        int offset = editor.getCaretModel().getOffset();
+        String docText = editor.getDocument().getText();
+
+        // CSS files: append semicolon if no semicolon follows the insert position
+        boolean isCss = false;
+        var vf = editor.getVirtualFile();
+        if (vf != null && "css".equalsIgnoreCase(vf.getExtension())) {
+            isCss = true;
+        }
+        boolean needSemicolon = isCss && !hasSemicolonAfter(docText, offset);
+        String textToInsert = "\"" + pathData + "\"" + (needSemicolon ? ";" : "");
+
+        WriteCommandAction.runWriteCommandAction(project, () ->
+                editor.getDocument().insertString(offset, textToInsert));
+        editor.getCaretModel().moveToOffset(offset + textToInsert.length());
+    }
+
+    /**
+     * Checks whether there is a semicolon between the offset and the end of the current line.
+     */
+    private static boolean hasSemicolonAfter(@NotNull String text, int offset) {
+        for (int i = offset; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c == ';') {
+                return true;
+            }
+            if (c == '\n' || c == '\r') {
+                return false;
+            }
+        }
+        return false;
     }
 
     // ==================== Public API ====================

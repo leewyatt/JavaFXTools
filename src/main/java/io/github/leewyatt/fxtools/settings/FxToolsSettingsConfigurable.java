@@ -12,7 +12,6 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.JBUI;
-import com.intellij.util.ui.ThreeStateCheckBox;
 import com.intellij.util.ui.UIUtil;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import io.github.leewyatt.fxtools.notification.JfxLinksNotifierService;
@@ -33,15 +32,9 @@ public class FxToolsSettingsConfigurable implements Configurable {
     private static final int[] SCALE_OPTIONS = {50, 75, 100, 125, 150};
 
     private JBCheckBox enableNotificationCheckbox;
-    private ThreeStateCheckBox gutterMasterCheckbox;
-    private JBCheckBox enableColorGutterCheckbox;
-    private JBCheckBox enableEffectGutterCheckbox;
-    private JBCheckBox enableShapeGutterCheckbox;
-    private JBCheckBox enableIkonliGutterCheckbox;
+    private JBCheckBox enableDoubleClickInsertCheckbox;
+    private JBCheckBox enableGutterCheckbox;
     private ComboBox<String> iconSizeCombo;
-
-    /** Guard flag to prevent recursive updates between master and sub checkboxes. */
-    private boolean updatingCheckboxes;
 
     @Override
     public String getDisplayName() {
@@ -68,17 +61,31 @@ public class FxToolsSettingsConfigurable implements Configurable {
                 FxToolsBundle.message("settings.notification.tip")));
         mainPanel.add(notifSection);
 
+        // ==================== Icon Browser Section ====================
+        JPanel iconBrowserSection = createSection(
+                FxToolsBundle.message("settings.section.iconbrowser"));
+
+        enableDoubleClickInsertCheckbox = new JBCheckBox(
+                FxToolsBundle.message("settings.iconbrowser.doubleclick"));
+        enableDoubleClickInsertCheckbox.setSelected(settings.enableDoubleClickInsert);
+        enableDoubleClickInsertCheckbox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        iconBrowserSection.add(enableDoubleClickInsertCheckbox);
+        mainPanel.add(iconBrowserSection);
+
         // ==================== Gutter Previews Section ====================
         JPanel gutterSection = createSection(
                 FxToolsBundle.message("settings.section.gutter"));
 
-        JBLabel gutterTip = new JBLabel(FxToolsBundle.message("settings.gutter.tip"));
-        gutterTip.setForeground(UIUtil.getContextHelpForeground());
-        gutterTip.setAlignmentX(Component.LEFT_ALIGNMENT);
-        gutterSection.add(gutterTip);
+        enableGutterCheckbox = new JBCheckBox(
+                FxToolsBundle.message("settings.gutter.master"));
+        enableGutterCheckbox.setSelected(settings.enableGutterPreviews);
+        enableGutterCheckbox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        gutterSection.add(enableGutterCheckbox);
+        gutterSection.add(createTipLabel(
+                FxToolsBundle.message("settings.gutter.tip")));
         gutterSection.add(Box.createVerticalStrut(JBUI.scale(6)));
 
-        // Icon size row (top-level, same indent as master checkbox)
+        // Icon size row
         JPanel sizeRow = new JPanel(new FlowLayout(FlowLayout.LEFT, JBUI.scale(4), 0));
         sizeRow.setOpaque(false);
         sizeRow.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -97,47 +104,6 @@ public class FxToolsSettingsConfigurable implements Configurable {
         iconSizeCombo.setSelectedIndex(selectedIndex);
         sizeRow.add(iconSizeCombo);
         gutterSection.add(sizeRow);
-        gutterSection.add(Box.createVerticalStrut(JBUI.scale(6)));
-
-        // Master toggle
-        gutterMasterCheckbox = new ThreeStateCheckBox(
-                FxToolsBundle.message("settings.gutter.master"));
-        gutterMasterCheckbox.setThirdStateEnabled(false);
-        gutterMasterCheckbox.setAlignmentX(Component.LEFT_ALIGNMENT);
-        gutterSection.add(gutterMasterCheckbox);
-        gutterSection.add(Box.createVerticalStrut(JBUI.scale(6)));
-
-        // Sub-toggles (indented)
-        enableColorGutterCheckbox = createSubCheckBox(
-                FxToolsBundle.message("settings.gutter.color"),
-                settings.enableColorGutterPreviews);
-        gutterSection.add(enableColorGutterCheckbox);
-        gutterSection.add(Box.createVerticalStrut(JBUI.scale(4)));
-
-        enableEffectGutterCheckbox = createSubCheckBox(
-                FxToolsBundle.message("settings.gutter.effect"),
-                settings.enableEffectGutterPreviews);
-        gutterSection.add(enableEffectGutterCheckbox);
-        gutterSection.add(Box.createVerticalStrut(JBUI.scale(4)));
-
-        enableShapeGutterCheckbox = createSubCheckBox(
-                FxToolsBundle.message("settings.gutter.shape"),
-                settings.enableShapeGutterPreviews);
-        gutterSection.add(enableShapeGutterCheckbox);
-        gutterSection.add(Box.createVerticalStrut(JBUI.scale(4)));
-
-        enableIkonliGutterCheckbox = createSubCheckBox(
-                FxToolsBundle.message("settings.gutter.ikonli"),
-                settings.enableIkonliGutterPreviews);
-        gutterSection.add(enableIkonliGutterCheckbox);
-
-        // Wire master ↔ sub synchronization
-        gutterMasterCheckbox.addActionListener(e -> onMasterToggled());
-        enableColorGutterCheckbox.addActionListener(e -> syncMasterFromSubs());
-        enableEffectGutterCheckbox.addActionListener(e -> syncMasterFromSubs());
-        enableShapeGutterCheckbox.addActionListener(e -> syncMasterFromSubs());
-        enableIkonliGutterCheckbox.addActionListener(e -> syncMasterFromSubs());
-        syncMasterFromSubs();
 
         mainPanel.add(gutterSection);
 
@@ -156,10 +122,8 @@ public class FxToolsSettingsConfigurable implements Configurable {
     public boolean isModified() {
         FxToolsSettingsState settings = FxToolsSettingsState.getInstance();
         return enableNotificationCheckbox.isSelected() != settings.enableLinksNotification
-                || enableColorGutterCheckbox.isSelected() != settings.enableColorGutterPreviews
-                || enableEffectGutterCheckbox.isSelected() != settings.enableEffectGutterPreviews
-                || enableShapeGutterCheckbox.isSelected() != settings.enableShapeGutterPreviews
-                || enableIkonliGutterCheckbox.isSelected() != settings.enableIkonliGutterPreviews
+                || enableDoubleClickInsertCheckbox.isSelected() != settings.enableDoubleClickInsert
+                || enableGutterCheckbox.isSelected() != settings.enableGutterPreviews
                 || getSelectedScale() != settings.gutterIconScale;
     }
 
@@ -169,17 +133,12 @@ public class FxToolsSettingsConfigurable implements Configurable {
         boolean wasNotifEnabled = settings.enableLinksNotification;
 
         boolean gutterChanged =
-                enableColorGutterCheckbox.isSelected() != settings.enableColorGutterPreviews
-                || enableEffectGutterCheckbox.isSelected() != settings.enableEffectGutterPreviews
-                || enableShapeGutterCheckbox.isSelected() != settings.enableShapeGutterPreviews
-                || enableIkonliGutterCheckbox.isSelected() != settings.enableIkonliGutterPreviews
+                enableGutterCheckbox.isSelected() != settings.enableGutterPreviews
                 || getSelectedScale() != settings.gutterIconScale;
 
         settings.enableLinksNotification = enableNotificationCheckbox.isSelected();
-        settings.enableColorGutterPreviews = enableColorGutterCheckbox.isSelected();
-        settings.enableEffectGutterPreviews = enableEffectGutterCheckbox.isSelected();
-        settings.enableShapeGutterPreviews = enableShapeGutterCheckbox.isSelected();
-        settings.enableIkonliGutterPreviews = enableIkonliGutterCheckbox.isSelected();
+        settings.enableDoubleClickInsert = enableDoubleClickInsertCheckbox.isSelected();
+        settings.enableGutterPreviews = enableGutterCheckbox.isSelected();
         settings.gutterIconScale = getSelectedScale();
 
         if (!wasNotifEnabled && settings.enableLinksNotification) {
@@ -197,79 +156,9 @@ public class FxToolsSettingsConfigurable implements Configurable {
     public void reset() {
         FxToolsSettingsState settings = FxToolsSettingsState.getInstance();
         enableNotificationCheckbox.setSelected(settings.enableLinksNotification);
-        enableColorGutterCheckbox.setSelected(settings.enableColorGutterPreviews);
-        enableEffectGutterCheckbox.setSelected(settings.enableEffectGutterPreviews);
-        enableShapeGutterCheckbox.setSelected(settings.enableShapeGutterPreviews);
-        enableIkonliGutterCheckbox.setSelected(settings.enableIkonliGutterPreviews);
+        enableDoubleClickInsertCheckbox.setSelected(settings.enableDoubleClickInsert);
+        enableGutterCheckbox.setSelected(settings.enableGutterPreviews);
         selectScale(settings.gutterIconScale);
-        syncMasterFromSubs();
-    }
-
-    // ==================== Master ↔ Sub Synchronization ====================
-
-    /**
-     * Called when the master checkbox is clicked.
-     * Unchecked or indeterminate → select all; checked → deselect all.
-     */
-    private void onMasterToggled() {
-        if (updatingCheckboxes) {
-            return;
-        }
-        updatingCheckboxes = true;
-        try {
-            boolean selectAll = gutterMasterCheckbox.getState() != ThreeStateCheckBox.State.NOT_SELECTED;
-            enableColorGutterCheckbox.setSelected(selectAll);
-            enableEffectGutterCheckbox.setSelected(selectAll);
-            enableShapeGutterCheckbox.setSelected(selectAll);
-            enableIkonliGutterCheckbox.setSelected(selectAll);
-            syncMasterState();
-        } finally {
-            updatingCheckboxes = false;
-        }
-    }
-
-    /**
-     * Called when any sub-checkbox changes. Updates the master to reflect
-     * the aggregate state.
-     */
-    private void syncMasterFromSubs() {
-        if (updatingCheckboxes) {
-            return;
-        }
-        updatingCheckboxes = true;
-        try {
-            syncMasterState();
-        } finally {
-            updatingCheckboxes = false;
-        }
-    }
-
-    private void syncMasterState() {
-        int checked = countCheckedSubs();
-        if (checked == 0) {
-            gutterMasterCheckbox.setState(ThreeStateCheckBox.State.NOT_SELECTED);
-        } else if (checked == 4) {
-            gutterMasterCheckbox.setState(ThreeStateCheckBox.State.SELECTED);
-        } else {
-            gutterMasterCheckbox.setState(ThreeStateCheckBox.State.DONT_CARE);
-        }
-    }
-
-    private int countCheckedSubs() {
-        int count = 0;
-        if (enableColorGutterCheckbox.isSelected()) {
-            count++;
-        }
-        if (enableEffectGutterCheckbox.isSelected()) {
-            count++;
-        }
-        if (enableShapeGutterCheckbox.isSelected()) {
-            count++;
-        }
-        if (enableIkonliGutterCheckbox.isSelected()) {
-            count++;
-        }
-        return count;
     }
 
     // ==================== Scale Helpers ====================
@@ -416,14 +305,6 @@ public class FxToolsSettingsConfigurable implements Configurable {
     }
 
     // ==================== UI Helpers ====================
-
-    private JBCheckBox createSubCheckBox(String text, boolean selected) {
-        JBCheckBox cb = new JBCheckBox(text);
-        cb.setSelected(selected);
-        cb.setAlignmentX(Component.LEFT_ALIGNMENT);
-        cb.setBorder(JBUI.Borders.emptyLeft(24));
-        return cb;
-    }
 
     private JPanel createSection(String title) {
         JPanel section = new JPanel();

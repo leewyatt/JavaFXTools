@@ -44,7 +44,7 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
     @Override
     public void collectSlowLineMarkers(@NotNull List<? extends PsiElement> elements,
                                        @NotNull Collection<? super LineMarkerInfo<?>> result) {
-        if (elements.isEmpty() || !FxToolsSettingsState.getInstance().enableIkonliGutterPreviews) {
+        if (elements.isEmpty() || !FxToolsSettingsState.getInstance().enableGutterPreviews) {
             return;
         }
         Project project = elements.get(0).getProject();

@@ -24,10 +24,8 @@ public final class FxToolsSettingsState
         implements PersistentStateComponent<FxToolsSettingsState> {
 
     public boolean enableLinksNotification = true;
-    public boolean enableColorGutterPreviews = true;
-    public boolean enableEffectGutterPreviews = true;
-    public boolean enableShapeGutterPreviews = true;
-    public boolean enableIkonliGutterPreviews = true;
+    public boolean enableDoubleClickInsert = true;
+    public boolean enableGutterPreviews = true;
     public int gutterIconScale = 100;
 
     public static FxToolsSettingsState getInstance() {
