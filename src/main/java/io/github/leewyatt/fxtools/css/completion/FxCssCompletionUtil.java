@@ -987,21 +987,41 @@ public final class FxCssCompletionUtil {
         }
 
         Icon placeholderIcon = IconPlaceholder.createIcon(ICON_SIZE);
+        // Dedupe by literal: FA5 and FA6 share every literal (e.g. "fab-accessible-icon")
+        // but have different SVG art. If we add both, IntelliJ may dedupe via LookupElement
+        // equality and silently drop one — leaving the user with FA5's typeText/preview
+        // while gutter preview (which goes through resolveLiteral) renders FA6. We resolve
+        // through the same disambiguation rule here so completion and gutter stay aligned.
+        Set<String> processedLiterals = new HashSet<>();
         for (IconDataService.IconEntry icon : service.getAllIcons()) {
             if (!availablePacks.contains(icon.getPackId())) {
                 continue;
             }
             String literal = icon.getLiteral();
-            String packName = icon.getPack().getName();
+            if (!processedLiterals.add(literal)) {
+                continue;  // already emitted the preferred entry for this literal
+            }
+            // For FA5/FA6 collision, prefer FA6 (matches gutter behavior).
+            // For non-colliding literals, returns the single candidate (equivalent to icon itself).
+            IconDataService.IconEntry preferred = service.resolveLiteral(literal, availablePacks);
+            if (preferred == null) {
+                continue;  // defensive — the outer check already guarantees at least one hit
+            }
+
+            // Show aggregated group title (e.g. "FontAwesome6") rather than the
+            // sub-pack name (e.g. "Font Awesome 6 Brands"). Falls back to pack name
+            // if the group lookup fails (shouldn't happen post-migration).
+            IconDataService.PackGroup group = service.getGroupForIcon(preferred);
+            String displayName = group != null ? group.getName() : preferred.getPack().getName();
             LookupElementBuilder builder = LookupElementBuilder.create(literal)
-                    .withTypeText(packName, true)
+                    .withTypeText(displayName, true)
                     .withCaseSensitivity(false)
                     .withInsertHandler(insertHandler);
 
             // Resolve preview icon: SVG for renderable, placeholder for np:true
             Icon previewIcon = null;
-            if (icon.isRenderable()) {
-                String pathData = service.getPath(icon);
+            if (preferred.isRenderable()) {
+                String pathData = service.getPath(preferred);
                 if (pathData != null) {
                     previewIcon = createSvgIcon(pathData);
                 }

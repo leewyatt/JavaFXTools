@@ -24,7 +24,17 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Popup for selecting which icon packs to include in search/browse.
+ * Popup for selecting which icon pack <em>groups</em> to include in search/browse.
+ *
+ * <p>Shows one row per {@link IconDataService.PackGroup}. Toggling a group's checkbox
+ * adds or removes all of its member packs' raw packIds from the {@code selected} set
+ * atomically — the rest of the app ({@link IconBrowserPanel}, {@link IconSearchEngine})
+ * continues to work with raw packIds, so no downstream changes are needed.</p>
+ *
+ * <p>A group's checkbox is considered "checked" only when <em>all</em> of its member
+ * packIds are present in {@code selected}. Partial selection (half-state) is not
+ * exposed in the UI — the Swing {@code CheckBoxList} doesn't support it natively, and
+ * partial state can only arise transiently if another code path injects raw packIds.</p>
  */
 public class PackFilterPopup {
 
@@ -35,12 +45,12 @@ public class PackFilterPopup {
      * Shows the pack filter popup below the given component.
      *
      * @param owner       component to anchor the popup to
-     * @param allPacks    all available packs
-     * @param selected    currently selected pack IDs (modified in place)
+     * @param allGroups   all aggregated pack groups
+     * @param selected    currently selected raw pack IDs (modified in place as groups are toggled)
      * @param onChanged   callback when selection changes (fired immediately on each checkbox toggle)
      */
     public static void show(@NotNull JComponent owner,
-                            @NotNull List<IconDataService.PackInfo> allPacks,
+                            @NotNull List<IconDataService.PackGroup> allGroups,
                             @NotNull Set<String> selected,
                             @Nullable Project project,
                             @Nullable Runnable onChanged) {
@@ -48,8 +58,8 @@ public class PackFilterPopup {
         JPanel content = new JPanel(new BorderLayout());
         content.setPreferredSize(new Dimension(JBUI.scale(300), JBUI.scale(400)));
 
-        // Track which packs are currently visible in the filtered list
-        List<IconDataService.PackInfo> visiblePacks = new ArrayList<>(allPacks);
+        // Track which groups are currently visible in the filtered list
+        List<IconDataService.PackGroup> visibleGroups = new ArrayList<>(allGroups);
 
         // ==================== Search Filter ====================
         SearchTextField filterField = new SearchTextField(false);
@@ -57,22 +67,22 @@ public class PackFilterPopup {
         content.add(filterField, BorderLayout.NORTH);
 
         // ==================== CheckBox List ====================
-        CheckBoxList<IconDataService.PackInfo> checkList = new CheckBoxList<>();
-        for (IconDataService.PackInfo pack : allPacks) {
-            checkList.addItem(pack, pack.getName() + " (" + pack.getTotal() + ")",
-                    selected.contains(pack.getId()));
+        CheckBoxList<IconDataService.PackGroup> checkList = new CheckBoxList<>();
+        for (IconDataService.PackGroup group : allGroups) {
+            checkList.addItem(group, group.getName() + " (" + group.getTotal() + ")",
+                    isGroupSelected(group, selected));
         }
 
         JBScrollPane scrollPane = new JBScrollPane(checkList);
         content.add(scrollPane, BorderLayout.CENTER);
 
-        // Sync only visible packs and fire callback
+        // Sync only visible groups and fire callback
         Runnable syncAndNotify = () -> {
-            for (IconDataService.PackInfo pack : visiblePacks) {
-                if (checkList.isItemSelected(pack)) {
-                    selected.add(pack.getId());
+            for (IconDataService.PackGroup group : visibleGroups) {
+                if (checkList.isItemSelected(group)) {
+                    selected.addAll(group.getPackIds());
                 } else {
-                    selected.remove(pack.getId());
+                    group.getPackIds().forEach(selected::remove);
                 }
             }
             if (onChanged != null) {
@@ -97,8 +107,8 @@ public class PackFilterPopup {
 
         JButton clearAll = new JButton(FxToolsBundle.message("icon.browser.packs.clear"));
         clearAll.addActionListener(e -> {
-            for (int i = 0; i < visiblePacks.size(); i++) {
-                checkList.setItemSelected(visiblePacks.get(i), false);
+            for (IconDataService.PackGroup group : visibleGroups) {
+                checkList.setItemSelected(group, false);
             }
             checkList.repaint();
             syncAndNotify.run();
@@ -106,8 +116,8 @@ public class PackFilterPopup {
 
         JButton selectAll = new JButton(FxToolsBundle.message("icon.browser.packs.select.all"));
         selectAll.addActionListener(e -> {
-            for (int i = 0; i < visiblePacks.size(); i++) {
-                checkList.setItemSelected(visiblePacks.get(i), true);
+            for (IconDataService.PackGroup group : visibleGroups) {
+                checkList.setItemSelected(group, true);
             }
             checkList.repaint();
             syncAndNotify.run();
@@ -124,13 +134,13 @@ public class PackFilterPopup {
             @Override
             protected void textChanged(@NotNull javax.swing.event.DocumentEvent e) {
                 String text = filterField.getText().toLowerCase().trim();
-                visiblePacks.clear();
+                visibleGroups.clear();
                 checkList.clear();
-                for (IconDataService.PackInfo pack : allPacks) {
-                    if (text.isEmpty() || pack.getName().toLowerCase().contains(text)) {
-                        visiblePacks.add(pack);
-                        checkList.addItem(pack, pack.getName() + " (" + pack.getTotal() + ")",
-                                selected.contains(pack.getId()));
+                for (IconDataService.PackGroup group : allGroups) {
+                    if (text.isEmpty() || group.getName().toLowerCase().contains(text)) {
+                        visibleGroups.add(group);
+                        checkList.addItem(group, group.getName() + " (" + group.getTotal() + ")",
+                                isGroupSelected(group, selected));
                     }
                 }
             }
@@ -178,5 +188,19 @@ public class PackFilterPopup {
         }
 
         popup.showUnderneathOf(owner);
+    }
+
+    /**
+     * Returns true iff every member pack of the group is present in {@code selected}.
+     * Partial selection (some members in, some out) is treated as "not selected".
+     */
+    private static boolean isGroupSelected(@NotNull IconDataService.PackGroup group,
+                                           @NotNull Set<String> selected) {
+        for (String packId : group.getPackIds()) {
+            if (!selected.contains(packId)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

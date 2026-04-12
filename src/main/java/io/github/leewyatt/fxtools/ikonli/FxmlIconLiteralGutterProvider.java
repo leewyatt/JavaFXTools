@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -73,14 +72,9 @@ public class FxmlIconLiteralGutterProvider implements LineMarkerProvider {
             return;
         }
 
-        Set<PsiElement> elementSet = new HashSet<>(elements);
-
         for (PsiElement element : elements) {
             ProgressManager.checkCanceled();
             if (!(element instanceof XmlAttributeValue attrValue)) {
-                continue;
-            }
-            if (!elementSet.contains(attrValue)) {
                 continue;
             }
 
@@ -109,8 +103,8 @@ public class FxmlIconLiteralGutterProvider implements LineMarkerProvider {
             return null;
         }
 
-        IconDataService.IconEntry iconEntry = service.getLiteralMap().get(literal);
-        if (iconEntry == null || !availablePacks.contains(iconEntry.getPackId())) {
+        IconDataService.IconEntry iconEntry = service.resolveLiteral(literal, availablePacks);
+        if (iconEntry == null) {
             return null;
         }
 
@@ -124,7 +118,12 @@ public class FxmlIconLiteralGutterProvider implements LineMarkerProvider {
             if (pathData == null) {
                 return null;
             }
-            icon = ICON_CACHE.computeIfAbsent(literal,
+            // Cache key includes packId to avoid FA5/FA6 cross-contamination:
+            // both versions share the same literal (e.g. "fab-accessible-icon") but have
+            // different SVG art, so keying by literal alone would serve the first-seen
+            // version for both — breaking after the user switches between projects.
+            String cacheKey = iconEntry.getPackId() + ":" + literal;
+            icon = ICON_CACHE.computeIfAbsent(cacheKey,
                     k -> CssPreviewIconRenderer.createSvgIcon(pathData, com.intellij.ui.JBColor.foreground()));
             if (icon == null) {
                 return null;

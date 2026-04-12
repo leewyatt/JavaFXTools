@@ -212,15 +212,19 @@ public class IconDetailPanel extends JPanel {
         setVisible(true);
 
         IconDataService.PackInfo pack = icon.getPack();
+        IconDataService.PackGroup group = service != null ? service.getGroupForIcon(icon) : null;
 
-        // ---- Info flow: name + pack + link icon ----
+        // ---- Info flow: name + group title + link icon ----
         nameLabel.setText(icon.getName());
-        packNameLabel.setText(pack.getName());
+        // Show aggregated group name (e.g. "MaterialDesign2 (Latest)") instead of
+        // the sub-pack name (e.g. "Material Design T"). Falls back to pack name for
+        // safety if group lookup fails (shouldn't happen post-migration).
+        packNameLabel.setText(group != null ? group.getName() : pack.getName());
         // Remove any previously-added link icon (index 0 and 1 are the fixed labels)
         while (infoFlow.getComponentCount() > 2) {
             infoFlow.remove(infoFlow.getComponentCount() - 1);
         }
-        String url = pack.getSourceUrl();
+        String url = group != null ? group.getSourceUrl() : pack.getSourceUrl();
         if (url != null && !url.isEmpty()) {
             Icon linkIcon = url.contains("github.com")
                     ? AllIcons.Vcs.Vendors.Github

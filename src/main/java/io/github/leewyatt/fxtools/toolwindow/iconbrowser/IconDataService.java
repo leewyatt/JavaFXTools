@@ -50,9 +50,10 @@ public final class IconDataService {
         private String maven;
         private final String sourceUrl;
         private final int index;
+        private final @Nullable String title;
 
         PackInfo(String id, String name, String file, int total, int renderable, String license,
-                 String enumClass, String maven, String sourceUrl, int index) {
+                 String enumClass, String maven, String sourceUrl, int index, @Nullable String title) {
             this.id = id;
             this.name = name;
             this.files = new ArrayList<>();
@@ -66,6 +67,7 @@ public final class IconDataService {
             this.maven = nullIfEmpty(maven);
             this.sourceUrl = nullIfEmpty(sourceUrl);
             this.index = index;
+            this.title = nullIfEmpty(title);
         }
 
         /**
@@ -97,6 +99,13 @@ public final class IconDataService {
         public @Nullable String getMaven() { return maven; }
         public @Nullable String getSourceUrl() { return sourceUrl; }
         public int getIndex() { return index; }
+        /**
+         * Returns the human-readable group title (from upstream ikonlipacks.json, e.g.
+         * {@code "MaterialDesign2 (Latest)"}). All member packs of the same aggregation
+         * group share this title. Null only when the {@code title} field is missing from
+         * {@code icon-packs.json} (defensive fallback — should not happen post-migration).
+         */
+        public @Nullable String getTitle() { return title; }
 
         /**
          * Returns true if this pack is an Ikonli library (has enumClass).
@@ -105,6 +114,133 @@ public final class IconDataService {
 
         @Override
         public String toString() { return name; }
+    }
+
+    /**
+     * An aggregated group of one or more {@link PackInfo} instances that share the same
+     * Maven artifactId. Ikonli libraries like MaterialDesign2 are split into multiple
+     * Java enum classes (MaterialDesignA~Z) due to the JVM 64KB class file limit; to
+     * users these are one logical library.
+     *
+     * <p>A group's {@link #getName() display name} comes from {@link PackInfo#getTitle()}
+     * which is populated at data-migration time from {@code ikonlipacks.json}. Groups
+     * that consist of only one pack behave identically to the single pack.</p>
+     *
+     * <p>Group membership is stable: an icon's {@link IconEntry#getPackId() packId} is
+     * never changed by aggregation. Callers that need group-level information should go
+     * through {@link IconDataService#getGroupByPackId(String)} or
+     * {@link IconDataService#getGroupForIcon(IconEntry)}.</p>
+     */
+    public static final class PackGroup {
+        private final String id;
+        private final @Nullable String title;
+        private final List<PackInfo> packs;
+        private final List<String> packIds;
+        private final int total;
+        private final int renderable;
+        private final @Nullable String maven;
+        private final @Nullable String sourceUrl;
+        private final @Nullable String license;
+        private final Set<String> enumClasses;
+        private final int index;
+
+        private PackGroup(String id, @Nullable String title, List<PackInfo> packs,
+                          List<String> packIds, int total, int renderable,
+                          @Nullable String maven, @Nullable String sourceUrl,
+                          @Nullable String license, Set<String> enumClasses, int index) {
+            this.id = id;
+            this.title = title;
+            this.packs = packs;
+            this.packIds = packIds;
+            this.total = total;
+            this.renderable = renderable;
+            this.maven = maven;
+            this.sourceUrl = sourceUrl;
+            this.license = license;
+            this.enumClasses = enumClasses;
+            this.index = index;
+        }
+
+        /**
+         * Aggregates a list of member packs into a PackGroup.
+         * Totals are summed; title / maven / sourceUrl / license take the first non-null
+         * value (guaranteed consistent within a group because group key = maven artifactId).
+         * enumClasses is the union of all member packs' enumClasses.
+         */
+        static PackGroup build(@NotNull String id, @NotNull List<PackInfo> members, int index) {
+            String title = null;
+            int total = 0;
+            int renderable = 0;
+            String maven = null;
+            String sourceUrl = null;
+            String license = null;
+            Set<String> enumClasses = new LinkedHashSet<>();
+            List<String> packIds = new ArrayList<>(members.size());
+
+            for (PackInfo p : members) {
+                total += p.getTotal();
+                renderable += p.getRenderable();
+                packIds.add(p.getId());
+                if (title == null && p.getTitle() != null) {
+                    title = p.getTitle();
+                }
+                if (maven == null && p.getMaven() != null) {
+                    maven = p.getMaven();
+                }
+                if (sourceUrl == null && p.getSourceUrl() != null) {
+                    sourceUrl = p.getSourceUrl();
+                }
+                if (license == null && p.getLicense() != null && !p.getLicense().isEmpty()) {
+                    license = p.getLicense();
+                }
+                if (p.getEnumClass() != null) {
+                    enumClasses.add(p.getEnumClass());
+                }
+            }
+
+            return new PackGroup(id, title,
+                    Collections.unmodifiableList(new ArrayList<>(members)),
+                    Collections.unmodifiableList(packIds),
+                    total, renderable, maven, sourceUrl, license,
+                    Collections.unmodifiableSet(enumClasses), index);
+        }
+
+        public String getId() { return id; }
+
+        /**
+         * Returns the user-visible display name for this group. Primary source is
+         * {@link PackInfo#getTitle()} (populated from upstream ikonlipacks.json during
+         * data migration). Falls back to a capitalized version of {@link #getId()} if
+         * the title field is missing (should not happen with migrated data).
+         */
+        public String getName() {
+            if (title != null && !title.isEmpty()) {
+                return title;
+            }
+            return displayNameOf(id);
+        }
+
+        public @Nullable String getTitle() { return title; }
+        public List<PackInfo> getPacks() { return packs; }
+
+        /** Returns the raw pack ids of all member packs (stable, preserves insertion order). */
+        public List<String> getPackIds() {
+            return packIds;
+        }
+
+        public int getTotal() { return total; }
+        public int getRenderable() { return renderable; }
+        public @Nullable String getMaven() { return maven; }
+        public @Nullable String getSourceUrl() { return sourceUrl; }
+        public @Nullable String getLicense() { return license; }
+        public Set<String> getEnumClasses() { return enumClasses; }
+        public int getIndex() { return index; }
+
+        /** True if this group contains more than one underlying pack. */
+        public boolean isAggregated() { return packs.size() > 1; }
+
+        @Override
+        public String toString() { return getName(); }
     }
 
     /**
@@ -167,7 +303,14 @@ public final class IconDataService {
     private String ikonliVersion = "";
     private List<PackInfo> allPacks = Collections.emptyList();
     private List<IconEntry> allIcons = Collections.emptyList();
-    private Map<String, IconEntry> literalMap = Collections.emptyMap();
+    /**
+     * One-to-many literal index: same literal can appear in multiple packs.
+     * In practice this only happens for FA5 vs FA6 (Ikonli upstream uses the same
+     * {@code fab-/far-/fas-} prefixes for both versions). Used by
+     * {@link #resolveLiteral(String, Set)} to pick the correct version based on the
+     * caller's allowed-pack set.
+     */
+    private Map<String, List<IconEntry>> literalMultiMap = Collections.emptyMap();
     /** packId → all enumClass FQCNs (pack-level + icon-level overrides). */
     private Map<String, Set<String>> packEnumClasses = Collections.emptyMap();
     /** enumClass FQCN → packId (reverse lookup for Ikonli gutter icons). */
@@ -177,6 +320,17 @@ public final class IconDataService {
      *  match Java enum references to icon entries without name guessing. */
     private Map<String, Map<String, IconEntry>> enumConstantIndex = Collections.emptyMap();
     private final Map<String, Map<String, String>> pathCache = new ConcurrentHashMap<>();
+
+    // Group aggregation (see PackGroup Javadoc)
+    private List<PackGroup> allGroups = Collections.emptyList();
+    private Map<String, PackGroup> groupsById = Collections.emptyMap();
+    private Map<String, PackGroup> groupByRawPackId = Collections.emptyMap();
+    /**
+     * Raw pack ids that belong to the {@code fontawesome6} group, used by
+     * {@link #resolveLiteral(String, Set)} to implement the "prefer FA6 over FA5
+     * when both are available" disambiguation rule without hard-coded string matching.
+     */
+    private Set<String> fontawesome6PackIds = Collections.emptySet();
 
     private static final Key<com.intellij.psi.util.CachedValue<Set<String>>> AVAILABLE_PACKS_KEY =
             Key.create("fx.icon.available.packs");
@@ -193,7 +347,37 @@ public final class IconDataService {
     public String getIkonliVersion() { return ikonliVersion; }
     public List<PackInfo> getAllPacks() { return allPacks; }
     public List<IconEntry> getAllIcons() { return allIcons; }
-    public Map<String, IconEntry> getLiteralMap() { return literalMap; }
+
+    /**
+     * Returns all aggregated groups, sorted by group index (insertion order of the
+     * first member pack encountered). Each group aggregates one or more packs that
+     * share a Maven artifactId — see {@link PackGroup}.
+     */
+    public List<PackGroup> getAllGroups() { return allGroups; }
+
+    /**
+     * Returns the group containing the given raw packId, or null if unknown.
+     */
+    @Nullable
+    public PackGroup getGroupByPackId(@NotNull String packId) {
+        return groupByRawPackId.get(packId);
+    }
+
+    /**
+     * Convenience: {@code getGroupByPackId(icon.getPackId())}.
+     */
+    @Nullable
+    public PackGroup getGroupForIcon(@NotNull IconEntry icon) {
+        return groupByRawPackId.get(icon.getPackId());
+    }
+
+    /**
+     * Returns the group by group key (e.g. {@code "materialdesign2"}).
+     */
+    @Nullable
+    public PackGroup getGroupById(@NotNull String groupId) {
+        return groupsById.get(groupId);
+    }
 
     /**
      * Ensures the index is loaded. Call from background thread for first load;
@@ -245,6 +429,54 @@ public final class IconDataService {
     public IconEntry findByEnumConstant(@NotNull String enumClassFqcn, @NotNull String constantName) {
         Map<String, IconEntry> byConstant = enumConstantIndex.get(enumClassFqcn);
         return byConstant != null ? byConstant.get(constantName) : null;
+    }
+
+    /**
+     * Resolves an icon literal (e.g. {@code "fab-accessible-icon"}) to the best matching
+     * {@link IconEntry}, constrained to {@code allowedPackIds}.
+     *
+     * <p>The Ikonli {@code ikonli-fontawesome5-pack} and {@code ikonli-fontawesome6-pack}
+     * use identical literal prefixes ({@code fab-/far-/fas-}), so a single literal can
+     * match up to two entries. This method picks one according to the following rules:</p>
+     * <ol>
+     *   <li>If any candidate's pack is {@code fontawesome6}, return it (FA6 preference
+     *       rule — matches <em>exactly one</em> Ikonli runtime behavior but is consistent
+     *       and documented).</li>
+     *   <li>Otherwise return the first candidate whose packId is in {@code allowedPackIds}.</li>
+     *   <li>Returns {@code null} if no candidate is in {@code allowedPackIds}.</li>
+     * </ol>
+     *
+     * <p>Callers that want classpath-aware resolution should pass
+     * {@link #getAvailablePacks(Project)}; callers that want user-filter-aware resolution
+     * (e.g. Icon Browser search) should pass the user's enabled pack set.</p>
+     *
+     * @param literal          the Ikonli literal to look up
+     * @param allowedPackIds   the set of raw packIds this caller wants to consider
+     * @return the preferred matching {@link IconEntry}, or {@code null}
+     */
+    @Nullable
+    public IconEntry resolveLiteral(@NotNull String literal, @NotNull Set<String> allowedPackIds) {
+        List<IconEntry> candidates = literalMultiMap.get(literal);
+        if (candidates == null || candidates.isEmpty()) {
+            return null;
+        }
+        IconEntry fallback = null;
+        for (IconEntry candidate : candidates) {
+            if (!allowedPackIds.contains(candidate.getPackId())) {
+                continue;
+            }
+            // FA6 preference rule: if both FA5 and FA6 are allowed, prefer FA6.
+            // Uses a precomputed packId set so we don't do string matching in the hot path
+            // and we're robust to upstream package renames as long as groupKeyOf still
+            // derives "fontawesome6" from the Maven artifactId.
+            if (fontawesome6PackIds.contains(candidate.getPackId())) {
+                return candidate;
+            }
+            if (fallback == null) {
+                fallback = candidate;
+            }
+        }
+        return fallback;
     }
 
     /**
@@ -338,7 +570,7 @@ public final class IconDataService {
                             int renderable = rp.renderable > 0 ? rp.renderable : rp.total;
                             PackInfo pi = new PackInfo(rp.id, rp.name, rp.file, rp.total, renderable,
                                     rp.license, rp.enumClass, rp.maven,
-                                    rp.url, idx++);
+                                    rp.url, idx++, rp.title);
                             packs.add(pi);
                             byId.put(pi.getId(), pi);
                         }
@@ -354,7 +586,7 @@ public final class IconDataService {
 
                 // Build icons
                 List<IconEntry> icons = new ArrayList<>();
-                Map<String, IconEntry> litMap = new HashMap<>();
+                Map<String, List<IconEntry>> litMulti = new HashMap<>();
                 if (rawIndex.icons != null) {
                     for (RawIcon ri : rawIndex.icons) {
                         PackInfo pack = byId.get(ri.p);
@@ -365,7 +597,7 @@ public final class IconDataService {
                         boolean noPath = ri.np != null && ri.np;
                         IconEntry entry = new IconEntry(ri.n, pack, tags, ri.e, ri.ec, noPath);
                         icons.add(entry);
-                        litMap.put(entry.getLiteral(), entry);
+                        litMulti.computeIfAbsent(entry.getLiteral(), k -> new ArrayList<>()).add(entry);
                     }
                 }
 
@@ -402,14 +634,51 @@ public final class IconDataService {
                     }
                 }
 
+                // Build PackGroup aggregation by maven artifactId
+                LinkedHashMap<String, List<PackInfo>> byGroupKey = new LinkedHashMap<>();
+                for (PackInfo pack : packs) {
+                    byGroupKey.computeIfAbsent(groupKeyOf(pack), k -> new ArrayList<>()).add(pack);
+                }
+                List<PackGroup> groupList = new ArrayList<>(byGroupKey.size());
+                Map<String, PackGroup> groupById = new HashMap<>();
+                Map<String, PackGroup> groupByPackIdMap = new HashMap<>();
+                Set<String> fa6PackIds = new HashSet<>();
+                int groupIdx = 0;
+                for (Map.Entry<String, List<PackInfo>> e : byGroupKey.entrySet()) {
+                    PackGroup group = PackGroup.build(e.getKey(), e.getValue(), groupIdx++);
+                    groupList.add(group);
+                    groupById.put(group.getId(), group);
+                    boolean isFa6 = "fontawesome6".equals(group.getId());
+                    for (PackInfo pack : e.getValue()) {
+                        groupByPackIdMap.put(pack.getId(), group);
+                        if (isFa6) {
+                            fa6PackIds.add(pack.getId());
+                        }
+                    }
+                }
+
+                // Freeze sub-lists in literalMultiMap (value lists become immutable).
+                // HashMap initial capacity formula: expectedSize / loadFactor + 1 to
+                // avoid rehashing during population (default loadFactor is 0.75).
+                Map<String, List<IconEntry>> frozenLitMulti =
+                        new HashMap<>((int) (litMulti.size() / 0.75f) + 1);
+                for (Map.Entry<String, List<IconEntry>> e : litMulti.entrySet()) {
+                    frozenLitMulti.put(e.getKey(), Collections.unmodifiableList(e.getValue()));
+                }
+
                 this.allPacks = Collections.unmodifiableList(packs);
                 this.allIcons = Collections.unmodifiableList(icons);
-                this.literalMap = Collections.unmodifiableMap(litMap);
+                this.literalMultiMap = Collections.unmodifiableMap(frozenLitMulti);
                 this.packEnumClasses = Collections.unmodifiableMap(enumClassMap);
                 this.enumConstantIndex = Collections.unmodifiableMap(ecIndex);
                 this.enumClassToPackId = Collections.unmodifiableMap(enumToPack);
+                this.allGroups = Collections.unmodifiableList(groupList);
+                this.groupsById = Collections.unmodifiableMap(groupById);
+                this.groupByRawPackId = Collections.unmodifiableMap(groupByPackIdMap);
+                this.fontawesome6PackIds = Collections.unmodifiableSet(fa6PackIds);
 
-                LOG.info("Loaded icon index: " + packs.size() + " packs, " + icons.size() + " icons");
+                LOG.info("Loaded icon index: " + packs.size() + " packs, " + icons.size()
+                        + " icons, " + groupList.size() + " groups");
             }
         } catch (IOException e) {
             LOG.warn("Failed to load icon pack index", e);
@@ -450,7 +719,7 @@ public final class IconDataService {
     }
 
     private static class RawPack {
-        String id, name, file, license, enumClass, maven, url;
+        String id, name, file, license, enumClass, maven, url, title;
         int total;
         int renderable;
     }
@@ -459,6 +728,48 @@ public final class IconDataService {
         String n, p, e, ec;
         List<String> t;
         Boolean np; // null when omitted; Boolean (not primitive) so Gson preserves absence
+    }
+
+    /**
+     * Derives the group key from a pack's Maven artifactId.
+     * <p>Pattern: {@code org.kordamp.ikonli:ikonli-{name}-pack} → {@code name}.
+     * Falls back to {@link PackInfo#getId()} when maven is null (defensive — all
+     * Ikonli packs should have maven via {@link #deriveMavenFromEnumClass} fallback).</p>
+     *
+     * <p>Using maven artifactId (not enumClass simpleName or literal name) guarantees
+     * that libraries with identical simpleNames but different packages — e.g.
+     * {@code fontawesome5.FontAwesomeBrands} and {@code fontawesome6.FontAwesomeBrands} —
+     * stay in separate groups.</p>
+     */
+    @NotNull
+    private static String groupKeyOf(@NotNull PackInfo pack) {
+        String maven = pack.getMaven();
+        if (maven == null) {
+            return pack.getId();
+        }
+        int colon = maven.indexOf(':');
+        String artifact = colon >= 0 ? maven.substring(colon + 1) : maven;
+        if (artifact.startsWith("ikonli-")) {
+            artifact = artifact.substring("ikonli-".length());
+        }
+        if (artifact.endsWith("-pack")) {
+            artifact = artifact.substring(0, artifact.length() - "-pack".length());
+        }
+        return artifact;
+    }
+
+    /**
+     * Defensive fallback for {@link PackGroup#getName()} when the {@code title} field
+     * is missing from {@code icon-packs.json}. Capitalizes the first letter of the
+     * group key. Should never be reached with migrated data — every pack's title is
+     * populated at data-migration time from upstream ikonlipacks.json.
+     */
+    @NotNull
+    private static String displayNameOf(@NotNull String groupKey) {
+        if (groupKey.isEmpty()) {
+            return groupKey;
+        }
+        return Character.toUpperCase(groupKey.charAt(0)) + groupKey.substring(1);
     }
 
     /**

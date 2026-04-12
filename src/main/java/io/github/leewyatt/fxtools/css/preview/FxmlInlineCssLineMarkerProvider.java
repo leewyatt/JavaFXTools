@@ -170,12 +170,15 @@ public class FxmlInlineCssLineMarkerProvider implements LineMarkerProvider {
                                             @NotNull String literal,
                                             @NotNull Project project) {
         IconDataService service = IconDataService.getInstance();
+        // Defensive ensureLoaded — normally data is already loaded by the time a gutter
+        // icon is clickable, but we want this click handler to be self-sufficient.
+        service.ensureLoaded();
         if (!service.isLoaded()) {
             return;
         }
         java.util.Set<String> availablePacks = IconDataService.getAvailablePacks(project);
-        IconDataService.IconEntry icon = service.getLiteralMap().get(literal);
-        if (icon == null || !availablePacks.contains(icon.getPackId())) {
+        IconDataService.IconEntry icon = service.resolveLiteral(literal, availablePacks);
+        if (icon == null) {
             return;
         }
         String pathData = null;

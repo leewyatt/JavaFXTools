@@ -44,9 +44,10 @@ public final class IconSearchEngine {
             return scope;
         }
 
-        // Step 1: exact literal match
-        IconDataService.IconEntry exact = service.getLiteralMap().get(normalized);
-        if (exact != null && enabledPackIds.contains(exact.getPackId())) {
+        // Step 1: exact literal match. For FA5/FA6 literal collisions, picks the
+        // user-enabled version (preferring FA6 when both enabled).
+        IconDataService.IconEntry exact = service.resolveLiteral(normalized, enabledPackIds);
+        if (exact != null) {
             List<IconDataService.IconEntry> results = new ArrayList<>();
             results.add(exact);
             results.addAll(fuzzySearch(scope, normalized, exact));

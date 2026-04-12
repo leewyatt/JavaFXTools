@@ -362,24 +362,34 @@ public class IconGridPanel extends JPanel {
             int nameX = cx + (cell - fm.stringWidth(displayName)) / 2;
             g2.drawString(displayName, nameX, nameY);
 
-            // Pack tag
+            // Pack tag — uses group for stable color and abbreviation (sibling sub-packs
+            // of the same group render with the same tag)
             if (showPackTags) {
-                drawPackTag(g2, tagFont, icon.getPack(), cx, cy, cell);
+                IconDataService.PackGroup group = service.getGroupForIcon(icon);
+                drawPackTag(g2, tagFont, group, icon.getPack(), cx, cy, cell);
             }
         }
 
         g2.dispose();
     }
 
-    private void drawPackTag(Graphics2D g2, Font tagFont, IconDataService.PackInfo pack,
+    private void drawPackTag(Graphics2D g2, Font tagFont,
+                             @Nullable IconDataService.PackGroup group,
+                             @NotNull IconDataService.PackInfo pack,
                              int cx, int cy, int cell) {
-        int colorIdx = pack.getIndex() % TAG_COLORS.length;
+        // Prefer group identity for color and abbreviation; fall back to pack when
+        // group lookup fails (shouldn't happen post-migration but keeps rendering alive).
+        int colorIdx = (group != null ? group.getIndex() : pack.getIndex()) % TAG_COLORS.length;
         Color bg = TAG_COLORS[colorIdx][0];
         Color fg = TAG_COLORS[colorIdx][1];
 
         g2.setFont(tagFont);
         FontMetrics fm = g2.getFontMetrics();
-        String abbr = abbreviatePack(pack.getId());
+        // Use title-based abbreviation (camelCase) when group available, otherwise
+        // fall back to the legacy packId abbreviation for non-grouped items.
+        String abbr = group != null && group.getTitle() != null
+                ? abbreviateTitle(group.getTitle())
+                : abbreviatePack(pack.getId());
         int tw = fm.stringWidth(abbr) + JBUI.scale(TAG_HPAD) * 2;
         int th = fm.getHeight() + JBUI.scale(TAG_VPAD) * 2;
         int tx = cx + cell - tw - JBUI.scale(3);
@@ -456,6 +466,58 @@ public class IconGridPanel extends JPanel {
             }
         }
         return ellipsis;
+    }
+
+    /**
+     * Abbreviates a {@link IconDataService.PackGroup#getTitle() group title} for display
+     * inside a {@code TAG_COLORS}-styled chip in the grid cell corner.
+     *
+     * <p>Rules, applied in order:</p>
+     * <ol>
+     *   <li>Strip trailing parenthetical suffixes like {@code " (Latest)"} / {@code " (Legacy)"}
+     *       so {@code "MaterialDesign2 (Latest)"} becomes {@code "MaterialDesign2"}.</li>
+     *   <li>Take uppercase letters and digits from the remainder (camelCase initials +
+     *       version suffix), cap at 4 characters. Ensures versioned libraries stay
+     *       distinct: {@code "FontAwesome5"} → {@code fa5}, {@code "FontAwesome6"} → {@code fa6},
+     *       {@code "MaterialDesign2"} → {@code md2}, {@code "Maki2"} → {@code m2}.</li>
+     *   <li>If the extracted string is shorter than 2 chars (single-word titles like
+     *       {@code "Bpmn"} or {@code "Feather"}), pad with the first 2 letters of the
+     *       cleaned title instead.</li>
+     * </ol>
+     *
+     * <p>Output is always lowercase for visual consistency with {@link #abbreviatePack}.</p>
+     */
+    @NotNull
+    private static String abbreviateTitle(@NotNull String title) {
+        // Strip " (Latest)" / " (Legacy)" / other parenthetical suffixes
+        int paren = title.indexOf(" (");
+        String clean = (paren > 0 ? title.substring(0, paren) : title).trim();
+        if (clean.isEmpty()) {
+            return title;
+        }
+
+        // Extract camelCase initials + digits (up to 4 chars)
+        StringBuilder camel = new StringBuilder();
+        for (int i = 0; i < clean.length() && camel.length() < 4; i++) {
+            char c = clean.charAt(i);
+            if (Character.isUpperCase(c) || Character.isDigit(c)) {
+                camel.append(Character.toLowerCase(c));
+            }
+        }
+
+        if (camel.length() >= 2) {
+            return camel.toString();
+        }
+
+        // Fallback: first 2 non-whitespace chars (for single-word titles like "Bpmn")
+        StringBuilder pad = new StringBuilder();
+        for (int i = 0; i < clean.length() && pad.length() < 2; i++) {
+            char c = clean.charAt(i);
+            if (!Character.isWhitespace(c)) {
+                pad.append(Character.toLowerCase(c));
+            }
+        }
+        return pad.length() > 0 ? pad.toString() : camel.toString();
     }
 
     @NotNull

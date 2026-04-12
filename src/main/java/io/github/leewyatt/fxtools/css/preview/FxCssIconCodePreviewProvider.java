@@ -62,6 +62,11 @@ public class FxCssIconCodePreviewProvider implements LineMarkerProvider {
         }
 
         IconDataService service = IconDataService.getInstance();
+        // Called from the slow highlighting phase (background thread), so blocking
+        // on the initial JSON parse is safe. Without this, a user whose only open file
+        // is a .css never triggers loading via any other path and the first daemon pass
+        // silently skips all gutter icons.
+        service.ensureLoaded();
         if (!service.isLoaded()) {
             return;
         }
@@ -86,9 +91,11 @@ public class FxCssIconCodePreviewProvider implements LineMarkerProvider {
                 continue;
             }
 
-            // Look up icon and resolve SVG path
-            IconDataService.IconEntry icon = service.getLiteralMap().get(literal);
-            if (icon == null || !availablePacks.contains(icon.getPackId())) {
+            // Look up icon, preferring an entry whose pack is on the project classpath.
+            // For FA5/FA6 literal collisions, prefers FA6 when both are available, FA5
+            // when only FA5 is available, etc. See IconDataService.resolveLiteral.
+            IconDataService.IconEntry icon = service.resolveLiteral(literal, availablePacks);
+            if (icon == null) {
                 continue;
             }
 
@@ -111,7 +118,11 @@ public class FxCssIconCodePreviewProvider implements LineMarkerProvider {
                         .IconPlaceholder.createIcon(CssPreviewIconRenderer.getGutterIconSize());
             }
 
-            String tooltip = icon.getPack().getName() + " — " + literal;
+            // Tooltip uses aggregated group name (e.g. "FontAwesome6"), consistent with
+            // the popup shown when the user clicks the gutter icon.
+            IconDataService.PackGroup group = service.getGroupForIcon(icon);
+            String displayName = group != null ? group.getName() : icon.getPack().getName();
+            String tooltip = displayName + " — " + literal;
             TextRange range = TextRange.create(matchStart, matchStart + 1);
             IconDataService.IconEntry iconRef = icon;
             String pathRef = pathData;

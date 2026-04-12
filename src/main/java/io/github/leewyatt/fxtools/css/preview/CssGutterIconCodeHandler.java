@@ -52,6 +52,10 @@ public final class CssGutterIconCodeHandler {
         final boolean renderable = path != null;
 
         IconDataService.PackInfo pack = icon.getPack();
+        IconDataService.PackGroup group = IconDataService.getInstance().getGroupForIcon(icon);
+        // Show aggregated group title (e.g. "MaterialDesign2 (Latest)") rather than
+        // the sub-pack name (e.g. "Material Design T"). Falls back to pack name.
+        String displayName = group != null ? group.getName() : pack.getName();
 
         // ==================== Content ====================
         JPanel content = new JPanel(new BorderLayout(JBUI.scale(12), 0));
@@ -117,8 +121,8 @@ public final class CssGutterIconCodeHandler {
         // Top glue — vertically centers the text block against the 130px preview
         infoPanel.add(Box.createVerticalGlue());
 
-        // Pack name (bold)
-        JBLabel packLabel = new JBLabel(pack.getName());
+        // Pack name (bold) — shows aggregated group name
+        JBLabel packLabel = new JBLabel(displayName);
         packLabel.setFont(packLabel.getFont().deriveFont(Font.BOLD));
         packLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         infoPanel.add(packLabel);

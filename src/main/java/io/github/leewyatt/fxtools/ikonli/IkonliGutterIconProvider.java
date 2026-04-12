@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,20 +60,14 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
             return;
         }
 
-        Set<PsiElement> elementSet = new HashSet<>(elements);
-
         for (PsiElement element : elements) {
             ProgressManager.checkCanceled();
-            if (!elementSet.contains(element)) {
-                continue;
-            }
-
             LineMarkerInfo<?> info = null;
             if (element instanceof PsiIdentifier identifier) {
                 info = buildEnumMarker(identifier, service, availablePacks);
             } else if (element instanceof PsiJavaToken token
                     && token.getTokenType() == JavaTokenType.STRING_LITERAL) {
-                info = buildStringLiteralMarker(token, service);
+                info = buildStringLiteralMarker(token, service, availablePacks);
             }
             if (info != null) {
                 result.add(info);
@@ -133,7 +126,10 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
             if (pathData == null) {
                 return null;
             }
-            icon = ICON_CACHE.computeIfAbsent(literal,
+            // Cache key includes packId — FA5 and FA6 share literal but differ in pack,
+            // so keying by literal alone would cache one version and serve it for both.
+            String cacheKey = packId + ":" + literal;
+            icon = ICON_CACHE.computeIfAbsent(cacheKey,
                     k -> CssPreviewIconRenderer.createSvgIcon(pathData, com.intellij.ui.JBColor.foreground()));
             if (icon == null) {
                 return null;
@@ -163,11 +159,17 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
     /**
      * Builds a gutter marker for {@code new FontIcon("mdi-tag")} or
      * {@code setIconLiteral("mdi-tag")} string arguments.
+     *
+     * <p>Only emits a marker if the literal resolves to a pack that is actually on
+     * the project classpath. For FA5/FA6 literal collisions, {@link
+     * IconDataService#resolveLiteral(String, Set)} picks the classpath-appropriate
+     * version (FA6-preferred when both are present).</p>
      */
     @Nullable
     private static LineMarkerInfo<?> buildStringLiteralMarker(
             @NotNull PsiJavaToken token,
-            @NotNull IconDataService service) {
+            @NotNull IconDataService service,
+            @NotNull Set<String> availablePacks) {
         PsiElement parent = token.getParent();
         if (!(parent instanceof PsiLiteralExpression literalExpr)) {
             return null;
@@ -182,8 +184,8 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
             return null;
         }
 
-        // Look up the literal in the icon data
-        IconDataService.IconEntry iconEntry = service.getLiteralMap().get(literalText);
+        // Resolve literal with classpath awareness + FA5/FA6 disambiguation
+        IconDataService.IconEntry iconEntry = service.resolveLiteral(literalText, availablePacks);
         if (iconEntry == null) {
             return null;
         }
@@ -200,7 +202,9 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
             if (pathData == null) {
                 return null;
             }
-            icon = ICON_CACHE.computeIfAbsent(literal,
+            // Cache key includes packId — see buildEnumMarker for rationale
+            String cacheKey = packId + ":" + literal;
+            icon = ICON_CACHE.computeIfAbsent(cacheKey,
                     k -> CssPreviewIconRenderer.createSvgIcon(pathData, com.intellij.ui.JBColor.foreground()));
             if (icon == null) {
                 return null;

@@ -390,12 +390,18 @@ public final class InlineCssGutterUtil {
     @Nullable
     private static Icon resolveIconCodeIcon(@NotNull String literal, @NotNull Project project) {
         IconDataService service = IconDataService.getInstance();
+        // Ensure index is loaded — callers may be invoked during the first highlight
+        // pass before any other code path has triggered ensureLoaded. This runs on the
+        // slow-phase background thread so blocking I/O is safe.
+        service.ensureLoaded();
         if (!service.isLoaded()) {
             return null;
         }
         Set<String> availablePacks = IconDataService.getAvailablePacks(project);
-        IconDataService.IconEntry icon = service.getLiteralMap().get(literal);
-        if (icon == null || !availablePacks.contains(icon.getPackId())) {
+        // Prefer an entry whose pack is on the project classpath; handles FA5/FA6
+        // literal collision correctly (see IconDataService.resolveLiteral).
+        IconDataService.IconEntry icon = service.resolveLiteral(literal, availablePacks);
+        if (icon == null) {
             return null;
         }
         if (!icon.isRenderable()) {

@@ -66,6 +66,18 @@ public class IconBrowserPanel extends JPanel implements Disposable {
 
     // ==================== State ====================
     private final Project project;
+    /**
+     * User-visible pack filter state, stored as raw packIds for downstream compatibility
+     * with {@link IconSearchEngine} / {@link IconDataService#getAvailablePacks(Project)}.
+     *
+     * <p><b>Invariant</b>: always group-atomic — every write path ({@link #loadDataAsync},
+     * {@link #selectAllPacks}, {@link PackFilterPopup} group toggle, and the
+     * "Select Project Dependencies Only" button which delegates to {@code getAvailablePacks})
+     * adds or removes <em>all</em> raw packIds of a group at once. Partial group membership
+     * (some but not all of MD2's sub-packs) never arises via the UI. Code that reads this
+     * set — e.g. {@link #updatePackButton} which counts "fully selected groups" via
+     * {@code enabledPackIds.containsAll(group.getPackIds())} — relies on that invariant.</p>
+     */
     private final Set<String> enabledPackIds = new LinkedHashSet<>();
     private List<IconDataService.IconEntry> currentResults = Collections.emptyList();
     private boolean dataReady;
@@ -287,20 +299,24 @@ public class IconBrowserPanel extends JPanel implements Disposable {
             }
         } else {
             cardLayout.show(cardPanel, CARD_GRID);
-            int packCount = countDistinctPacks(currentResults);
+            int groupCount = countDistinctGroups(currentResults, service);
             if (isSearch) {
                 statusLabel.setText(FxToolsBundle.message("icon.browser.results.search", query, currentResults.size()));
-            } else if (enabledPackIds.size() == 1) {
-                IconDataService.PackInfo pack = currentResults.get(0).getPack();
-                String license = pack.getLicense();
+            } else if (groupCount == 1) {
+                // Single-group display: show group name (aggregated title), not the sub-pack name
+                IconDataService.PackGroup group = service.getGroupForIcon(currentResults.get(0));
+                String displayName = group != null
+                        ? group.getName()
+                        : currentResults.get(0).getPack().getName();
+                String license = group != null ? group.getLicense() : null;
                 statusLabel.setText(license != null && !license.isEmpty()
                         ? FxToolsBundle.message("icon.browser.results.single.pack.license",
-                                pack.getName(), currentResults.size(), license)
+                                displayName, currentResults.size(), license)
                         : FxToolsBundle.message("icon.browser.results.single.pack",
-                                pack.getName(), currentResults.size()));
+                                displayName, currentResults.size()));
             } else {
                 statusLabel.setText(FxToolsBundle.message("icon.browser.results.multi.pack",
-                        packCount, currentResults.size()));
+                        groupCount, currentResults.size()));
             }
         }
 
@@ -326,7 +342,7 @@ public class IconBrowserPanel extends JPanel implements Disposable {
                 Math.min(start, currentResults.size()),
                 Math.min(end, currentResults.size()));
 
-        boolean showTags = countDistinctPacks(pageItems) > 1;
+        boolean showTags = countDistinctGroups(pageItems, IconDataService.getInstance()) > 1;
 
         // Load needed packs in background
         IconDataService service = IconDataService.getInstance();
@@ -365,7 +381,7 @@ public class IconBrowserPanel extends JPanel implements Disposable {
         if (!dataReady) {
             return;
         }
-        PackFilterPopup.show(packButton, IconDataService.getInstance().getAllPacks(),
+        PackFilterPopup.show(packButton, IconDataService.getInstance().getAllGroups(),
                 enabledPackIds, project, () -> {
                     updatePackButton();
                     updateSearchPlaceholder();
@@ -408,14 +424,19 @@ public class IconBrowserPanel extends JPanel implements Disposable {
 
     private void updatePackButton() {
         IconDataService service = IconDataService.getInstance();
-        int total = service.getAllPacks().size();
-        int selected = enabledPackIds.size();
-        if (selected == total) {
-            packButton.setText(FxToolsBundle.message("icon.browser.packs.all", total));
-        } else if (selected == 0) {
+        int totalGroups = service.getAllGroups().size();
+        int selectedGroups = 0;
+        for (IconDataService.PackGroup group : service.getAllGroups()) {
+            if (enabledPackIds.containsAll(group.getPackIds())) {
+                selectedGroups++;
+            }
+        }
+        if (selectedGroups == totalGroups) {
+            packButton.setText(FxToolsBundle.message("icon.browser.packs.all", totalGroups));
+        } else if (selectedGroups == 0) {
             packButton.setText(FxToolsBundle.message("icon.browser.packs.none"));
         } else {
-            packButton.setText(FxToolsBundle.message("icon.browser.packs.count", selected));
+            packButton.setText(FxToolsBundle.message("icon.browser.packs.count", selectedGroups));
         }
     }
 
@@ -439,12 +460,31 @@ public class IconBrowserPanel extends JPanel implements Disposable {
         return null;
     }
 
-    private static int countDistinctPacks(@NotNull List<IconDataService.IconEntry> icons) {
-        Set<String> packs = new HashSet<>();
+    /**
+     * Counts distinct aggregated groups across the given icons. Icons from sibling
+     * sub-packs of the same group (e.g. MaterialDesignA and MaterialDesignT) count as one.
+     *
+     * <p>The defensive fallback path (when {@code getGroupForIcon} unexpectedly returns
+     * null) uses the raw packId as a stand-in group key. For <em>single-pack</em> groups
+     * this accidentally produces the correct count because {@code groupKey == packId}
+     * (both derived from the same Maven artifactId). For multi-pack groups the fallback
+     * overcounts (MD2 could appear as 26 "groups") — acceptable since this path only
+     * triggers on data corruption or mid-initialization races that shouldn't occur in
+     * practice.</p>
+     */
+    private static int countDistinctGroups(@NotNull List<IconDataService.IconEntry> icons,
+                                            @NotNull IconDataService service) {
+        Set<String> groupIds = new HashSet<>();
         for (IconDataService.IconEntry icon : icons) {
-            packs.add(icon.getPackId());
+            IconDataService.PackGroup group = service.getGroupForIcon(icon);
+            if (group != null) {
+                groupIds.add(group.getId());
+            } else {
+                // Defensive fallback: treat orphan icon as its own group
+                groupIds.add(icon.getPackId());
+            }
         }
-        return packs.size();
+        return groupIds.size();
     }
 
     @Override
