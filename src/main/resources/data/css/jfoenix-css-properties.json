@@ -1,8 +1,7 @@
 {
   "_meta": {
     "library": "JFoenix",
-    "version": "9.0.10",
-    "markerClass": "com.jfoenix.controls.JFXButton"
+    "version": "9.0.10"
   },
   "-jfx-button-type": {
     "valueType": "enum",

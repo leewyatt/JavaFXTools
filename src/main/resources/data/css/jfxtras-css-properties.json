@@ -1,0 +1,96 @@
+{
+  "_meta": {
+    "library": "JFXtras",
+    "version": "17-r2-SNAPSHOT"
+  },
+  "-fxx-animated": {
+    "valueType": "enum",
+    "values": ["yes", "no"],
+    "appliesTo": "BasicRoundDailGauge, SimpleMetroArcGauge",
+    "default": "yes",
+    "description": "Whether the gauge animates value changes.",
+    "example": "-fxx-animated: no;"
+  },
+  "-fxx-arrow-direction": {
+    "valueType": "enum",
+    "values": ["vertical", "horizontal"],
+    "appliesTo": "ListSpinner",
+    "default": "horizontal",
+    "description": "The direction in which the previous/next arrow buttons are oriented.",
+    "example": "-fxx-arrow-direction: vertical;"
+  },
+  "-fxx-arrow-position": {
+    "valueType": "enum",
+    "values": ["leading", "trailing", "split"],
+    "appliesTo": "ListSpinner",
+    "default": "trailing",
+    "description": "The placement of the previous/next arrow buttons relative to the value.",
+    "example": "-fxx-arrow-position: leading;"
+  },
+  "-fxx-days-after-furthest": {
+    "valueType": "integer",
+    "appliesTo": "Agenda",
+    "default": "9",
+    "description": "The number of days to display after the furthest displayed day.",
+    "example": "-fxx-days-after-furthest: 9;"
+  },
+  "-fxx-days-before-furthest": {
+    "valueType": "integer",
+    "appliesTo": "Agenda",
+    "default": "-9",
+    "description": "The number of days to display before the furthest displayed day.",
+    "example": "-fxx-days-before-furthest: -9;"
+  },
+  "-fxx-label-dateformat": {
+    "valueType": "string",
+    "appliesTo": "CalendarPicker, CalendarTimePicker",
+    "default": "d",
+    "description": "The SimpleDateFormat pattern used to render the day labels.",
+    "example": "-fxx-label-dateformat: \"d\";"
+  },
+  "-fxx-show-ticklabels": {
+    "valueType": "enum",
+    "values": ["yes", "no"],
+    "appliesTo": "CalendarTimePicker",
+    "default": "no",
+    "description": "Whether the tick labels are shown next to the time sliders.",
+    "example": "-fxx-show-ticklabels: yes;"
+  },
+  "-fxx-show-weeknumbers": {
+    "valueType": "enum",
+    "values": ["yes", "no"],
+    "appliesTo": "CalendarPicker",
+    "default": "yes",
+    "description": "Whether the ISO week numbers column is shown in the calendar grid.",
+    "example": "-fxx-show-weeknumbers: no;"
+  },
+  "-fxx-snap-to-minutes": {
+    "valueType": "number",
+    "appliesTo": "Agenda",
+    "default": "5",
+    "description": "The minute granularity to which appointments snap when dragged or resized.",
+    "example": "-fxx-snap-to-minutes: 15;"
+  },
+  "-fxx-tick-color": {
+    "valueType": "paint",
+    "appliesTo": "BasicRoundDailGauge",
+    "default": "black",
+    "description": "The color of the gauge's major and minor ticks.",
+    "example": "-fxx-tick-color: #336699;"
+  },
+  "-fxx-value-alignment": {
+    "valueType": "enum",
+    "values": ["top-left", "top-center", "top-right", "center-left", "center", "center-right", "bottom-left", "bottom-center", "bottom-right", "baseline-left", "baseline-center", "baseline-right"],
+    "appliesTo": "ListSpinner",
+    "default": "center-left",
+    "description": "The alignment of the value text within the spinner's value area.",
+    "example": "-fxx-value-alignment: center;"
+  },
+  "-fxx-value-format": {
+    "valueType": "string",
+    "appliesTo": "BasicRoundDailGauge, SimpleMetroArcGauge",
+    "default": "0",
+    "description": "The DecimalFormat pattern used to render the gauge's numeric value.",
+    "example": "-fxx-value-format: \"0.00\";"
+  }
+}

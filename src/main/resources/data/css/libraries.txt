@@ -1,0 +1,11 @@
+# CSS property data files
+# Format: markerClass=filename
+# The JSON is loaded only when markerClass is resolvable on the project classpath.
+javafx.scene.Node=fx-css-properties.json
+atlantafx.base.theme.Theme=atlantafx-css-properties.json
+org.controlsfx.control.GridView=controlsfx-css-properties.json
+com.dlsc.gemsfx.DialogPane=gemsfx-css-properties.json
+com.jfoenix.controls.JFXButton=jfoenix-css-properties.json
+jfxtras.scene.control.Agenda=jfxtras-css-properties.json
+org.kordamp.ikonli.Ikon=ikonli-css-properties.json
+io.github.palexdev.materialfx.controls.MFXButton=materialfx-css-properties.json

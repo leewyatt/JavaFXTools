@@ -1,8 +1,7 @@
 {
   "_meta": {
     "library": "ControlsFX",
-    "version": "11.2.4-SNAPSHOT",
-    "markerClass": "org.controlsfx.control.GridView"
+    "version": "11.2.4-SNAPSHOT"
   },
   "-fx-cell-height": {
     "valueType": "size",

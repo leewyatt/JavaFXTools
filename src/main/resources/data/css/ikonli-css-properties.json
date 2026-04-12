@@ -1,8 +1,7 @@
 {
   "_meta": {
     "library": "Ikonli",
-    "version": "12.3.1",
-    "markerClass": "org.kordamp.ikonli.Ikon"
+    "version": "12.3.1"
   },
   "-fx-icon-code": {
     "valueType": "icon-code",

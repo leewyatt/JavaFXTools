@@ -26,7 +26,7 @@ public final class FxCssPropertyTable {
 
     private static final Logger LOG = Logger.getInstance(FxCssPropertyTable.class);
     private static final String CSS_DATA_DIR = "/data/css/";
-    private static final String CSS_DATA_INDEX = "/data/css/index.txt";
+    private static final String CSS_LIBRARIES_FILE = "/data/css/libraries.txt";
 
     private static final Map<Project, Map<String, PropertyInfo>> CACHE = new WeakHashMap<>();
 
@@ -169,11 +169,11 @@ public final class FxCssPropertyTable {
     @NotNull
     private static Map<String, PropertyInfo> loadProperties(@NotNull Project project) {
         Map<String, PropertyInfo> result = new LinkedHashMap<>();
-        List<IndexEntry> entries = loadIndex();
+        List<ManifestEntry> entries = loadManifest();
         Gson gson = new Gson();
         Type type = new TypeToken<Map<String, RawProperty>>() {}.getType();
-        for (IndexEntry entry : entries) {
-            if (entry.markerClass != null && !isClassOnClasspath(entry.markerClass, project)) {
+        for (ManifestEntry entry : entries) {
+            if (!isClassOnClasspath(entry.markerClass, project)) {
                 continue;
             }
             loadSingleFile(CSS_DATA_DIR + entry.fileName, gson, type, result);
@@ -181,22 +181,22 @@ public final class FxCssPropertyTable {
         return result;
     }
 
-    private static final class IndexEntry {
-        final @Nullable String markerClass;
+    private static final class ManifestEntry {
+        final @NotNull String markerClass;
         final @NotNull String fileName;
 
-        IndexEntry(@Nullable String markerClass, @NotNull String fileName) {
+        ManifestEntry(@NotNull String markerClass, @NotNull String fileName) {
             this.markerClass = markerClass;
             this.fileName = fileName;
         }
     }
 
     @NotNull
-    private static List<IndexEntry> loadIndex() {
-        List<IndexEntry> entries = new ArrayList<>();
-        try (InputStream is = FxCssPropertyTable.class.getResourceAsStream(CSS_DATA_INDEX)) {
+    private static List<ManifestEntry> loadManifest() {
+        List<ManifestEntry> entries = new ArrayList<>();
+        try (InputStream is = FxCssPropertyTable.class.getResourceAsStream(CSS_LIBRARIES_FILE)) {
             if (is == null) {
-                LOG.warn("CSS data index not found: " + CSS_DATA_INDEX);
+                LOG.warn("CSS libraries manifest not found: " + CSS_LIBRARIES_FILE);
                 return entries;
             }
             try (BufferedReader reader = new BufferedReader(
@@ -208,15 +208,15 @@ public final class FxCssPropertyTable {
                         continue;
                     }
                     int eq = line.indexOf('=');
-                    if (eq > 0) {
-                        entries.add(new IndexEntry(line.substring(0, eq), line.substring(eq + 1)));
-                    } else {
-                        entries.add(new IndexEntry(null, line));
+                    if (eq <= 0 || eq == line.length() - 1) {
+                        LOG.warn("Skipping malformed libraries.txt line: " + line);
+                        continue;
                     }
+                    entries.add(new ManifestEntry(line.substring(0, eq), line.substring(eq + 1)));
                 }
             }
         } catch (Exception ex) {
-            LOG.error("Failed to load CSS data index", ex);
+            LOG.error("Failed to load CSS libraries manifest", ex);
         }
         return entries;
     }
@@ -286,6 +286,5 @@ public final class FxCssPropertyTable {
         // _meta fields
         String library;
         String version;
-        String markerClass;
     }
 }

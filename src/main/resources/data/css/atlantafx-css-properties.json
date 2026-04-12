@@ -1,0 +1,50 @@
+{
+  "_meta": {
+    "library": "AtlantaFX",
+    "version": "2.1.0"
+  },
+  "-fx-highlight-stroke": {
+    "valueType": "paint",
+    "appliesTo": "SelectableTextFlow",
+    "default": "transparent",
+    "description": "The stroke paint used to outline selected text in a SelectableTextFlow.",
+    "example": "-fx-highlight-stroke: #336699;"
+  },
+  "-fx-indeterminate-animation-time": {
+    "valueType": "number",
+    "appliesTo": "RingProgressIndicator",
+    "default": "3",
+    "description": "The duration in seconds of one full cycle of the indeterminate progress animation.",
+    "example": "-fx-indeterminate-animation-time: 2;"
+  },
+  "-fx-label-position": {
+    "valueType": "enum",
+    "values": ["left", "right"],
+    "appliesTo": "ToggleSwitch",
+    "default": "left",
+    "description": "The side on which the ToggleSwitch label text is placed relative to the thumb.",
+    "example": "-fx-label-position: right;"
+  },
+  "-fx-show-week-numbers": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "Calendar",
+    "default": "false",
+    "description": "Whether the Calendar should display an additional column showing week numbers.",
+    "example": "-fx-show-week-numbers: true;"
+  },
+  "-fx-tab-fixed-width": {
+    "valueType": "size",
+    "appliesTo": "TabLine",
+    "default": "120",
+    "description": "The fixed width applied to each tab when the TabLine uses the FIXED_WIDTH resize policy.",
+    "example": "-fx-tab-fixed-width: 150;"
+  },
+  "-fx-thumb-move-animation-time": {
+    "valueType": "number",
+    "appliesTo": "ToggleSwitch",
+    "default": "200",
+    "description": "The duration in milliseconds for the thumb to slide from one edge to the other.",
+    "example": "-fx-thumb-move-animation-time: 150;"
+  }
+}

@@ -1,8 +1,7 @@
 {
   "_meta": {
     "library": "GemsFX",
-    "version": "3.10.1",
-    "markerClass": "com.dlsc.gemsfx.DialogPane"
+    "version": "3.10.1"
   },
   "-fx-active": {
     "valueType": "boolean",

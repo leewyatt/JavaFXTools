@@ -1,0 +1,622 @@
+{
+  "_meta": {
+    "library": "MaterialFX",
+    "version": "11.17.0"
+  },
+  "-mfx-allow-copy": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXPasswordField",
+    "default": "false",
+    "description": "Whether the password field allows copying its content to the clipboard.",
+    "example": "-mfx-allow-copy: true;"
+  },
+  "-mfx-allow-cut": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXPasswordField",
+    "default": "false",
+    "description": "Whether the password field allows cutting its content to the clipboard.",
+    "example": "-mfx-allow-cut: true;"
+  },
+  "-mfx-allow-paste": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXPasswordField",
+    "default": "false",
+    "description": "Whether the password field allows pasting from the clipboard.",
+    "example": "-mfx-allow-paste: true;"
+  },
+  "-mfx-alignment": {
+    "valueType": "enum",
+    "values": ["top-left", "top-center", "top-right", "center-left", "center", "center-right", "bottom-left", "bottom-center", "bottom-right", "baseline-left", "baseline-center", "baseline-right"],
+    "appliesTo": "MFXStepper",
+    "default": "center",
+    "description": "The alignment of the stepper's toggles along its progress bar.",
+    "example": "-mfx-alignment: center;"
+  },
+  "-mfx-alt-color": {
+    "valueType": "paint",
+    "appliesTo": "MFXStepper",
+    "default": "#BEBEBE",
+    "description": "The alternative accent color used by the stepper for inactive toggles and icons.",
+    "example": "-mfx-alt-color: #BEBEBE;"
+  },
+  "-mfx-alternative-unit-increment": {
+    "valueType": "number",
+    "appliesTo": "MFXSlider",
+    "default": "5.0",
+    "description": "The alternative increment step applied when adjusting the slider value with fine-grained input.",
+    "example": "-mfx-alternative-unit-increment: 1.0;"
+  },
+  "-mfx-animate-background": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "RippleGenerator",
+    "default": "true",
+    "description": "Whether the ripple generator animates the background along with the ripple effect.",
+    "example": "-mfx-animate-background: false;"
+  },
+  "-mfx-animate-lines": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXLegacyComboBox",
+    "default": "true",
+    "description": "Whether the focus and unfocused lines are animated on focus change.",
+    "example": "-mfx-animate-lines: false;"
+  },
+  "-mfx-animate-on-press": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXSlider",
+    "default": "true",
+    "description": "Whether the slider value is animated when the track is pressed.",
+    "example": "-mfx-animate-on-press: false;"
+  },
+  "-mfx-animated": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXTextField",
+    "default": "true",
+    "description": "Whether the floating prompt text transitions are animated.",
+    "example": "-mfx-animated: false;"
+  },
+  "-mfx-animation-duration": {
+    "valueType": "number",
+    "appliesTo": "MFXTreeItem",
+    "default": "250",
+    "description": "The duration in milliseconds of the tree item expand/collapse animation.",
+    "example": "-mfx-animation-duration: 300;"
+  },
+  "-mfx-animation-speed": {
+    "valueType": "number",
+    "appliesTo": "MFXProgressBar, MFXCircleRippleGenerator",
+    "default": "1.0",
+    "description": "A multiplier applied to the default animation speed of the control.",
+    "example": "-mfx-animation-speed: 1.5;"
+  },
+  "-mfx-auto-clip": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXCircleRippleGenerator",
+    "default": "false",
+    "description": "Whether the ripple effect is automatically clipped to the host region bounds.",
+    "example": "-mfx-auto-clip: true;"
+  },
+  "-mfx-background-insets": {
+    "valueType": "size",
+    "appliesTo": "MFXLegacyListCell",
+    "default": "0",
+    "description": "The insets applied around the cell's background fill.",
+    "example": "-mfx-background-insets: 2;"
+  },
+  "-mfx-background-opacity": {
+    "valueType": "number",
+    "appliesTo": "MFXCircleRippleGenerator",
+    "default": "0.3",
+    "description": "The opacity of the background overlay animated alongside the ripple.",
+    "example": "-mfx-background-opacity: 0.2;"
+  },
+  "-mfx-bar-animated": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXStepper",
+    "default": "true",
+    "description": "Whether the stepper's progress bar animates its progress changes.",
+    "example": "-mfx-bar-animated: false;"
+  },
+  "-mfx-bar-background": {
+    "valueType": "paint",
+    "appliesTo": "MFXStepper",
+    "default": "#F8F8FF",
+    "description": "The background color of the stepper's progress bar track.",
+    "example": "-mfx-bar-background: #EEEEEE;"
+  },
+  "-mfx-bar-borders-radius": {
+    "valueType": "size",
+    "appliesTo": "MFXStepper",
+    "default": "7.0",
+    "description": "The corner radius of the stepper's progress bar.",
+    "example": "-mfx-bar-borders-radius: 10;"
+  },
+  "-mfx-base-color": {
+    "valueType": "paint",
+    "appliesTo": "MFXStepper",
+    "default": "#7F0FFF",
+    "description": "The primary accent color used by the stepper for active elements.",
+    "example": "-mfx-base-color: #7F0FFF;"
+  },
+  "-mfx-bidirectional": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXSlider",
+    "default": "true",
+    "description": "Whether the slider can be dragged in both directions from its current value.",
+    "example": "-mfx-bidirectional: false;"
+  },
+  "-mfx-border-gap": {
+    "valueType": "size",
+    "appliesTo": "MFXTextField",
+    "default": "10.0",
+    "description": "The horizontal gap inside the border used by the floating text when FloatMode is BORDER.",
+    "example": "-mfx-border-gap: 12;"
+  },
+  "-mfx-button-type": {
+    "valueType": "enum",
+    "values": ["flat", "raised"],
+    "appliesTo": "MFXButton",
+    "default": "flat",
+    "description": "The visual style of the button, either flat or raised with a shadow.",
+    "example": "-mfx-button-type: raised;"
+  },
+  "-mfx-caret-visible": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXTextField",
+    "default": "true",
+    "description": "Whether the text field shows its text caret.",
+    "example": "-mfx-caret-visible: false;"
+  },
+  "-mfx-color1": {
+    "valueType": "color",
+    "appliesTo": "MFXProgressSpinner",
+    "default": "#4285f4",
+    "description": "The first color used in the spinner's four-color indeterminate animation.",
+    "example": "-mfx-color1: #4285f4;"
+  },
+  "-mfx-color2": {
+    "valueType": "color",
+    "appliesTo": "MFXProgressSpinner",
+    "default": "#db4437",
+    "description": "The second color used in the spinner's four-color indeterminate animation.",
+    "example": "-mfx-color2: #db4437;"
+  },
+  "-mfx-color3": {
+    "valueType": "color",
+    "appliesTo": "MFXProgressSpinner",
+    "default": "#f4b400",
+    "description": "The third color used in the spinner's four-color indeterminate animation.",
+    "example": "-mfx-color3: #f4b400;"
+  },
+  "-mfx-color4": {
+    "valueType": "color",
+    "appliesTo": "MFXProgressSpinner",
+    "default": "#0F9D58",
+    "description": "The fourth color used in the spinner's four-color indeterminate animation.",
+    "example": "-mfx-color4: #0F9D58;"
+  },
+  "-mfx-content-disposition": {
+    "valueType": "enum",
+    "values": ["top", "right", "bottom", "left", "center", "graphic-only", "text-only"],
+    "appliesTo": "MFXCheckbox, MFXRadioButton, MFXToggleButton",
+    "default": "left",
+    "description": "The position of the text relative to the control's graphic.",
+    "example": "-mfx-content-disposition: right;"
+  },
+  "-mfx-corner-radius": {
+    "valueType": "size",
+    "appliesTo": "MFXLegacyListCell",
+    "default": "0",
+    "description": "The corner radius of the cell's background.",
+    "example": "-mfx-corner-radius: 4;"
+  },
+  "-mfx-depth-level": {
+    "valueType": "enum",
+    "values": ["level0", "level1", "level2", "level3", "level4", "level5"],
+    "appliesTo": "MFXButton, MFXLegacyListView, AbstractMFXListView",
+    "default": "level2",
+    "description": "The depth level of the drop shadow applied to the control.",
+    "example": "-mfx-depth-level: level3;"
+  },
+  "-mfx-editable": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXTextField",
+    "default": "true",
+    "description": "Whether the text field's content can be edited by the user.",
+    "example": "-mfx-editable: false;"
+  },
+  "-mfx-extra-spacing": {
+    "valueType": "size",
+    "appliesTo": "MFXStepper",
+    "default": "64.0",
+    "description": "The extra spacing added at the two ends of the stepper's progress bar.",
+    "example": "-mfx-extra-spacing: 32;"
+  },
+  "-mfx-float-mode": {
+    "valueType": "enum",
+    "values": ["disabled", "above", "border", "inline"],
+    "appliesTo": "MFXTextField",
+    "default": "inline",
+    "description": "The floating behavior of the text field's prompt text.",
+    "example": "-mfx-float-mode: above;"
+  },
+  "-mfx-gap": {
+    "valueType": "size",
+    "appliesTo": "MFXCheckbox, MFXRadioButton, MFXToggleButton, MFXTextField, MFXCircleToggleNode",
+    "default": "8.0",
+    "description": "The spacing between the control's graphic and its text.",
+    "example": "-mfx-gap: 10;"
+  },
+  "-mfx-hide-character": {
+    "valueType": "string",
+    "appliesTo": "MFXPasswordField",
+    "default": "\u25cf",
+    "description": "The character used to mask the password field's content.",
+    "example": "-mfx-hide-character: \"*\";"
+  },
+  "-mfx-hide-cursor": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXMagnifierPane",
+    "default": "false",
+    "description": "Whether the system cursor is hidden while the magnifier is active.",
+    "example": "-mfx-hide-cursor: true;"
+  },
+  "-mfx-hide-scrollbars": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "AbstractMFXListView, MFXLegacyListView",
+    "default": "false",
+    "description": "Whether the list view's scrollbars are hidden until hover.",
+    "example": "-mfx-hide-scrollbars: true;"
+  },
+  "-mfx-hide-zoom-label-after": {
+    "valueType": "number",
+    "appliesTo": "MFXMagnifierPane",
+    "default": "2000.0",
+    "description": "The time in milliseconds before the magnifier's zoom label fades out.",
+    "example": "-mfx-hide-zoom-label-after: 1500;"
+  },
+  "-mfx-hover-color": {
+    "valueType": "paint",
+    "appliesTo": "MFXLegacyTableRow, MFXLegacyListCell",
+    "default": "rgba(50, 150, 255, 0.15)",
+    "description": "The background color applied to the cell or row while hovered.",
+    "example": "-mfx-hover-color: rgba(0, 120, 255, 0.2);"
+  },
+  "-mfx-label-text-gap": {
+    "valueType": "size",
+    "appliesTo": "MFXStepperToggle",
+    "default": "10.0",
+    "description": "The spacing between the stepper toggle's circle and its label text.",
+    "example": "-mfx-label-text-gap: 8;"
+  },
+  "-mfx-length": {
+    "valueType": "number",
+    "appliesTo": "MFXToggleButton",
+    "default": "36.0",
+    "description": "The length of the toggle button's track.",
+    "example": "-mfx-length: 40;"
+  },
+  "-mfx-lens-size": {
+    "valueType": "number",
+    "appliesTo": "MFXMagnifierPane",
+    "default": "100.0",
+    "description": "The diameter of the magnifier's circular lens.",
+    "example": "-mfx-lens-size: 120;"
+  },
+  "-mfx-line-color": {
+    "valueType": "paint",
+    "appliesTo": "MFXLegacyComboBox",
+    "default": "rgb(50, 120, 220)",
+    "description": "The color of the focused underline beneath the combo box.",
+    "example": "-mfx-line-color: #3278DC;"
+  },
+  "-mfx-line-stroke-cap": {
+    "valueType": "enum",
+    "values": ["butt", "round", "square"],
+    "appliesTo": "MFXLegacyComboBox",
+    "default": "round",
+    "description": "The stroke cap style of the combo box's underline.",
+    "example": "-mfx-line-stroke-cap: square;"
+  },
+  "-mfx-line-stroke-width": {
+    "valueType": "size",
+    "appliesTo": "MFXLegacyComboBox",
+    "default": "2.0",
+    "description": "The stroke width of the combo box's underline.",
+    "example": "-mfx-line-stroke-width: 1;"
+  },
+  "-mfx-max-zoom": {
+    "valueType": "number",
+    "appliesTo": "MFXMagnifierPane",
+    "default": "8.0",
+    "description": "The maximum zoom factor allowed by the magnifier.",
+    "example": "-mfx-max-zoom: 10;"
+  },
+  "-mfx-measure-unit-gap": {
+    "valueType": "size",
+    "appliesTo": "MFXTextField",
+    "default": "5.0",
+    "description": "The gap between the text field's content and its measure unit label.",
+    "example": "-mfx-measure-unit-gap: 8;"
+  },
+  "-mfx-min-zoom": {
+    "valueType": "number",
+    "appliesTo": "MFXMagnifierPane",
+    "default": "2.0",
+    "description": "The minimum zoom factor allowed by the magnifier.",
+    "example": "-mfx-min-zoom: 1;"
+  },
+  "-mfx-minor-ticks-count": {
+    "valueType": "integer",
+    "appliesTo": "MFXSlider",
+    "default": "5",
+    "description": "The number of minor ticks rendered between two major ticks.",
+    "example": "-mfx-minor-ticks-count: 4;"
+  },
+  "-mfx-orientation": {
+    "valueType": "enum",
+    "values": ["horizontal", "vertical"],
+    "appliesTo": "MFXSlider",
+    "default": "horizontal",
+    "description": "The orientation of the slider.",
+    "example": "-mfx-orientation: vertical;"
+  },
+  "-mfx-paused": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXCircleRippleGenerator",
+    "default": "false",
+    "description": "Whether the ripple generator is paused and does not emit new ripples.",
+    "example": "-mfx-paused: true;"
+  },
+  "-mfx-picker-pos": {
+    "valueType": "enum",
+    "values": ["top", "center", "bottom", "baseline"],
+    "appliesTo": "MFXMagnifierPane",
+    "default": "bottom",
+    "description": "The vertical position of the magnifier's color picker relative to the lens.",
+    "example": "-mfx-picker-pos: top;"
+  },
+  "-mfx-picker-spacing": {
+    "valueType": "size",
+    "appliesTo": "MFXMagnifierPane",
+    "default": "10.0",
+    "description": "The spacing between the magnifier's lens and its color picker.",
+    "example": "-mfx-picker-spacing: 12;"
+  },
+  "-mfx-popup-side": {
+    "valueType": "enum",
+    "values": ["default", "other-side"],
+    "appliesTo": "MFXSlider",
+    "default": "default",
+    "description": "Which side of the slider the popup value indicator appears on.",
+    "example": "-mfx-popup-side: other-side;"
+  },
+  "-mfx-progress-color": {
+    "valueType": "paint",
+    "appliesTo": "MFXStepper",
+    "default": "#7F0FFF",
+    "description": "The color of the stepper's progress bar fill.",
+    "example": "-mfx-progress-color: #7F0FFF;"
+  },
+  "-mfx-radio-gap": {
+    "valueType": "size",
+    "appliesTo": "MFXRadioButton",
+    "default": "3.5",
+    "description": "The gap between the radio button's outer circle and its inner filled dot.",
+    "example": "-mfx-radio-gap: 4;"
+  },
+  "-mfx-radius": {
+    "valueType": "size",
+    "appliesTo": "MFXRadioButton, MFXToggleButton, MFXProgressSpinner",
+    "default": "8.0",
+    "description": "The radius of the control's circular component.",
+    "example": "-mfx-radius: 10;"
+  },
+  "-mfx-ripple-color": {
+    "valueType": "paint",
+    "appliesTo": "RippleGenerator, MFXCircleRippleGenerator",
+    "default": "lightgray",
+    "description": "The color of the ripple effect.",
+    "example": "-mfx-ripple-color: #BDBDBD;"
+  },
+  "-mfx-ripple-opacity": {
+    "valueType": "number",
+    "appliesTo": "MFXCircleRippleGenerator",
+    "default": "1.0",
+    "description": "The initial opacity of the emitted ripple.",
+    "example": "-mfx-ripple-opacity: 0.5;"
+  },
+  "-mfx-ripple-radius": {
+    "valueType": "size",
+    "appliesTo": "RippleGenerator, MFXCircleRippleGenerator",
+    "default": "10.0",
+    "description": "The maximum radius the ripple reaches before fading.",
+    "example": "-mfx-ripple-radius: 20;"
+  },
+  "-mfx-rows-count": {
+    "valueType": "integer",
+    "appliesTo": "MFXComboBox",
+    "default": "10",
+    "description": "The number of rows displayed in the combo box's popup.",
+    "example": "-mfx-rows-count: 8;"
+  },
+  "-mfx-scale-on-above": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXTextField",
+    "default": "false",
+    "description": "Whether the prompt text scales down when floating above the field.",
+    "example": "-mfx-scale-on-above: true;"
+  },
+  "-mfx-scroll-on-open": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXComboBox",
+    "default": "false",
+    "description": "Whether the combo box scrolls to the selected item when the popup opens.",
+    "example": "-mfx-scroll-on-open: true;"
+  },
+  "-mfx-selected-color": {
+    "valueType": "paint",
+    "appliesTo": "MFXLegacyTableRow, MFXLegacyListCell",
+    "default": "rgb(180, 180, 255)",
+    "description": "The background color applied to the cell or row when selected.",
+    "example": "-mfx-selected-color: #B4B4FF;"
+  },
+  "-mfx-show-major-ticks": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXSlider",
+    "default": "false",
+    "description": "Whether the slider renders major tick marks along its track.",
+    "example": "-mfx-show-major-ticks: true;"
+  },
+  "-mfx-show-minor-ticks": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXSlider",
+    "default": "false",
+    "description": "Whether the slider renders minor tick marks between major ticks.",
+    "example": "-mfx-show-minor-ticks: true;"
+  },
+  "-mfx-show-password": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXPasswordField",
+    "default": "false",
+    "description": "Whether the password field reveals its content as plain text.",
+    "example": "-mfx-show-password: true;"
+  },
+  "-mfx-show-ticks-at-edge": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXSlider",
+    "default": "true",
+    "description": "Whether tick marks are rendered at the edges of the slider track.",
+    "example": "-mfx-show-ticks-at-edge: false;"
+  },
+  "-mfx-show-zoom-label": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXMagnifierPane",
+    "default": "true",
+    "description": "Whether the magnifier displays its current zoom factor as a label.",
+    "example": "-mfx-show-zoom-label: false;"
+  },
+  "-mfx-size": {
+    "valueType": "number",
+    "appliesTo": "MFXStepperToggle, MFXCircleToggleNode, MFXIconWrapper",
+    "default": "32.0",
+    "description": "The overall size of the control.",
+    "example": "-mfx-size: 48;"
+  },
+  "-mfx-slider-mode": {
+    "valueType": "enum",
+    "values": ["default", "snap-to-ticks"],
+    "appliesTo": "MFXSlider",
+    "default": "default",
+    "description": "The snap behavior of the slider when the thumb is released.",
+    "example": "-mfx-slider-mode: snap-to-ticks;"
+  },
+  "-mfx-spacing": {
+    "valueType": "size",
+    "appliesTo": "MFXStepper",
+    "default": "128.0",
+    "description": "The horizontal spacing between the stepper's toggles.",
+    "example": "-mfx-spacing: 100;"
+  },
+  "-mfx-starting-angle": {
+    "valueType": "number",
+    "appliesTo": "MFXProgressSpinner",
+    "default": "0",
+    "description": "The angle in degrees at which the spinner's indeterminate animation starts.",
+    "example": "-mfx-starting-angle: 90;"
+  },
+  "-mfx-stroke-width": {
+    "valueType": "size",
+    "appliesTo": "MFXStepperToggle",
+    "default": "2.0",
+    "description": "The stroke width of the stepper toggle's outer circle.",
+    "example": "-mfx-stroke-width: 3;"
+  },
+  "-mfx-text-expand": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXCheckbox, MFXRadioButton, MFXToggleButton",
+    "default": "false",
+    "description": "Whether the text label can grow beyond its computed width to fill available space.",
+    "example": "-mfx-text-expand: true;"
+  },
+  "-mfx-text-limit": {
+    "valueType": "integer",
+    "appliesTo": "MFXTextField",
+    "default": "-1",
+    "description": "The maximum number of characters allowed in the field, or -1 for unlimited.",
+    "example": "-mfx-text-limit: 50;"
+  },
+  "-mfx-text-position": {
+    "valueType": "enum",
+    "values": ["top", "bottom"],
+    "appliesTo": "MFXStepperToggle, MFXCircleToggleNode",
+    "default": "bottom",
+    "description": "The position of the label text relative to the control's graphic.",
+    "example": "-mfx-text-position: top;"
+  },
+  "-mfx-tick-unit": {
+    "valueType": "number",
+    "appliesTo": "MFXSlider",
+    "default": "25.0",
+    "description": "The value interval between two major ticks on the slider.",
+    "example": "-mfx-tick-unit: 10;"
+  },
+  "-mfx-unfocused-line-color": {
+    "valueType": "paint",
+    "appliesTo": "MFXLegacyComboBox",
+    "default": "rgb(77, 77, 77)",
+    "description": "The color of the underline beneath the combo box when it is not focused.",
+    "example": "-mfx-unfocused-line-color: #4D4D4D;"
+  },
+  "-mfx-unit-increment": {
+    "valueType": "number",
+    "appliesTo": "MFXSlider",
+    "default": "10.0",
+    "description": "The increment step applied when adjusting the slider value via the keyboard or wheel.",
+    "example": "-mfx-unit-increment: 5;"
+  },
+  "-mfx-validate": {
+    "valueType": "boolean",
+    "values": ["true", "false"],
+    "appliesTo": "MFXLegacyComboBox",
+    "default": "false",
+    "description": "Whether the combo box performs validation on its selected value.",
+    "example": "-mfx-validate: true;"
+  },
+  "-mfx-zoom": {
+    "valueType": "number",
+    "appliesTo": "MFXMagnifierPane",
+    "default": "2.0",
+    "description": "The current zoom factor applied by the magnifier.",
+    "example": "-mfx-zoom: 4;"
+  },
+  "-mfx-zoom-increment": {
+    "valueType": "number",
+    "appliesTo": "MFXMagnifierPane",
+    "default": "0.25",
+    "description": "The zoom factor increment applied on each zoom-in or zoom-out step.",
+    "example": "-mfx-zoom-increment: 0.5;"
+  }
+}
