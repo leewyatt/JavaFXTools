@@ -52,7 +52,9 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
@@ -62,6 +64,7 @@ import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * ToolWindow panel for extracting and simplifying SVG path data.
@@ -98,6 +101,8 @@ public class SvgPathToolPanel extends JPanel {
             new JBColor(Color.WHITE, new Color(0x2B2D30));
     private static final JBColor DROP_BORDER =
             new JBColor(new Color(0xC0C0C0), new Color(0x505357));
+    private static final JBColor DROP_ACCENT =
+            new JBColor(new Color(0x3574F0), new Color(0x548AF7));
 
     // ==================== Options ====================
     private static final int[] SIZE_OPTIONS = {16, 24, 32, 48, 64, 128, 256, 512, 1024};
@@ -181,7 +186,9 @@ public class SvgPathToolPanel extends JPanel {
         gbc.insets = JBUI.emptyInsets();
         previewPanel.add(createLabeledPreview(FxToolsBundle.message("svg.tool.extracted"), extractedPreview), gbc);
 
-        previewCard = wrapInCard(previewPanel, JBUI.insets(10, 12));
+        DroppableCard droppablePreview = new DroppableCard(previewPanel, JBUI.insets(10, 12));
+        setupDropTarget(droppablePreview, droppablePreview::setHighlighted);
+        previewCard = droppablePreview;
         main.add(previewCard);
         main.add(Box.createVerticalStrut(JBUI.scale(8)));
 
@@ -338,29 +345,13 @@ public class SvgPathToolPanel extends JPanel {
 
     @NotNull
     private JPanel createDropZone() {
-        JPanel zone = new JPanel(new GridBagLayout()) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                int arc = JBUI.scale(CARD_ARC);
-                g2.setColor(DROP_ZONE_BG);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), arc, arc);
-                g2.setColor(DROP_BORDER);
-                g2.setStroke(new BasicStroke(1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                        10f, new float[]{5f, 4f}, 0f));
-                g2.drawRoundRect(1, 1, getWidth() - 2, getHeight() - 2, arc, arc);
-                g2.dispose();
-            }
-        };
-        zone.setOpaque(false);
+        DropZone zone = new DropZone();
         zone.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         zone.setAlignmentX(LEFT_ALIGNMENT);
         int h = JBUI.scale(66);
         zone.setPreferredSize(new Dimension(100, h));
         zone.setMaximumSize(new Dimension(Short.MAX_VALUE, h));
-        setupDropTarget(zone);
+        setupDropTarget(zone, zone::setHighlighted);
         zone.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -504,10 +495,42 @@ public class SvgPathToolPanel extends JPanel {
     // ==================== Drag & Drop ====================
 
     @SuppressWarnings("unchecked")
-    private void setupDropTarget(@NotNull JComponent target) {
+    private void setupDropTarget(@NotNull JComponent target,
+                                 @Nullable Consumer<Boolean> highlightCallback) {
         target.setDropTarget(new DropTarget(target, DnDConstants.ACTION_COPY, new DropTargetAdapter() {
             @Override
+            public void dragEnter(DropTargetDragEvent event) {
+                if (event.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                    event.acceptDrag(DnDConstants.ACTION_COPY);
+                    if (highlightCallback != null) {
+                        highlightCallback.accept(true);
+                    }
+                } else {
+                    event.rejectDrag();
+                }
+            }
+
+            @Override
+            public void dragOver(DropTargetDragEvent event) {
+                if (event.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                    event.acceptDrag(DnDConstants.ACTION_COPY);
+                } else {
+                    event.rejectDrag();
+                }
+            }
+
+            @Override
+            public void dragExit(DropTargetEvent event) {
+                if (highlightCallback != null) {
+                    highlightCallback.accept(false);
+                }
+            }
+
+            @Override
             public void drop(DropTargetDropEvent event) {
+                if (highlightCallback != null) {
+                    highlightCallback.accept(false);
+                }
                 try {
                     if (!event.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                         event.rejectDrop();
@@ -536,6 +559,81 @@ public class SvgPathToolPanel extends JPanel {
                 }
             }
         }));
+    }
+
+    // ==================== Drop Zone ====================
+
+    private static final class DropZone extends JPanel {
+
+        private boolean highlighted;
+
+        DropZone() {
+            super(new GridBagLayout());
+            setOpaque(false);
+        }
+
+        void setHighlighted(boolean highlighted) {
+            if (this.highlighted == highlighted) {
+                return;
+            }
+            this.highlighted = highlighted;
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            int arc = JBUI.scale(CARD_ARC);
+            g2.setColor(DROP_ZONE_BG);
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), arc, arc);
+            g2.setColor(highlighted ? DROP_ACCENT : DROP_BORDER);
+            g2.setStroke(new BasicStroke(highlighted ? 2f : 1f,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                    10f, new float[]{5f, 4f}, 0f));
+            g2.drawRoundRect(1, 1, getWidth() - 2, getHeight() - 2, arc, arc);
+            g2.dispose();
+        }
+    }
+
+    // ==================== Droppable Card ====================
+
+    private static final class DroppableCard extends JPanel {
+
+        private boolean highlighted;
+
+        DroppableCard(@NotNull JComponent content, @NotNull Insets padding) {
+            super(new BorderLayout());
+            setOpaque(false);
+            setBorder(JBUI.Borders.empty(padding.top, padding.left, padding.bottom, padding.right));
+            setAlignmentX(LEFT_ALIGNMENT);
+            add(content, BorderLayout.CENTER);
+        }
+
+        void setHighlighted(boolean highlighted) {
+            if (this.highlighted == highlighted) {
+                return;
+            }
+            this.highlighted = highlighted;
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            int arc = JBUI.scale(CARD_ARC);
+            g2.setColor(CARD_BG);
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), arc, arc);
+            int offset = highlighted ? 1 : 0;
+            g2.setStroke(new BasicStroke(highlighted ? 2f : 1f));
+            g2.setColor(highlighted ? DROP_ACCENT : CARD_BORDER);
+            g2.drawRoundRect(offset, offset,
+                    getWidth() - 1 - 2 * offset, getHeight() - 1 - 2 * offset, arc, arc);
+            g2.dispose();
+        }
     }
 
     // ==================== Processing ====================
