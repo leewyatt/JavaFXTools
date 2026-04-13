@@ -11,6 +11,8 @@ import io.github.leewyatt.fxtools.toolwindow.iconbrowser.IconBrowserPanel;
 import io.github.leewyatt.fxtools.toolwindow.svgtool.SvgPathToolPanel;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * Factory for the "JavaFX Tools" tool window.
  */
@@ -30,5 +32,7 @@ public class FxToolWindowFactory implements ToolWindowFactory {
         Content svgContent = cf.createContent(
                 svgTool, FxToolsBundle.message("svg.tool.tab"), false);
         toolWindow.getContentManager().addContent(svgContent);
+
+        toolWindow.setTitleActions(List.of(new ToolWindowLinksActionGroup()));
     }
 }
