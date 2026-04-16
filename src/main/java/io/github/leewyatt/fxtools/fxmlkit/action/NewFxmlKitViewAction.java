@@ -23,8 +23,12 @@ import com.intellij.psi.*;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import io.github.leewyatt.fxtools.fxmlkit.FxmlKitDetector;
+import io.github.leewyatt.fxtools.fxmlkit.dependency.DependencyContextBuilder;
+import io.github.leewyatt.fxtools.fxmlkit.dependency.DependencyInsertionContext;
+import io.github.leewyatt.fxtools.fxmlkit.dialog.AddFxmlKitDependencyDialog;
 import io.github.leewyatt.fxtools.fxmlkit.dialog.I18nConfig;
 import io.github.leewyatt.fxtools.fxmlkit.dialog.NewFxmlKitViewDialog;
+import io.github.leewyatt.fxtools.util.FxDetector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
 
@@ -32,8 +36,10 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Action for creating a new FxmlKit View with associated files.
- * Visible in New menu when the project has FxmlKit on its classpath.
+ * Action for creating a new FxmlKit View with associated files. Visible only in
+ * JavaFX projects (detected via {@code javafx.scene.Node} on the classpath).
+ * When the project does not depend on FxmlKit the files are still generated and
+ * a dialog is shown afterwards with the Maven/Gradle coordinates to add.
  */
 public class NewFxmlKitViewAction extends AnAction {
 
@@ -178,6 +184,17 @@ public class NewFxmlKitViewAction extends AnAction {
                         LOG.error("Failed to create FxmlKit view files", ex);
                     }
                 });
+
+        // Runs on EDT, outside the WriteCommandAction above.
+        // DependencyContextBuilder.build() may show a modal progress dialog
+        // (via FxmlKitVersionResolver) — safe here because no write lock is held.
+        // Use module-scoped check: in multi-module projects, other modules may
+        // already have FxmlKit while the current module does not.
+        if (!FxmlKitDetector.isFxmlKitModule(module)) {
+            DependencyInsertionContext ctx =
+                    DependencyContextBuilder.build(project, module);
+            new AddFxmlKitDependencyDialog(project, ctx).show();
+        }
     }
 
     @Override
@@ -201,7 +218,12 @@ public class NewFxmlKitViewAction extends AnAction {
             return;
         }
 
-        e.getPresentation().setEnabledAndVisible(FxmlKitDetector.isFxmlKitProject(project));
+        if (!FxDetector.isJavaFxProject(project)) {
+            e.getPresentation().setEnabledAndVisible(false);
+            return;
+        }
+
+        e.getPresentation().setEnabledAndVisible(true);
     }
 
     @Override

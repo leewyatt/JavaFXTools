@@ -8,9 +8,10 @@ import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.awt.RelativePoint;
 import io.github.leewyatt.fxtools.FxToolsBundle;
+import io.github.leewyatt.fxtools.util.BuildSystemDetector;
+import io.github.leewyatt.fxtools.util.BuildSystemDetector.BuildSystem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,34 +39,6 @@ public final class IconCopyUtil {
 
     /** A single copyable snippet derived from an icon. */
     public record CopyItem(@NotNull String label, @NotNull String value, boolean separatorBefore) {
-    }
-
-    // ==================== Build System Detection ====================
-
-    private enum BuildSystem { MAVEN, GRADLE, NONE }
-
-    private static BuildSystem detectBuildSystem(@Nullable Project project) {
-        if (project == null) {
-            return BuildSystem.NONE;
-        }
-        String basePath = project.getBasePath();
-        if (basePath == null) {
-            return BuildSystem.NONE;
-        }
-        VirtualFile baseDir = com.intellij.openapi.vfs.LocalFileSystem.getInstance()
-                .findFileByPath(basePath);
-        if (baseDir == null) {
-            return BuildSystem.NONE;
-        }
-        // Check Gradle first — Gradle projects sometimes also have pom.xml
-        if (baseDir.findChild("build.gradle") != null
-                || baseDir.findChild("build.gradle.kts") != null) {
-            return BuildSystem.GRADLE;
-        }
-        if (baseDir.findChild("pom.xml") != null) {
-            return BuildSystem.MAVEN;
-        }
-        return BuildSystem.NONE;
     }
 
     // ==================== Building ====================
@@ -105,7 +78,7 @@ public final class IconCopyUtil {
             if (pack.getMaven() != null && service != null) {
                 String[] parts = pack.getMaven().split(":");
                 String version = service.getIkonliVersion();
-                BuildSystem buildSystem = detectBuildSystem(project);
+                BuildSystem buildSystem = BuildSystemDetector.detect(project);
                 if (buildSystem == BuildSystem.MAVEN && parts.length == 2) {
                     String maven = "<dependency>\n    <groupId>" + parts[0] + "</groupId>\n"
                             + "    <artifactId>" + parts[1] + "</artifactId>\n"
