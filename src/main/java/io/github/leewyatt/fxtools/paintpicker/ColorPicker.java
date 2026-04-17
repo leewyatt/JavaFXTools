@@ -29,6 +29,7 @@
  */
 package io.github.leewyatt.fxtools.paintpicker;
 
+import com.intellij.ui.Gray;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SearchTextField;
 import com.intellij.ui.components.JBLabel;
@@ -81,10 +82,10 @@ public class ColorPicker extends JPanel {
 
     public static final String PROP_COLOR = "pickerColor";
 
-    private static final JBColor CHECKER_WHITE = new JBColor(Color.WHITE, new Color(60, 60, 60));
-    private static final JBColor CHECKER_GRAY = new JBColor(Color.LIGHT_GRAY, new Color(70, 70, 70));
-    private static final JBColor INDICATOR_OUTER = new JBColor(Color.BLACK, new Color(220, 220, 220));
-    private static final JBColor INDICATOR_INNER = new JBColor(Color.WHITE, new Color(40, 40, 40));
+    private static final JBColor CHECKER_WHITE = new JBColor(Color.WHITE, Gray._60);
+    private static final JBColor CHECKER_GRAY = new JBColor(Color.LIGHT_GRAY, Gray._70);
+    private static final JBColor INDICATOR_OUTER = new JBColor(Color.BLACK, Gray._220);
+    private static final JBColor INDICATOR_INNER = new JBColor(Color.WHITE, Gray._40);
     private static final Color CHIP_BORDER = JBColor.border();
 
     private final SatBrightPanel satBrightPanel;

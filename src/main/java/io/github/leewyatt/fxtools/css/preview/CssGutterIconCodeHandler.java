@@ -2,6 +2,7 @@ package io.github.leewyatt.fxtools.css.preview;
 
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.ui.Gray;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.ui.components.JBLabel;
@@ -32,7 +33,7 @@ public final class CssGutterIconCodeHandler {
     private static final Color SVG_FILL =
             new JBColor(new Color(0x3C3C3C), new Color(0xCCCCCC));
     private static final Color PREVIEW_BG =
-            new JBColor(new Color(240, 240, 240), new Color(60, 60, 60));
+            new JBColor(Gray._240, Gray._60);
 
     private CssGutterIconCodeHandler() {
     }
