@@ -9,11 +9,13 @@ import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.ui.popup.JBPopupListener;
+import com.intellij.openapi.ui.popup.LightweightWindowEvent;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.awt.RelativePoint;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 import io.github.leewyatt.fxtools.paintpicker.PaintConvertUtil;
 import io.github.leewyatt.fxtools.paintpicker.PaintPicker;
@@ -121,9 +123,9 @@ public final class CssGutterColorHandler {
                 .setCancelOnWindowDeactivation(true)
                 .createPopup();
 
-        popup.addListener(new com.intellij.openapi.ui.popup.JBPopupListener() {
+        popup.addListener(new JBPopupListener() {
             @Override
-            public void onClosed(com.intellij.openapi.ui.popup.@NotNull LightweightWindowEvent event) {
+            public void onClosed(@NotNull LightweightWindowEvent event) {
                 marker.dispose();
             }
         });

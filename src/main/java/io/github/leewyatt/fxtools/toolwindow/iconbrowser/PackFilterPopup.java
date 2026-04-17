@@ -1,9 +1,11 @@
 package io.github.leewyatt.fxtools.toolwindow.iconbrowser;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.popup.IconButton;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.CheckBoxList;
+import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.SearchTextField;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
@@ -11,10 +13,12 @@ import io.github.leewyatt.fxtools.FxToolsBundle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.event.DocumentEvent;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -95,7 +99,7 @@ public class PackFilterPopup {
 
         // ==================== Bottom Bar ====================
         JPanel bottomArea = new JPanel();
-        bottomArea.setLayout(new javax.swing.BoxLayout(bottomArea, javax.swing.BoxLayout.Y_AXIS));
+        bottomArea.setLayout(new BoxLayout(bottomArea, BoxLayout.Y_AXIS));
         bottomArea.setBorder(JBUI.Borders.empty(2, 4, 4, 4));
 
         // Row 1: Select Project Deps (global operation, closes popup)
@@ -130,9 +134,9 @@ public class PackFilterPopup {
         content.add(bottomArea, BorderLayout.SOUTH);
 
         // ==================== Filter Logic ====================
-        filterField.addDocumentListener(new com.intellij.ui.DocumentAdapter() {
+        filterField.addDocumentListener(new DocumentAdapter() {
             @Override
-            protected void textChanged(@NotNull javax.swing.event.DocumentEvent e) {
+            protected void textChanged(@NotNull DocumentEvent e) {
                 String text = filterField.getText().toLowerCase().trim();
                 visibleGroups.clear();
                 checkList.clear();
@@ -156,7 +160,7 @@ public class PackFilterPopup {
                 .setCancelOnClickOutside(true)
                 .setCancelOnOtherWindowOpen(true)
                 .setCancelCallback(() -> true)
-                .setCancelButton(new com.intellij.openapi.ui.popup.IconButton(
+                .setCancelButton(new IconButton(
                         FxToolsBundle.message("icon.browser.packs.close"),
                         com.intellij.icons.AllIcons.Actions.Close,
                         com.intellij.icons.AllIcons.Actions.CloseHovered))

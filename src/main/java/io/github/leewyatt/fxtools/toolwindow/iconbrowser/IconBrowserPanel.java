@@ -5,6 +5,7 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
+import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.HyperlinkLabel;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SearchTextField;
@@ -23,9 +24,11 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Cursor;
+import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
@@ -159,9 +162,9 @@ public class IconBrowserPanel extends JPanel implements Disposable {
         Alarm searchAlarm = new Alarm(Alarm.ThreadToUse.SWING_THREAD);
         Disposer.register(this, searchAlarm);
 
-        searchField.addDocumentListener(new com.intellij.ui.DocumentAdapter() {
+        searchField.addDocumentListener(new DocumentAdapter() {
             @Override
-            protected void textChanged(@org.jetbrains.annotations.NotNull javax.swing.event.DocumentEvent e) {
+            protected void textChanged(@org.jetbrains.annotations.NotNull DocumentEvent e) {
                 searchAlarm.cancelAllRequests();
                 searchAlarm.addRequest(() -> executeSearch(), SEARCH_DEBOUNCE_MS);
             }
@@ -196,7 +199,7 @@ public class IconBrowserPanel extends JPanel implements Disposable {
         gridScrollPane.getVerticalScrollBar().setUnitIncrement(JBUI.scale(40));
 
         // Empty state panel (centered icon + text + action link)
-        JPanel emptyPanel = new JPanel(new java.awt.GridBagLayout());
+        JPanel emptyPanel = new JPanel(new GridBagLayout());
         JPanel emptyContent = new JPanel();
         emptyContent.setLayout(new BoxLayout(emptyContent, BoxLayout.Y_AXIS));
         emptyContent.setOpaque(false);

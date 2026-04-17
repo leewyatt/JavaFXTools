@@ -3,22 +3,31 @@ package io.github.leewyatt.fxtools.css.preview;
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
+import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.util.ScalableIcon;
 import com.intellij.ui.JBColor;
-import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
 import io.github.leewyatt.fxtools.css.preview.effect.EffectConfig;
 import io.github.leewyatt.fxtools.css.preview.effect.EffectType;
+import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
 import io.github.leewyatt.fxtools.util.FxSvgRenderer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Icon;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
+import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -237,7 +246,7 @@ public final class CssPreviewIconRenderer {
      * All subclass drawing happens in the base ICON_SIZE x ICON_SIZE coordinate system.
      */
     private static abstract class BasePreviewIcon implements ScalableIcon {
-        private static final java.util.WeakHashMap<Component, Editor> EDITOR_CACHE = new java.util.WeakHashMap<>();
+        private static final WeakHashMap<Component, Editor> EDITOR_CACHE = new WeakHashMap<>();
 
         private float scale = 1f;
         private float lastZoom = 1f;

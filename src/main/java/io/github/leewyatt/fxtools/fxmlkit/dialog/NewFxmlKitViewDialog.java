@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
@@ -12,7 +13,6 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
-import com.intellij.psi.PsiDirectory;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +44,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Dialog for creating a new FxmlKit View with associated files.
@@ -275,7 +277,7 @@ public class NewFxmlKitViewDialog extends DialogWrapper {
         String viewClassName = computeViewClassName(name, isProvider);
         String baseName = computeBaseName(viewClassName);
 
-        java.util.List<String> conflicts = new java.util.ArrayList<>();
+        List<String> conflicts = new ArrayList<>();
 
         if (javaDir.findFile(viewClassName + ".java") != null) {
             conflicts.add(viewClassName + ".java");
@@ -841,7 +843,7 @@ public class NewFxmlKitViewDialog extends DialogWrapper {
      * Live-updating file tree preview panel.
      */
     private static class FileTreePreview extends JPanel {
-        private final java.util.List<TreeEntry> entries = new java.util.ArrayList<>();
+        private final List<TreeEntry> entries = new ArrayList<>();
 
         FileTreePreview() {
             setOpaque(false);

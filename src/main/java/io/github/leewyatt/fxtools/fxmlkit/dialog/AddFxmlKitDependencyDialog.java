@@ -19,6 +19,7 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.ui.scale.JBUIScale;
 import com.intellij.util.ui.JBUI;
+import com.intellij.util.ui.UIUtil;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import io.github.leewyatt.fxtools.fxmlkit.dependency.DependencyInsertionContext;
 import io.github.leewyatt.fxtools.fxmlkit.dependency.FxmlKitModuleConstants;
@@ -35,6 +36,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.awt.BorderLayout;
@@ -42,6 +44,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.LayoutManager;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 
@@ -192,8 +195,8 @@ public class AddFxmlKitDependencyDialog extends DialogWrapper {
         );
 
         // Use JLayeredPane to overlay the Copy button on top of the scroll pane
-        javax.swing.JLayeredPane layered = new javax.swing.JLayeredPane();
-        layered.setLayout(new java.awt.LayoutManager() {
+        JLayeredPane layered = new JLayeredPane();
+        layered.setLayout(new LayoutManager() {
             @Override
             public void addLayoutComponent(String name, java.awt.Component comp) {
             }
@@ -240,7 +243,7 @@ public class AddFxmlKitDependencyDialog extends DialogWrapper {
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, JBUI.scale(8), 0));
         JBLabel versionLabel = new JBLabel(
                 FxmlKitModuleConstants.ARTIFACT_ID + " v" + ctx.getFxmlKitVersion());
-        versionLabel.setForeground(com.intellij.util.ui.UIUtil.getLabelDisabledForeground());
+        versionLabel.setForeground(UIUtil.getLabelDisabledForeground());
         leftPanel.add(versionLabel);
 
         HyperlinkLabel link = new HyperlinkLabel(
@@ -254,7 +257,7 @@ public class AddFxmlKitDependencyDialog extends DialogWrapper {
             String tooltip = getDisabledTooltip();
             if (tooltip != null) {
                 JBLabel hint = new JBLabel("<html><small>" + tooltip + "</small></html>");
-                hint.setForeground(com.intellij.util.ui.UIUtil.getLabelDisabledForeground());
+                hint.setForeground(UIUtil.getLabelDisabledForeground());
                 hint.setBorder(JBUI.Borders.emptyTop(4));
                 JPanel footerWrap = new JPanel(new BorderLayout());
                 footerWrap.add(footer, BorderLayout.NORTH);

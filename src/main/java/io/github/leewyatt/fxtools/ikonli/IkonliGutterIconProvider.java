@@ -5,16 +5,28 @@ import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaTokenType;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiEnumConstant;
+import com.intellij.psi.PsiExpression;
+import com.intellij.psi.PsiExpressionList;
+import com.intellij.psi.PsiIdentifier;
+import com.intellij.psi.PsiJavaToken;
+import com.intellij.psi.PsiLiteralExpression;
+import com.intellij.psi.PsiMethodCallExpression;
+import com.intellij.psi.PsiNewExpression;
+import com.intellij.psi.PsiReferenceExpression;
+import com.intellij.ui.JBColor;
 import io.github.leewyatt.fxtools.css.preview.CssGutterIconCodeHandler;
 import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
-import io.github.leewyatt.fxtools.toolwindow.iconbrowser.IconDataService;
 import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
+import io.github.leewyatt.fxtools.toolwindow.iconbrowser.IconDataService;
 import io.github.leewyatt.fxtools.util.FxDetector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
+import javax.swing.Icon;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -130,7 +142,7 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
             // so keying by literal alone would cache one version and serve it for both.
             String cacheKey = packId + ":" + literal;
             icon = ICON_CACHE.computeIfAbsent(cacheKey,
-                    k -> CssPreviewIconRenderer.createSvgIcon(pathData, com.intellij.ui.JBColor.foreground()));
+                    k -> CssPreviewIconRenderer.createSvgIcon(pathData, JBColor.foreground()));
             if (icon == null) {
                 return null;
             }
@@ -205,7 +217,7 @@ public class IkonliGutterIconProvider implements LineMarkerProvider {
             // Cache key includes packId — see buildEnumMarker for rationale
             String cacheKey = packId + ":" + literal;
             icon = ICON_CACHE.computeIfAbsent(cacheKey,
-                    k -> CssPreviewIconRenderer.createSvgIcon(pathData, com.intellij.ui.JBColor.foreground()));
+                    k -> CssPreviewIconRenderer.createSvgIcon(pathData, JBColor.foreground()));
             if (icon == null) {
                 return null;
             }

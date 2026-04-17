@@ -23,8 +23,23 @@ import io.github.leewyatt.fxtools.util.FxSvgRenderer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
@@ -195,10 +210,10 @@ public final class CssGutterSvgHandler {
 
             // Document listener for real-time linked updates
             boolean[] updating = {false};
-            widthField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-                @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { sync(); }
-                @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { sync(); }
-                @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { sync(); }
+            widthField.getDocument().addDocumentListener(new DocumentListener() {
+                @Override public void insertUpdate(DocumentEvent e) { sync(); }
+                @Override public void removeUpdate(DocumentEvent e) { sync(); }
+                @Override public void changedUpdate(DocumentEvent e) { sync(); }
                 private void sync() {
                     if (updating[0] || !locked[0]) { return; }
                     updating[0] = true;
@@ -210,10 +225,10 @@ public final class CssGutterSvgHandler {
                     updating[0] = false;
                 }
             });
-            heightField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-                @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { sync(); }
-                @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { sync(); }
-                @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { sync(); }
+            heightField.getDocument().addDocumentListener(new DocumentListener() {
+                @Override public void insertUpdate(DocumentEvent e) { sync(); }
+                @Override public void removeUpdate(DocumentEvent e) { sync(); }
+                @Override public void changedUpdate(DocumentEvent e) { sync(); }
                 private void sync() {
                     if (updating[0] || !locked[0]) { return; }
                     updating[0] = true;
@@ -560,7 +575,7 @@ public final class CssGutterSvgHandler {
             int w = getIconWidth();
             int h = getIconHeight();
             g2.setColor(locked ? LOCKED_COLOR : UNLOCKED_COLOR);
-            g2.setStroke(new java.awt.BasicStroke(1.5f));
+            g2.setStroke(new BasicStroke(1.5f));
 
             // Lock body (rounded rect at bottom)
             int bx = w / 2 - 5, by = h / 2 - 1, bw = 10, bh = 8;

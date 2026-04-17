@@ -1,5 +1,6 @@
 package io.github.leewyatt.fxtools.generate;
 
+import com.intellij.lang.java.JavaLanguage;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -7,7 +8,15 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementFactory;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiMethod;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -54,7 +63,7 @@ public class FxPropertyGenerateAction extends AnAction {
                     // Parse the entire generated code as a dummy class body and extract members
                     String dummyClass = "class _Dummy_ {\n" + code + "\n}";
                     PsiJavaFile dummyFile = (PsiJavaFile) PsiFileFactory.getInstance(project)
-                            .createFileFromText("_Dummy_.java", com.intellij.lang.java.JavaLanguage.INSTANCE, dummyClass);
+                            .createFileFromText("_Dummy_.java", JavaLanguage.INSTANCE, dummyClass);
                     PsiClass dummyPsiClass = dummyFile.getClasses()[0];
 
                     for (PsiField field : dummyPsiClass.getFields()) {

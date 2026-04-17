@@ -13,15 +13,16 @@ import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.psi.xml.XmlToken;
 import com.intellij.psi.xml.XmlTokenType;
+import com.intellij.ui.JBColor;
 import io.github.leewyatt.fxtools.css.preview.CssGutterIconCodeHandler;
 import io.github.leewyatt.fxtools.css.preview.CssPreviewIconRenderer;
-import io.github.leewyatt.fxtools.toolwindow.iconbrowser.IconDataService;
 import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
+import io.github.leewyatt.fxtools.toolwindow.iconbrowser.IconDataService;
 import io.github.leewyatt.fxtools.util.FxDetector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
+import javax.swing.Icon;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -124,7 +125,7 @@ public class FxmlIconLiteralGutterProvider implements LineMarkerProvider {
             // version for both — breaking after the user switches between projects.
             String cacheKey = iconEntry.getPackId() + ":" + literal;
             icon = ICON_CACHE.computeIfAbsent(cacheKey,
-                    k -> CssPreviewIconRenderer.createSvgIcon(pathData, com.intellij.ui.JBColor.foreground()));
+                    k -> CssPreviewIconRenderer.createSvgIcon(pathData, JBColor.foreground()));
             if (icon == null) {
                 return null;
             }

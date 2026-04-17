@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -155,7 +157,7 @@ public final class FxEffectParser {
      * This handles cases like "rgba(0,0,0,0.3)" as a single argument.
      */
     private static String[] splitArgs(@NotNull String argsStr) {
-        java.util.List<String> parts = new java.util.ArrayList<>();
+        List<String> parts = new ArrayList<>();
         int depth = 0;
         int start = 0;
         for (int i = 0; i < argsStr.length(); i++) {

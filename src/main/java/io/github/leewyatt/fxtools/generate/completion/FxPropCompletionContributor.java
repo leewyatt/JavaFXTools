@@ -1,6 +1,13 @@
 package io.github.leewyatt.fxtools.generate.completion;
 
-import com.intellij.codeInsight.completion.*;
+import com.intellij.codeInsight.completion.CompletionContributor;
+import com.intellij.codeInsight.completion.CompletionParameters;
+import com.intellij.codeInsight.completion.CompletionProvider;
+import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.completion.InsertHandler;
+import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -15,17 +22,37 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.patterns.PlatformPatterns;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassInitializer;
+import com.intellij.psi.PsiCodeBlock;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementFactory;
+import com.intellij.psi.PsiExpression;
+import com.intellij.psi.PsiExpressionList;
+import com.intellij.psi.PsiExpressionStatement;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiMethodCallExpression;
+import com.intellij.psi.PsiModifier;
+import com.intellij.psi.PsiStatement;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ProcessingContext;
 import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -131,8 +158,8 @@ public class FxPropCompletionContributor extends CompletionContributor {
             checkPanel.add(defaultBox);
 
             JBLabel hintLabel = new JBLabel("Press letter to toggle, Enter to confirm");
-            hintLabel.setForeground(com.intellij.ui.JBColor.namedColor(
-                    "Link.activeForeground", new com.intellij.ui.JBColor(0x2470B3, 0x589DF6)));
+            hintLabel.setForeground(JBColor.namedColor(
+                    "Link.activeForeground", new JBColor(0x2470B3, 0x589DF6)));
             hintLabel.setFont(hintLabel.getFont().deriveFont(java.awt.Font.BOLD));
 
             JButton okButton = new JButton("OK");

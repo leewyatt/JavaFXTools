@@ -2,13 +2,14 @@ package io.github.leewyatt.fxtools.toolwindow.iconbrowser;
 
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.JBColor;
-import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
 import com.intellij.ui.scale.JBUIScale;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
+import io.github.leewyatt.fxtools.settings.FxToolsSettingsState;
 import io.github.leewyatt.fxtools.util.FxSvgRenderer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -218,7 +219,7 @@ public class IconGridPanel extends JPanel {
         WriteCommandAction.runWriteCommandAction(project, () ->
                 editor.getDocument().insertString(offset, textToInsert));
         editor.getCaretModel().moveToOffset(offset + textToInsert.length());
-        editor.getScrollingModel().scrollToCaret(com.intellij.openapi.editor.ScrollType.MAKE_VISIBLE);
+        editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
     }
 
     /**

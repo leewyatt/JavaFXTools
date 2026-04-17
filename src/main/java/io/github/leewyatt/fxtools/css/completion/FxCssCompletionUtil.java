@@ -869,7 +869,7 @@ public final class FxCssCompletionUtil {
                 g2.translate(x, y);
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                         RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(com.intellij.ui.JBColor.foreground());
+                g2.setColor(JBColor.foreground());
                 g2.fill(transformed);
                 g2.dispose();
             }
