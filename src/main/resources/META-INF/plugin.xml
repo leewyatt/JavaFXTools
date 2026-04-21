@@ -47,6 +47,28 @@
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.1.0</h3>
+
+<h4>New Features</h4>
+<ul>
+  <li><b>FxmlKit Dev Mode Executor</b> — two new toolbar buttons ("FxmlKit Dev Mode" and "FxmlKit Dev Mode Debug") visible in FxmlKit projects. One-click hot-reload launch by auto-injecting <code>-Dfxmlkit.devmode=true</code>. Requires FxmlKit 1.5.1+ (older versions show an upgrade dialog).</li>
+  <li><b>Add FxmlKit Dependency dialog</b> — after creating a FxmlKit view, offers to auto-add <code>com.dlsc.fxmlkit:fxmlkit</code> to your Maven/Gradle build and <code>module-info.java</code>. Detects existing JavaFX configuration to avoid duplicates.</li>
+  <li><b>Icon Pack Aggregation</b> — 117 Ikonli packs and 64,800+ icons (added FontAwesome 6). New pack-group view (58 groups) for easier browsing; FA5/FA6 literal disambiguation in completion and gutter.</li>
+  <li><b>Tool Window Links</b> — quick-access dropdown for JavaFX API docs, FXML/CSS references, OpenJFX, Gluon, JFXCentral.</li>
+</ul>
+
+<h4>Improvements</h4>
+<ul>
+  <li>Multi-module FxmlKit detection (<code>isFxmlKitModule</code>)</li>
+  <li>Unified CSS library manifest (<code>libraries.txt</code>) with per-library property loading</li>
+  <li>SVG Path Tool redesigned with drag-and-drop zones</li>
+</ul>
+
+<h4>Fixes</h4>
+<ul>
+  <li>IDE 2025.x compatibility: replaced deprecated <code>Project.getBaseDir()</code> with <code>ProjectUtil.guessProjectDir()</code></li>
+</ul>
+
 <h3>2.0.0 — Complete Rewrite</h3>
 <p>This is a ground-up rewrite of JavaFX Tools. New build system (Gradle 8 + Kotlin DSL), new package structure, zero JavaFX runtime dependency.</p>
 

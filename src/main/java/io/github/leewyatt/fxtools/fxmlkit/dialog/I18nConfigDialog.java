@@ -7,6 +7,7 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -491,7 +492,7 @@ public class I18nConfigDialog extends DialogWrapper {
     }
 
     private void browseLocation() {
-        VirtualFile baseDir = project.getBaseDir();
+        VirtualFile baseDir = ProjectUtil.guessProjectDir(project);
         VirtualFile startDir = resolveLocationDir();
         if (startDir == null) {
             startDir = baseDir;
@@ -507,7 +508,7 @@ public class I18nConfigDialog extends DialogWrapper {
 
     private @Nullable VirtualFile resolveLocationDir() {
         String loc = locationField.getText().trim().replaceAll("/+$", "");
-        VirtualFile baseDir = project.getBaseDir();
+        VirtualFile baseDir = ProjectUtil.guessProjectDir(project);
         if (!loc.isEmpty() && baseDir != null) {
             VirtualFile dir = baseDir.findFileByRelativePath(loc);
             if (dir != null && dir.isDirectory()) {
@@ -629,7 +630,7 @@ public class I18nConfigDialog extends DialogWrapper {
         if (module == null) {
             return null;
         }
-        VirtualFile baseDir = project.getBaseDir();
+        VirtualFile baseDir = ProjectUtil.guessProjectDir(project);
         if (baseDir == null) {
             return null;
         }
@@ -658,7 +659,7 @@ public class I18nConfigDialog extends DialogWrapper {
     }
 
     private boolean hasBundleConflict(String bundleName, String location) {
-        VirtualFile baseDir = project.getBaseDir();
+        VirtualFile baseDir = ProjectUtil.guessProjectDir(project);
         if (baseDir == null) {
             return false;
         }
@@ -703,7 +704,7 @@ public class I18nConfigDialog extends DialogWrapper {
             return true;
         });
 
-        VirtualFile baseDir = project.getBaseDir();
+        VirtualFile baseDir = ProjectUtil.guessProjectDir(project);
 
         for (Map.Entry<VirtualFile, List<String>> entry : dirToNames.entrySet()) {
             VirtualFile dir = entry.getKey();

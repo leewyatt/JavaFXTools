@@ -25,7 +25,7 @@ public final class ToolWindowLinksActionGroup extends DefaultActionGroup impleme
     public ToolWindowLinksActionGroup() {
         getTemplatePresentation().setText(FxToolsBundle.message("action.toolwindow.links.text"));
         getTemplatePresentation().setDescription(FxToolsBundle.message("action.toolwindow.links.description"));
-        getTemplatePresentation().setIcon(AllIcons.Ide.ExternalLinkArrowWhite);
+        getTemplatePresentation().setIcon(AllIcons.Ide.External_link_arrow);
         setPopup(true);
 
         add(new OpenUrlAction("action.toolwindow.links.api", JAVADOC_BASE + "/"));
