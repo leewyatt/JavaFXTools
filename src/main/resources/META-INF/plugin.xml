@@ -303,6 +303,16 @@
                            displayType="BALLOON"
                            isLogByDefault="true"/>
         <copyPastePreProcessor implementation="io.github.leewyatt.fxtools.action.FontFacePasteProcessor"/>
+
+        <!-- FxmlKit Dev Mode: one-click launcher injecting -Dfxmlkit.devmode=true.
+             VM arg injection is done inside the runners' patch() override (not via
+             a JavaProgramPatcher EP) because DefaultJavaProgramRunner.patch calls
+             runCustomPatchers with a hardcoded DefaultRunExecutor, which prevents
+             executor-id-based filtering from matching on the Run path. -->
+        <executor implementation="io.github.leewyatt.fxtools.fxmlkit.devmode.FxmlKitDevExecutor"/>
+        <executor implementation="io.github.leewyatt.fxtools.fxmlkit.devmode.FxmlKitDevDebugExecutor"/>
+        <programRunner implementation="io.github.leewyatt.fxtools.fxmlkit.devmode.FxmlKitDevRunRunner"/>
+        <programRunner implementation="io.github.leewyatt.fxtools.fxmlkit.devmode.FxmlKitDevDebugRunner"/>
     </extensions>
 
     <actions>

@@ -29,7 +29,7 @@ public final class FxmlKitVersionResolver {
     private static final Logger LOG = Logger.getInstance(FxmlKitVersionResolver.class);
 
     /** Bundled fallback used when Maven Central is unreachable or the response cannot be parsed. */
-    public static final String FALLBACK_VERSION = "1.5.0";
+    public static final String FALLBACK_VERSION = "1.5.1";
 
     private static final String METADATA_URL =
             "https://repo1.maven.org/maven2/com/dlsc/fxmlkit/fxmlkit/maven-metadata.xml";
