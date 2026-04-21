@@ -53,7 +53,7 @@
 <ul>
   <li><b>FxmlKit Dev Mode Executor</b> — two new toolbar buttons ("FxmlKit Dev Mode" and "FxmlKit Dev Mode Debug") visible in FxmlKit projects. One-click hot-reload launch by auto-injecting <code>-Dfxmlkit.devmode=true</code>. Requires FxmlKit 1.5.1+ (older versions show an upgrade dialog).</li>
   <li><b>Add FxmlKit Dependency dialog</b> — after creating a FxmlKit view, offers to auto-add <code>com.dlsc.fxmlkit:fxmlkit</code> to your Maven/Gradle build and <code>module-info.java</code>. Detects existing JavaFX configuration to avoid duplicates.</li>
-  <li><b>Icon Pack Aggregation</b> — 117 Ikonli packs and 64,800+ icons (added FontAwesome 6). New pack-group view (58 groups) for easier browsing; FA5/FA6 literal disambiguation in completion and gutter.</li>
+  <li><b>Icon Pack Aggregation</b> — 58 aggregated icon packs, 64,800+ icons (FontAwesome 6 added). Related Ikonli distributions merged into single pack views for easier browsing; FA5/FA6 literal disambiguation in completion and gutter.</li>
   <li><b>Tool Window Links</b> — quick-access dropdown for JavaFX API docs, FXML/CSS references, OpenJFX, Gluon, JFXCentral.</li>
 </ul>
 

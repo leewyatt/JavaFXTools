@@ -62,7 +62,7 @@ Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA 
 ### Ikonli Icon Integration
 
 **Icon Browser ToolWindow**
-- 114 icon packs, 63,000+ icons from the [Ikonli](https://github.com/kordamp/ikonli) library
+- 58 icon packs, 64,800+ icons from the [Ikonli](https://github.com/kordamp/ikonli) library
 - Search across all packs with fuzzy keyword matching
 - Pack filter for narrowing results
 - Detail panel with preview, icon name, pack name, and source link
@@ -130,6 +130,17 @@ A structured MVC pattern for JavaFX with convention-based file resolution.
 <img src="screenshots/img_9.png" alt="Resource Bundle — Existing" width="400">
 
 <img src="screenshots/img_10.png" alt="Resource Bundle — Create New" width="400">
+
+**Add Dependency Dialog**
+- When your project lacks FxmlKit on the classpath, a dialog offers to auto-add `com.dlsc.fxmlkit:fxmlkit` to your Maven/Gradle build and `module-info.java`
+- Detects existing JavaFX setup to avoid duplicate dependencies (controls / fxml modules, JavaFX Gradle plugin block)
+- Triggers Maven/Gradle project refresh after editing the build file — no manual reimport
+
+**Dev Mode Launcher** (requires FxmlKit 1.5.1+)
+- Two new toolbar buttons: **FxmlKit Dev Mode** and **FxmlKit Dev Mode Debug** (visible only in FxmlKit projects)
+- One-click launch with `-Dfxmlkit.devmode=true` auto-injected — FXML and CSS edits reload live without restarting the app
+- Respects user-set VM args — if `-Dfxmlkit.devmode=...` is already on the command line, it's preserved as-is
+- Version below 1.5.1 → dialog offers **Launch Anyway** or **Cancel** with "don't show again for this version" option
 
 **Property Generation** (Alt+Insert / Cmd+N)
 - 10 property types: String, Integer, Long, Float, Double, Boolean, Object, List, Map, Set
