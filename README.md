@@ -6,7 +6,7 @@
 
 All-in-one JavaFX development toolkit for IntelliJ IDEA — CSS intelligence, gutter previews, FXML code assistance, Ikonli icon browsing, SVG path extraction, and FxmlKit integration.
 
-Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA **2024.2+** and Java **17+**.
+Works with both **Community** and **Ultimate** editions. Requires IntelliJ IDEA **2023.3+** and Java **17+**.
 
 <a href="https://plugins.jetbrains.com/plugin/17514-javafx-tools"><img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F_Install_from-JetBrains_Marketplace-orange?style=for-the-badge&logo=jetbrains" alt="Install from JetBrains Marketplace"></a>
 
@@ -193,7 +193,7 @@ Settings -> Tools -> JavaFX Tools
 
 | Requirement | Version |
 |-------------|---------|
-| IntelliJ IDEA | 2024.2+ (Community or Ultimate) |
+| IntelliJ IDEA | 2023.3+ (Community or Ultimate) |
 | Java | 17+ |
 | JavaFX SDK | Not required (plugin uses Swing/IntelliJ Platform UI) |
 

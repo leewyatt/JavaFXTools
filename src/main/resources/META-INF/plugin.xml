@@ -47,6 +47,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.1.1</h3>
+
+<h4>Compatibility</h4>
+<ul>
+  <li>Lowered minimum IDE version from IntelliJ IDEA 2024.2 to <b>2023.3</b>. All editions (Community and Ultimate) from 2023.3 onwards are now supported.</li>
+</ul>
+
 <h3>2.1.0</h3>
 
 <h4>New Features</h4>
@@ -92,7 +99,7 @@
 
 <h4>Compatibility</h4>
 <ul>
-  <li>IntelliJ IDEA 2024.2+ (Community and Ultimate)</li>
+  <li>IntelliJ IDEA 2023.3+ (Community and Ultimate)</li>
   <li>Java 17+</li>
   <li>No JavaFX SDK required — plugin uses Swing/IntelliJ Platform UI</li>
 </ul>

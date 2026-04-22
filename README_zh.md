@@ -6,7 +6,7 @@
 
 JavaFX 一站式开发工具包 — CSS 智能提示、Gutter 预览、FXML 代码辅助、Ikonli 图标浏览器、SVG 路径提取、FxmlKit 集成。
 
-同时支持 IntelliJ IDEA **社区版** 和 **旗舰版**，要求 **2024.2+**、Java **17+**。
+同时支持 IntelliJ IDEA **社区版** 和 **旗舰版**，要求 **2023.3+**、Java **17+**。
 
 <a href="https://plugins.jetbrains.com/plugin/17514-javafx-tools"><img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F_%E4%BB%8E_JetBrains_Marketplace_%E5%AE%89%E8%A3%85-orange?style=for-the-badge&logo=jetbrains" alt="从 JetBrains Marketplace 安装"></a>
 
@@ -193,7 +193,7 @@ Settings -> Tools -> JavaFX Tools
 
 | 要求 | 版本 |
 |------|------|
-| IntelliJ IDEA | 2024.2+（社区版或旗舰版） |
+| IntelliJ IDEA | 2023.3+（社区版或旗舰版） |
 | Java | 17+ |
 | JavaFX SDK | 不需要（插件使用 Swing/IntelliJ 平台 UI） |
 
