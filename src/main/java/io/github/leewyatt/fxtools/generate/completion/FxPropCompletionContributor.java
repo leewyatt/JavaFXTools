@@ -58,7 +58,7 @@ import java.awt.event.KeyEvent;
 
 /**
  * Completion contributor for JavaFX Property code generation.
- * Type fxpstr/fxpint/fxpbool/... then select options in a popup.
+ * Type fxpstring/fxpinteger/fxpboolean/... then select options in a popup.
  */
 public class FxPropCompletionContributor extends CompletionContributor {
 
