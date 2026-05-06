@@ -179,6 +179,9 @@ public enum FxPropertyType {
             return valueTypeName + "<" + genericParam + ", " + genericParam2 + ">";
         }
         if (needsTypeParam && !genericParam.isEmpty()) {
+            if (this == OBJECT) {
+                return genericParam;
+            }
             return valueTypeName + "<" + genericParam + ">";
         }
         return valueTypeName;

@@ -365,6 +365,9 @@ public final class FxPropCodeGenerator {
 
     @NotNull
     private static String valueTypeText(@NotNull PropType type) {
+        if (type == PropType.OBJECT) {
+            return "$TYPE$";
+        }
         if (type.singleGeneric) {
             return type.valueType + "<$TYPE$>";
         }

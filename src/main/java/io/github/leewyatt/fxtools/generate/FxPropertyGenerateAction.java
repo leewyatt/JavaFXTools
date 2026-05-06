@@ -61,6 +61,13 @@ public class FxPropertyGenerateAction extends AnAction {
             return;
         }
 
+        String propertyName = dialog.getPropertyName();
+        if (hasPropertyMemberConflict(psiClass, dialog.getPropertyType(), propertyName)) {
+            HintManager.getInstance().showInformationHint(editor,
+                    "JavaFX property '" + propertyName + "' already exists in this class.");
+            return;
+        }
+
         String code = dialog.getGeneratedCode();
         if (code.isEmpty()) {
             return;
@@ -127,6 +134,20 @@ public class FxPropertyGenerateAction extends AnAction {
     @Override
     public @NotNull ActionUpdateThread getActionUpdateThread() {
         return ActionUpdateThread.BGT;
+    }
+
+    private boolean hasPropertyMemberConflict(@NotNull PsiClass psiClass,
+                                              @NotNull FxPropertyType type,
+                                              @NotNull String propertyName) {
+        if (psiClass.findFieldByName(propertyName, false) != null) {
+            return true;
+        }
+
+        String capitalizedName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
+        String getterName = type.getGetterPrefix() + capitalizedName;
+        return psiClass.findMethodsByName(getterName, false).length > 0
+                || psiClass.findMethodsByName("set" + capitalizedName, false).length > 0
+                || psiClass.findMethodsByName(propertyName + "Property", false).length > 0;
     }
 
     private void ensureStyleableProperties(@NotNull Editor editor,
