@@ -206,6 +206,56 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         return generatedCode;
     }
 
+    /**
+     * Returns whether the generated property uses JavaFX CSS metadata.
+     */
+    public boolean isStyleableGenerated() {
+        return styleableCheck.isSelected() && getSelectedType().isStyleableSupported();
+    }
+
+    /**
+     * Returns the generated property name.
+     */
+    @NotNull
+    public String getPropertyName() {
+        return nameField.getText().trim();
+    }
+
+    /**
+     * Returns the generated property type metadata.
+     */
+    @NotNull
+    public FxPropertyType getPropertyType() {
+        return getSelectedType();
+    }
+
+    /**
+     * Returns the CSS property name used by the generated styleable property.
+     */
+    @NotNull
+    public String getCssName() {
+        String cssName = cssNameField.getText().trim();
+        if (!cssName.isEmpty()) {
+            return cssName;
+        }
+        return toKebabCase(getPropertyName());
+    }
+
+    /**
+     * Returns the default expression used by generated CssMetaData, or an empty string.
+     */
+    @NotNull
+    public String getCssDefaultReference() {
+        String defaultVal = normalizeDefaultValue(defaultValueField.getText().trim(), getSelectedType());
+        if (defaultVal.isEmpty()) {
+            return "";
+        }
+        if (constantCheck.isSelected()) {
+            return toUpperSnakeCase("DEFAULT_" + getPropertyName());
+        }
+        return defaultVal;
+    }
+
     private void updateGenericFieldsVisibility() {
         FxPropertyType type = getSelectedType();
         boolean singleParam = type.isNeedsTypeParam();
@@ -391,36 +441,8 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
                                          @NotNull String genericSuffix, @NotNull String cssName,
                                          @NotNull String defaultRef, @NotNull String defaultLiteralRef) {
         String cssValueType = type.getCssValueType();
-        String metaName = toUpperSnakeCase(propName) + "_META";
-        String converterExpr = type.getConverterExpression();
-        if (converterExpr == null) {
-            converterExpr = "/* TODO: provide StyleConverter */";
-        }
-
-        // CssMetaData static field
-        sb.append("private static final javafx.css.CssMetaData<").append(className).append(", ")
-                .append(cssValueType).append("> ").append(metaName).append(" =\n");
-        sb.append("    new javafx.css.CssMetaData<>(\"").append(cssName).append("\",\n");
-        sb.append("            ").append(converterExpr);
-        if (!defaultRef.isEmpty()) {
-            sb.append(", ").append(defaultRef);
-        }
-        sb.append(") {\n");
-        sb.append("        @Override\n");
-        sb.append("        public boolean isSettable(").append(className).append(" node) {\n");
-        sb.append("            return node.").append(propName).append(" == null || !node.")
-                .append(propName).append(".isBound();\n");
-        sb.append("        }\n");
-        sb.append("        @Override\n");
-        sb.append("        public javafx.css.StyleableProperty<").append(cssValueType)
-                .append("> getStyleableProperty(").append(className).append(" node) {\n");
-        sb.append("            return (javafx.css.StyleableProperty<").append(cssValueType)
-                .append(">) node.").append(propName).append("Property();\n");
-        sb.append("        }\n");
-        sb.append("    };\n\n");
-
         // Styleable property anonymous class body
-        String styleableBody = buildStyleableBody(propName, cssValueType, metaName);
+        String styleableBody = buildStyleableBody(propName, cssValueType, toUpperSnakeCase(propName));
 
         if (lazy) {
             // Lazy: field without initializer
@@ -479,7 +501,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         sb.append("            @Override\n");
         sb.append("            public javafx.css.CssMetaData<? extends javafx.css.Styleable, ")
                 .append(cssValueType).append("> getCssMetaData() {\n");
-        sb.append("                return ").append(metaName).append(";\n");
+        sb.append("                return StyleableProperties.").append(metaName).append(";\n");
         sb.append("            }\n");
         sb.append("            @Override\n");
         sb.append("            public Object getBean() {\n");
