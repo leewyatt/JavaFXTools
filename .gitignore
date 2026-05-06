@@ -11,3 +11,5 @@ gen
 /.intellijPlatform/
 /build/
 .DS_Store
+/CLAUDE.md
+/AGENT_GUIDE.md
