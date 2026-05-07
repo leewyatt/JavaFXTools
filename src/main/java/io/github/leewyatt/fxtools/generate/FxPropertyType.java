@@ -178,7 +178,7 @@ public enum FxPropertyType {
             case STRING: return "null";
             case INTEGER: return "0";
             case LONG: return "0L";
-            case FLOAT: return "0.0f";
+            case FLOAT: return "0.0F";
             case DOUBLE: return "0.0";
             case BOOLEAN: return "false";
             case OBJECT: return "null";
@@ -190,32 +190,25 @@ public enum FxPropertyType {
     }
 
     /**
-     * Adds the {@code L} or {@code f} suffix to a numeric literal when missing.
-     * Non-literal expressions (variables, method calls) are returned unchanged.
+     * Adds the {@code L} or {@code F} suffix to a numeric literal when missing.
+     * Non-literal expressions (variables, method calls, hex literals) are returned unchanged.
      */
     @NotNull
     public String normalizeDefaultLiteral(@NotNull String value) {
         if (value.isEmpty()) {
             return value;
         }
-        boolean isHex = value.startsWith("0x") || value.startsWith("0X");
+        // Hex literals are left alone for both LONG and FLOAT.
+        // Java rejects F suffix on hex int literals; for LONG the rare "exceeds int range"
+        // case is reported by the IDE/compiler so the user can add L manually.
+        if (value.startsWith("0x") || value.startsWith("0X")) {
+            return value;
+        }
         char last = value.charAt(value.length() - 1);
-        // In hex literals, F/D are hex digits, not type suffixes — only L/l acts as a suffix.
-        boolean alreadySuffixed = isHex
-                ? (last == 'l' || last == 'L')
-                : ("lLfFdD".indexOf(last) >= 0);
-        if (alreadySuffixed) {
+        if ("lLfFdD".indexOf(last) >= 0) {
             return value;
         }
         if (this == LONG) {
-            if (isHex) {
-                try {
-                    Long.parseLong(value.substring(2), 16);
-                    return value + "L";
-                } catch (NumberFormatException ignored) {
-                }
-                return value;
-            }
             try {
                 Long.parseLong(value);
                 return value + "L";
@@ -224,14 +217,9 @@ public enum FxPropertyType {
             return value;
         }
         if (this == FLOAT) {
-            // Hex int literals can't take f suffix in Java — leave alone, the int→float widening
-            // is implicit at assignment (e.g., 0x1F → 31.0f).
-            if (isHex) {
-                return value;
-            }
             try {
                 Double.parseDouble(value);
-                return value + "f";
+                return value + "F";
             } catch (NumberFormatException ignored) {
             }
             return value;

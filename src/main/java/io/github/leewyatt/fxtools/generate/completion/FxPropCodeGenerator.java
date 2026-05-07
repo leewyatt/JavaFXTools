@@ -34,7 +34,7 @@ public final class FxPropCodeGenerator {
                 "ReadOnlyFloatWrapper", "ReadOnlyFloatProperty",
                 "StyleableFloatProperty", "SimpleStyleableFloatProperty",
                 "javafx.css.StyleConverter.getSizeConverter()", "Number",
-                "get", "0.0f", "0.0f", "0.0f", false, false),
+                "get", "0.0F", "0.0F", "0.0F", false, false),
         DOUBLE("fxpdouble", "DoubleProperty", "double", "SimpleDoubleProperty",
                 "ReadOnlyDoubleWrapper", "ReadOnlyDoubleProperty",
                 "StyleableDoubleProperty", "SimpleStyleableDoubleProperty",
