@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.PsiShortNamesCache;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
@@ -290,7 +291,7 @@ public final class FxFileResolver {
             }
         }
 
-        PsiClass[] found = com.intellij.psi.search.PsiShortNamesCache.getInstance(project)
+        PsiClass[] found = PsiShortNamesCache.getInstance(project)
                 .getClassesByName(tagName, GlobalSearchScope.allScope(project));
         if (found.length > 0 && found[0].getQualifiedName() != null) {
             return found[0].getQualifiedName();

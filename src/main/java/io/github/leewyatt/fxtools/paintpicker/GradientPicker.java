@@ -41,7 +41,9 @@ import javax.swing.BoxLayout;
 import com.intellij.openapi.ui.ComboBox;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -288,7 +290,7 @@ public class GradientPicker extends JPanel {
         gbc.fill = GridBagConstraints.NONE;
         JBLabel cycleLabel = new JBLabel("cycleMethod");
         cycleLabel.setPreferredSize(new Dimension(labelW, cycleLabel.getPreferredSize().height));
-        cycleLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        cycleLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         paramsPanel.add(cycleLabel, gbc);
 
         cycleMethodCombo = new ComboBox<>(new CycleMethodItem[]{
@@ -312,7 +314,7 @@ public class GradientPicker extends JPanel {
         gbc.anchor = GridBagConstraints.LINE_END;
         JBLabel propLabel = new JBLabel("proportional");
         propLabel.setPreferredSize(new Dimension(labelW, propLabel.getPreferredSize().height));
-        propLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        propLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         paramsPanel.add(propLabel, gbc);
 
         proportionalCheckbox = new JBCheckBox();
@@ -374,7 +376,7 @@ public class GradientPicker extends JPanel {
 
     private void initializeListeners() {
         // Slider change listeners
-        javax.swing.event.ChangeListener sliderChange = e -> {
+        ChangeListener sliderChange = e -> {
             if (updating) {
                 return;
             }

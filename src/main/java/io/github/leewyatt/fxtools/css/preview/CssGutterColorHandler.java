@@ -215,7 +215,7 @@ public final class CssGutterColorHandler {
 
     @NotNull
     private static LinearGradientPaint toProportionalLinearPaint(@NotNull FxGradientParser.LinearGradientInfo info) {
-        java.util.List<FxGradientParser.Stop> stops = info.getStops();
+        List<FxGradientParser.Stop> stops = info.getStops();
         float[] fractions = new float[stops.size()];
         Color[] colors = new Color[stops.size()];
         for (int i = 0; i < stops.size(); i++) {
@@ -236,7 +236,7 @@ public final class CssGutterColorHandler {
 
     @NotNull
     private static RadialGradientPaint toProportionalRadialPaint(@NotNull FxGradientParser.RadialGradientInfo info) {
-        java.util.List<FxGradientParser.Stop> stops = info.getStops();
+        List<FxGradientParser.Stop> stops = info.getStops();
         float[] fractions = new float[stops.size()];
         Color[] colors = new Color[stops.size()];
         for (int i = 0; i < stops.size(); i++) {

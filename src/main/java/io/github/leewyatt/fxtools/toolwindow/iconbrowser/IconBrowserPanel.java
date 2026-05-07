@@ -25,6 +25,8 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Cursor;
@@ -136,7 +138,7 @@ public class IconBrowserPanel extends JPanel implements Disposable {
         JPanel separatorPanel = new JPanel(new BorderLayout());
         separatorPanel.setOpaque(false);
         separatorPanel.setBorder(JBUI.Borders.empty(4, 0));
-        javax.swing.JSeparator sep = new JSeparator(SwingConstants.VERTICAL);
+        JSeparator sep = new JSeparator(SwingConstants.VERTICAL);
         separatorPanel.add(sep);
 
         JPanel packArea = new JPanel(new BorderLayout());
@@ -400,11 +402,11 @@ public class IconBrowserPanel extends JPanel implements Disposable {
             emptyAction.setHyperlinkText(actionText);
             emptyAction.setVisible(true);
             // Remove old listeners, add new one
-            for (javax.swing.event.HyperlinkListener l : emptyAction.getListeners(javax.swing.event.HyperlinkListener.class)) {
+            for (HyperlinkListener l : emptyAction.getListeners(HyperlinkListener.class)) {
                 emptyAction.removeHyperlinkListener(l);
             }
             emptyAction.addHyperlinkListener(e -> {
-                if (e.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED) {
+                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     action.run();
                 }
             });

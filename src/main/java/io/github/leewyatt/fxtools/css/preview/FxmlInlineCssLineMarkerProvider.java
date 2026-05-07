@@ -25,6 +25,7 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Provides gutter preview icons for colors, gradients, SVG paths, effects and
@@ -176,7 +177,7 @@ public class FxmlInlineCssLineMarkerProvider implements LineMarkerProvider {
         if (!service.isLoaded()) {
             return;
         }
-        java.util.Set<String> availablePacks = IconDataService.getAvailablePacks(project);
+        Set<String> availablePacks = IconDataService.getAvailablePacks(project);
         IconDataService.IconEntry icon = service.resolveLiteral(literal, availablePacks);
         if (icon == null) {
             return;

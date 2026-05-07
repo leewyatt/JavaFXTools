@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 /**
  * Handles gutter icon click to open an Effect editor popup for editing
@@ -119,7 +120,7 @@ public final class CssGutterEffectHandler {
         }
         if (FxColorParser.isVariableReference(value)) {
             GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-            java.util.List<String> values = FxCssPropertyIndex.getPropertyValues(value, project, scope);
+            List<String> values = FxCssPropertyIndex.getPropertyValues(value, project, scope);
             for (String rawValue : values) {
                 String trimmed = rawValue.trim();
                 if (FxEffectParser.isEffect(trimmed)) {

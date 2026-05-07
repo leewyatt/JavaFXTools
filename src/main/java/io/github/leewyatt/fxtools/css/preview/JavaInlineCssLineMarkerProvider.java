@@ -8,6 +8,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.ui.JBColor;
 import io.github.leewyatt.fxtools.css.index.FxCssPropertyIndex;
 import io.github.leewyatt.fxtools.css.preview.effect.CssGutterEffectHandler;
@@ -273,7 +274,7 @@ public class JavaInlineCssLineMarkerProvider implements LineMarkerProvider {
                 String qName = containingClass.getQualifiedName();
                 // Only match SVGPath.setContent, not other setContent methods
                 return "javafx.scene.shape.SVGPath".equals(qName)
-                        || com.intellij.psi.util.InheritanceUtil.isInheritor(
+                        || InheritanceUtil.isInheritor(
                         containingClass, "javafx.scene.shape.SVGPath");
             }
         }

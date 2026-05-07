@@ -3,6 +3,7 @@ package io.github.leewyatt.fxtools.fxmlkit.dialog;
 import com.intellij.icons.AllIcons;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
@@ -227,8 +228,8 @@ public class AddFxmlKitDependencyDialog extends DialogWrapper {
                 copy.setBounds(btnX, btnY, btnSize.width, btnSize.height);
             }
         });
-        layered.add(scroll, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        layered.add(copy, javax.swing.JLayeredPane.PALETTE_LAYER);
+        layered.add(scroll, JLayeredPane.DEFAULT_LAYER);
+        layered.add(copy, JLayeredPane.PALETTE_LAYER);
 
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.add(layered, BorderLayout.CENTER);
@@ -377,7 +378,7 @@ public class AddFxmlKitDependencyDialog extends DialogWrapper {
         if (project == null || project.isDisposed()) {
             return;
         }
-        com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
+        ApplicationManager.getApplication().invokeLater(() -> {
             if (project.isDisposed()) {
                 return;
             }

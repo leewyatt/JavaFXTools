@@ -5,6 +5,7 @@ import com.intellij.util.ui.JBUI;
 
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -52,7 +53,7 @@ public class SliderControl extends JPanel {
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.fill = GridBagConstraints.NONE;
         label.setPreferredSize(new Dimension(JBUI.scale(95), label.getPreferredSize().height));
-        label.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        label.setHorizontalAlignment(SwingConstants.RIGHT);
         add(label, gbc);
 
         // Col 1: slider (fill horizontal)

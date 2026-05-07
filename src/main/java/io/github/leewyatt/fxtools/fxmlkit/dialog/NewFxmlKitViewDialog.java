@@ -1042,7 +1042,7 @@ public class NewFxmlKitViewDialog extends DialogWrapper {
                 iconLabel.setIcon(AllIcons.General.InspectionsOK);
                 textLabel.setForeground(SUMMARY_GREEN_FG);
 
-                java.util.List<String> locales = config.getSelectedLocales();
+                List<String> locales = config.getSelectedLocales();
                 int totalLocales = locales.size() + 1;
                 String localeStr;
                 if (locales.size() > 3) {
