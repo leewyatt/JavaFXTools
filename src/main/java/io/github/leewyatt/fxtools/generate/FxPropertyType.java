@@ -77,7 +77,7 @@ public enum FxPropertyType {
      * Returns whether this type supports CSS styleable generation.
      */
     public boolean isStyleableSupported() {
-        return this != LIST && this != MAP && this != SET;
+        return this != OBJECT && this != LIST && this != MAP && this != SET;
     }
 
     /**
@@ -92,7 +92,6 @@ public enum FxPropertyType {
             case FLOAT: return "StyleableFloatProperty";
             case DOUBLE: return "StyleableDoubleProperty";
             case BOOLEAN: return "StyleableBooleanProperty";
-            case OBJECT: return "StyleableObjectProperty";
             default: return null;
         }
     }

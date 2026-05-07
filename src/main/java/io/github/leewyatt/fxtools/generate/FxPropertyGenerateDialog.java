@@ -9,6 +9,7 @@ import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
 import io.github.leewyatt.fxtools.FxToolsBundle;
+import io.github.leewyatt.fxtools.util.FxNamingUtil;
 import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +36,6 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     private final JBLabel genericLabel = new JBLabel();
     private final JBLabel genericKeyLabel = new JBLabel();
     private final JBLabel genericValueLabel = new JBLabel();
-    private final JCheckBox javadocCheck;
     private final JCheckBox readonlyCheck;
     private final JCheckBox lazyCheck;
     private final JCheckBox constantCheck;
@@ -53,7 +53,6 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         super(project, true);
         this.project = project;
         this.className = className;
-        javadocCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.generate.javadoc"), true);
         readonlyCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.readonly"), false);
         lazyCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.lazy"), false);
         constantCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.constant"), false);
@@ -74,7 +73,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             protected void textChanged(@NotNull DocumentEvent e) {
                 if (autoUpdateCssName && styleableCheck.isSelected()) {
                     String name = nameField.getText().trim();
-                    cssNameField.setText(name.isEmpty() ? "" : toKebabCase(name));
+                    cssNameField.setText(name.isEmpty() ? "" : FxNamingUtil.toFxKebabCase(name));
                     SwingUtilities.invokeLater(cssNameField::selectAll);
                 }
                 updatePreview();
@@ -97,7 +96,6 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             updateStyleableVisibility();
             updatePreview();
         });
-        javadocCheck.addActionListener(e -> updatePreview());
         readonlyCheck.addActionListener(e -> updatePreview());
         lazyCheck.addActionListener(e -> updatePreview());
         constantCheck.addActionListener(e -> updatePreview());
@@ -107,7 +105,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
                 autoUpdateCssName = true;
                 String name = nameField.getText().trim();
                 if (!name.isEmpty()) {
-                    cssNameField.setText(toKebabCase(name));
+                    cssNameField.setText(FxNamingUtil.toFxKebabCase(name));
                     SwingUtilities.invokeLater(cssNameField::selectAll);
                 }
             }
@@ -164,7 +162,6 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         panel.add(defaultValueField);
 
         panel.add(new JSeparator(), "span 2, growx, gaptop 5, gapbottom 5");
-        panel.add(javadocCheck, "span 2");
         panel.add(readonlyCheck, "span 2");
         panel.add(lazyCheck, "span 2");
         panel.add(constantCheck, "span 2");
@@ -238,7 +235,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         if (!cssName.isEmpty()) {
             return cssName;
         }
-        return toKebabCase(getPropertyName());
+        return FxNamingUtil.toFxKebabCase(getPropertyName());
     }
 
     /**
@@ -251,7 +248,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             return "";
         }
         if (constantCheck.isSelected()) {
-            return toUpperSnakeCase("DEFAULT_" + getPropertyName());
+            return FxNamingUtil.toUpperSnakeCase("DEFAULT_" + getPropertyName());
         }
         return defaultVal;
     }
@@ -305,10 +302,8 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         FxPropertyType type = getSelectedType();
         boolean readonly = readonlyCheck.isSelected();
         boolean lazy = lazyCheck.isSelected();
-        boolean javadoc = javadocCheck.isSelected();
         boolean styleable = styleableCheck.isSelected() && type.isStyleableSupported();
         String defaultVal = normalizeDefaultValue(defaultValueField.getText().trim(), type);
-        String cssName = cssNameField.getText().trim();
         String gp = genericField.getText().trim();
         String gk = genericKeyField.getText().trim();
         String gv = genericValueField.getText().trim();
@@ -329,7 +324,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         String defaultValueLiteral = getDefaultValueLiteral(type, defaultVal);
 
         boolean useConstant = constantCheck.isSelected() && !defaultVal.isEmpty();
-        String constantName = useConstant ? toUpperSnakeCase("DEFAULT_" + propName) : null;
+        String constantName = useConstant ? FxNamingUtil.toUpperSnakeCase("DEFAULT_" + propName) : null;
         String defaultRef = useConstant ? constantName : defaultVal;
         String defaultLiteralRef = useConstant ? constantName : defaultValueLiteral;
 
@@ -357,16 +352,16 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         }
 
         if (styleable) {
-            return generateStyleableCode(sb, propName, capName, getterName, type, readonly, lazy, javadoc,
-                    fieldType, valueType, genericSuffix, cssName, defaultRef, defaultLiteralRef);
+            return generateStyleableCode(sb, propName, capName, getterName, type, readonly, lazy,
+                    fieldType, valueType, genericSuffix, defaultRef, defaultLiteralRef);
         }
 
         if (lazy) {
-            return generateLazyCode(sb, propName, capName, getterName, type, readonly, javadoc,
+            return generateLazyCode(sb, propName, capName, getterName, type, readonly,
                     fieldType, implClass, valueType, genericSuffix, defaultRef, defaultLiteralRef);
         }
 
-        return generateEagerCode(sb, propName, capName, getterName, type, readonly, javadoc,
+        return generateEagerCode(sb, propName, capName, getterName, type, readonly,
                 fieldType, implClass, valueType, genericSuffix, defaultRef);
     }
 
@@ -374,7 +369,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     private String generateEagerCode(@NotNull StringBuilder sb,
                                      @NotNull String propName, @NotNull String capName,
                                      @NotNull String getterName, @NotNull FxPropertyType type,
-                                     boolean readonly, boolean javadoc,
+                                     boolean readonly,
                                      @NotNull String fieldType, @NotNull String implClass,
                                      @NotNull String valueType, @NotNull String genericSuffix,
                                      @NotNull String defaultRef) {
@@ -385,11 +380,11 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         }
         sb.append(");\n");
 
-        appendGetter(sb, propName, getterName, valueType, javadoc, false, null);
+        appendGetter(sb, propName, getterName, valueType, false, null);
         if (!readonly) {
-            appendSetter(sb, propName, capName, valueType, javadoc, false);
+            appendSetter(sb, propName, capName, valueType, false);
         }
-        appendPropertyAccessor(sb, propName, type, fieldType, genericSuffix, javadoc, readonly, false);
+        appendPropertyAccessor(sb, propName, type, fieldType, genericSuffix, readonly);
 
         return sb.toString();
     }
@@ -398,20 +393,17 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     private String generateLazyCode(@NotNull StringBuilder sb,
                                     @NotNull String propName, @NotNull String capName,
                                     @NotNull String getterName, @NotNull FxPropertyType type,
-                                    boolean readonly, boolean javadoc,
+                                    boolean readonly,
                                     @NotNull String fieldType, @NotNull String implClass,
                                     @NotNull String valueType, @NotNull String genericSuffix,
                                     @NotNull String defaultRef, @NotNull String defaultLiteralRef) {
         sb.append("private ").append(fieldType).append(" ").append(propName).append(";\n");
 
-        appendGetter(sb, propName, getterName, valueType, javadoc, true, defaultLiteralRef);
+        appendGetter(sb, propName, getterName, valueType, true, defaultLiteralRef);
         if (!readonly) {
-            appendSetter(sb, propName, capName, valueType, javadoc, true);
+            appendSetter(sb, propName, capName, valueType, true);
         }
 
-        if (javadoc) {
-            sb.append("\n/**\n * The ").append(propName).append(" property.\n */\n");
-        }
         if (readonly) {
             String roType = type.getReadOnlyPropertyFqn() + genericSuffix;
             sb.append("public final ").append(roType).append(" ").append(propName).append("Property() {\n");
@@ -436,25 +428,22 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     private String generateStyleableCode(@NotNull StringBuilder sb,
                                          @NotNull String propName, @NotNull String capName,
                                          @NotNull String getterName, @NotNull FxPropertyType type,
-                                         boolean readonly, boolean lazy, boolean javadoc,
+                                         boolean readonly, boolean lazy,
                                          @NotNull String fieldType, @NotNull String valueType,
-                                         @NotNull String genericSuffix, @NotNull String cssName,
-                                         @NotNull String defaultRef, @NotNull String defaultLiteralRef) {
+                                         @NotNull String genericSuffix, @NotNull String defaultRef,
+                                         @NotNull String defaultLiteralRef) {
         String cssValueType = type.getCssValueType();
         // Styleable property anonymous class body
-        String styleableBody = buildStyleableBody(propName, cssValueType, toUpperSnakeCase(propName));
+        String styleableBody = buildStyleableBody(propName, cssValueType, FxNamingUtil.toUpperSnakeCase(propName));
 
         if (lazy) {
             // Lazy: field without initializer
             sb.append("private ").append(fieldType).append(" ").append(propName).append(";\n");
-            appendGetter(sb, propName, getterName, valueType, javadoc, true, defaultLiteralRef);
+            appendGetter(sb, propName, getterName, valueType, true, defaultLiteralRef);
             if (!readonly) {
-                appendSetter(sb, propName, capName, valueType, javadoc, true);
+                appendSetter(sb, propName, capName, valueType, true);
             }
 
-            if (javadoc) {
-                sb.append("\n/**\n * The ").append(propName).append(" property.\n */\n");
-            }
             sb.append("public final ").append(fieldType).append(" ").append(propName).append("Property() {\n");
             sb.append("    if (").append(propName).append(" == null) {\n");
             sb.append("        ").append(propName).append(" = new ").append(fieldType).append("(");
@@ -478,14 +467,11 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             sb.append(styleableBody);
             sb.append("};\n");
 
-            appendGetter(sb, propName, getterName, valueType, javadoc, false, null);
+            appendGetter(sb, propName, getterName, valueType, false, null);
             if (!readonly) {
-                appendSetter(sb, propName, capName, valueType, javadoc, false);
+                appendSetter(sb, propName, capName, valueType, false);
             }
 
-            if (javadoc) {
-                sb.append("\n/**\n * The ").append(propName).append(" property.\n */\n");
-            }
             sb.append("public final ").append(fieldType).append(" ").append(propName).append("Property() {\n");
             sb.append("    return ").append(propName).append(";\n");
             sb.append("}\n");
@@ -516,11 +502,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
 
     private void appendGetter(@NotNull StringBuilder sb, @NotNull String propName,
                               @NotNull String getterName, @NotNull String valueType,
-                              boolean javadoc, boolean lazy, @Nullable String defaultLiteral) {
-        if (javadoc) {
-            sb.append("\n/**\n * Gets the value of {@link #").append(propName)
-                    .append("Property() ").append(propName).append("}.\n */\n");
-        }
+                              boolean lazy, @Nullable String defaultLiteral) {
         sb.append("public final ").append(valueType).append(" ").append(getterName).append("() {\n");
         if (lazy) {
             sb.append("    return ").append(propName).append(" == null ? ")
@@ -533,11 +515,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
 
     private void appendSetter(@NotNull StringBuilder sb, @NotNull String propName,
                               @NotNull String capName, @NotNull String valueType,
-                              boolean javadoc, boolean lazy) {
-        if (javadoc) {
-            sb.append("\n/**\n * Sets the value of {@link #").append(propName)
-                    .append("Property() ").append(propName).append("}.\n */\n");
-        }
+                              boolean lazy) {
         sb.append("public final void set").append(capName).append("(").append(valueType).append(" value) {\n");
         if (lazy) {
             sb.append("    ").append(propName).append("Property().set(value);\n");
@@ -549,11 +527,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
 
     private void appendPropertyAccessor(@NotNull StringBuilder sb, @NotNull String propName,
                                         @NotNull FxPropertyType type, @NotNull String fieldType,
-                                        @NotNull String genericSuffix, boolean javadoc,
-                                        boolean readonly, boolean lazy) {
-        if (javadoc) {
-            sb.append("\n/**\n * The ").append(propName).append(" property.\n */\n");
-        }
+                                        @NotNull String genericSuffix, boolean readonly) {
         if (readonly) {
             String roType = type.getReadOnlyPropertyFqn() + genericSuffix;
             sb.append("public final ").append(roType).append(" ").append(propName).append("Property() {\n");
@@ -563,32 +537,6 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             sb.append("    return ").append(propName).append(";\n");
         }
         sb.append("}\n");
-    }
-
-    @NotNull
-    private String toUpperSnakeCase(@NotNull String camelCase) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < camelCase.length(); i++) {
-            char c = camelCase.charAt(i);
-            if (Character.isUpperCase(c) && i > 0 && !Character.isUpperCase(camelCase.charAt(i - 1))) {
-                sb.append('_');
-            }
-            sb.append(Character.toUpperCase(c));
-        }
-        return sb.toString();
-    }
-
-    @NotNull
-    private String toKebabCase(@NotNull String camelCase) {
-        StringBuilder sb = new StringBuilder("-fx-");
-        for (int i = 0; i < camelCase.length(); i++) {
-            char c = camelCase.charAt(i);
-            if (Character.isUpperCase(c) && i > 0) {
-                sb.append('-');
-            }
-            sb.append(Character.toLowerCase(c));
-        }
-        return sb.toString();
     }
 
     @NotNull

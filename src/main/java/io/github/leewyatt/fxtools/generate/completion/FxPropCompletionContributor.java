@@ -8,7 +8,6 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
-import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.template.Template;
@@ -22,29 +21,20 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.patterns.PlatformPatterns;
-import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassInitializer;
-import com.intellij.psi.PsiCodeBlock;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiExpression;
-import com.intellij.psi.PsiExpressionList;
-import com.intellij.psi.PsiExpressionStatement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiMethodCallExpression;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiStatement;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ProcessingContext;
+import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertiesIntegrator;
+import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertyDescriptor;
+import io.github.leewyatt.fxtools.util.FxNamingUtil;
 import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -260,7 +250,7 @@ public class FxPropCompletionContributor extends CompletionContributor {
 
             template.addVariable("NAME", new ConstantNode("name"), true);
             template.addVariable("Name", "capitalize(NAME)", "", false);
-            template.addVariable("NAME_CONST", "capitalizeAndUnderscore(NAME)", "", false);
+            template.addVariable("NAME_CONST", "fxConstantName(NAME)", "", false);
 
             if (css) {
                 template.addVariable("CSS_NAME", "fxCssName(NAME)", "", false);
@@ -311,253 +301,24 @@ public class FxPropCompletionContributor extends CompletionContributor {
                 return;
             }
 
-            String constName = FxPropCodeGenerator.toConstantCase(propertyName);
-
-            // Find existing StyleableProperties
-            PsiClass styleableProps = findStyleablePropertiesClass(currentClass);
-
-            if (styleableProps != null) {
-                // Phase 2: append to existing inner class
-                appendToStyleableProperties(editor, project, currentClass, styleableProps,
-                        propertyName, constName, defaultConst, lazy);
-            } else {
-                // Phase 1: create new inner class + methods
-                createStyleableProperties(project, currentClass, propertyName,
-                        constName, defaultConst, lazy);
-            }
-        }
-
-        /**
-         * Phase 1: Creates StyleableProperties inner class + getClassCssMetaData + instance method.
-         */
-        private void createStyleableProperties(@NotNull Project project,
-                                                @NotNull PsiClass currentClass,
-                                                @NotNull String propertyName,
-                                                @NotNull String constName,
-                                                boolean defaultConst, boolean lazy) {
-            PsiClass superClass = currentClass.getSuperClass();
-            String superClassName = superClass != null && superClass.getName() != null
-                    ? superClass.getName() : "javafx.scene.control.Control";
-
-            boolean useControlCssMetaData = false;
-            PsiClass controlClass = JavaPsiFacade.getInstance(project)
-                    .findClass("javafx.scene.control.Control", GlobalSearchScope.allScope(project));
-            if (controlClass != null && currentClass.isInheritor(controlClass, true)) {
-                useControlCssMetaData = true;
+            String constName = FxNamingUtil.toUpperSnakeCase(propertyName);
+            String defaultReference = "";
+            if (defaultConst) {
+                defaultReference = "DEFAULT_" + constName;
+            } else if (lazy) {
+                defaultReference = type.lazyDefault;
             }
 
-            String code = FxPropCodeGenerator.generateStyleablePropertiesClass(
-                    propertyName, className, type, defaultConst, lazy,
-                    superClassName, useControlCssMetaData);
+            StyleablePropertyDescriptor descriptor = new StyleablePropertyDescriptor(
+                    propertyName,
+                    type.cssValueType,
+                    type.converterExpr,
+                    FxNamingUtil.toFxKebabCase(propertyName),
+                    defaultReference,
+                    constName);
 
-            WriteCommandAction.runWriteCommandAction(project, "Generate StyleableProperties", null, () -> {
-                PsiElementFactory factory = JavaPsiFacade.getElementFactory(project);
-                PsiElement rBrace = currentClass.getRBrace();
-                if (rBrace == null) {
-                    return;
-                }
-
-                PsiClass dummyClass = factory.createClassFromText(code, currentClass);
-                for (PsiClass inner : dummyClass.getInnerClasses()) {
-                    currentClass.addBefore(inner, rBrace);
-                }
-                for (PsiMethod method : dummyClass.getMethods()) {
-                    if (currentClass.findMethodsByName(method.getName(), false).length == 0) {
-                        currentClass.addBefore(method, rBrace);
-                    }
-                }
-
-                JavaCodeStyleManager.getInstance(project).shortenClassReferences(currentClass);
-            });
-        }
-
-        /**
-         * Phase 2: Appends a CssMetaData field to existing StyleableProperties
-         * and updates the STYLEABLES collection in the static block.
-         */
-        private void appendToStyleableProperties(@NotNull Editor editor,
-                                                  @NotNull Project project,
-                                                  @NotNull PsiClass currentClass,
-                                                  @NotNull PsiClass styleableProps,
-                                                  @NotNull String propertyName,
-                                                  @NotNull String constName,
-                                                  boolean defaultConst, boolean lazy) {
-            // Check for name conflict
-            for (PsiField f : styleableProps.getFields()) {
-                if (constName.equals(f.getName())) {
-                    HintManager.getInstance().showInformationHint(editor,
-                            "CssMetaData field '" + constName + "' already exists in StyleableProperties.");
-                    return;
-                }
-            }
-
-            String fieldCode = FxPropCodeGenerator.generateCssMetaDataField(
-                    propertyName, className, type, defaultConst, lazy);
-
-            WriteCommandAction.runWriteCommandAction(project, "Append to StyleableProperties", null, () -> {
-                PsiElementFactory factory = JavaPsiFacade.getElementFactory(project);
-
-                // Step 1: Insert the CssMetaData field into StyleableProperties
-                PsiField newField = createFieldFromText(factory, fieldCode, styleableProps);
-                if (newField == null) {
-                    return;
-                }
-
-                PsiElement insertedField = insertCssMetaDataField(styleableProps, newField);
-                if (insertedField == null) {
-                    return;
-                }
-
-                // Step 2: Update the static block's collection
-                boolean updated = updateStaticBlock(factory, styleableProps, constName);
-                if (!updated) {
-                    // Show hint if we couldn't auto-update the static block
-                    com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() ->
-                            HintManager.getInstance().showInformationHint(editor,
-                                    "CssMetaData field added. Please add '" + constName
-                                            + "' to the STYLEABLES list manually."));
-                }
-
-                JavaCodeStyleManager.getInstance(project).shortenClassReferences(styleableProps);
-                com.intellij.psi.codeStyle.CodeStyleManager.getInstance(project).reformat(styleableProps);
-            });
-        }
-
-        /**
-         * Creates a PsiField from code text using a dummy class wrapper.
-         */
-        @Nullable
-        private static PsiField createFieldFromText(@NotNull PsiElementFactory factory,
-                                                     @NotNull String fieldCode,
-                                                     @NotNull PsiElement context) {
-            String wrappedCode = "class _Dummy_ { " + fieldCode + " }";
-            PsiClass dummyClass = factory.createClassFromText(wrappedCode, context).getInnerClasses()[0];
-            PsiField[] fields = dummyClass.getFields();
-            return fields.length > 0 ? (PsiField) fields[0].copy() : null;
-        }
-
-        /**
-         * Inserts a CssMetaData field into StyleableProperties before the STYLEABLES list field,
-         * or after the last CssMetaData field, or at the beginning.
-         */
-        @Nullable
-        private static PsiElement insertCssMetaDataField(@NotNull PsiClass styleableProps,
-                                                          @NotNull PsiField newField) {
-            PsiField stylesablesListField = null;
-            PsiField lastCssMetaDataField = null;
-
-            for (PsiField field : styleableProps.getFields()) {
-                String typeText = field.getType().getCanonicalText();
-                if (typeText.contains("List") && typeText.contains("CssMetaData")) {
-                    stylesablesListField = field;
-                } else if (typeText.contains("CssMetaData")) {
-                    lastCssMetaDataField = field;
-                }
-            }
-
-            if (stylesablesListField != null) {
-                return styleableProps.addBefore(newField, stylesablesListField);
-            } else if (lastCssMetaDataField != null) {
-                return styleableProps.addAfter(newField, lastCssMetaDataField);
-            } else {
-                PsiElement lBrace = styleableProps.getLBrace();
-                if (lBrace != null) {
-                    return styleableProps.addAfter(newField, lBrace);
-                }
-            }
-            return null;
-        }
-
-        /**
-         * Updates the static block to include the new constant in the STYLEABLES collection.
-         * Supports Collections.addAll(...) and list.add(...) patterns.
-         *
-         * @return true if the static block was successfully updated
-         */
-        private static boolean updateStaticBlock(@NotNull PsiElementFactory factory,
-                                                  @NotNull PsiClass styleableProps,
-                                                  @NotNull String constName) {
-            PsiClassInitializer staticInit = findStaticInitializer(styleableProps);
-            if (staticInit == null) {
-                return false;
-            }
-            PsiCodeBlock body = staticInit.getBody();
-
-            // Pattern A: Collections.addAll(styleables, FIELD_A, FIELD_B)
-            for (PsiStatement stmt : body.getStatements()) {
-                if (!(stmt instanceof PsiExpressionStatement)) {
-                    continue;
-                }
-                PsiExpression expr = ((PsiExpressionStatement) stmt).getExpression();
-                if (!(expr instanceof PsiMethodCallExpression)) {
-                    continue;
-                }
-                PsiMethodCallExpression call = (PsiMethodCallExpression) expr;
-                String methodName = call.getMethodExpression().getReferenceName();
-                PsiExpression qualifier = call.getMethodExpression().getQualifierExpression();
-
-                if ("addAll".equals(methodName) && qualifier != null
-                        && qualifier.getText().endsWith("Collections")) {
-                    PsiExpressionList argList = call.getArgumentList();
-                    PsiExpression newArg = factory.createExpressionFromText(constName, null);
-                    argList.add(newArg);
-                    return true;
-                }
-            }
-
-            // Pattern B: list.add(FIELD_A)
-            PsiStatement lastAddStmt = null;
-            String listVarName = null;
-            for (PsiStatement stmt : body.getStatements()) {
-                if (!(stmt instanceof PsiExpressionStatement)) {
-                    continue;
-                }
-                PsiExpression expr = ((PsiExpressionStatement) stmt).getExpression();
-                if (!(expr instanceof PsiMethodCallExpression)) {
-                    continue;
-                }
-                PsiMethodCallExpression call = (PsiMethodCallExpression) expr;
-                String methodName = call.getMethodExpression().getReferenceName();
-                if ("add".equals(methodName)) {
-                    lastAddStmt = stmt;
-                    PsiExpression q = call.getMethodExpression().getQualifierExpression();
-                    if (q != null) {
-                        listVarName = q.getText();
-                    }
-                }
-            }
-
-            if (lastAddStmt != null && listVarName != null) {
-                PsiStatement newStmt = factory.createStatementFromText(
-                        listVarName + ".add(" + constName + ");", null);
-                body.addAfter(newStmt, lastAddStmt);
-                return true;
-            }
-
-            return false;
-        }
-
-        /**
-         * Finds the static initializer block in a class.
-         */
-        @Nullable
-        private static PsiClassInitializer findStaticInitializer(@NotNull PsiClass psiClass) {
-            for (PsiClassInitializer init : psiClass.getInitializers()) {
-                if (init.hasModifierProperty(PsiModifier.STATIC)) {
-                    return init;
-                }
-            }
-            return null;
-        }
-
-        @Nullable
-        private static PsiClass findStyleablePropertiesClass(@NotNull PsiClass parentClass) {
-            for (PsiClass inner : parentClass.getInnerClasses()) {
-                if ("StyleableProperties".equals(inner.getName())) {
-                    return inner;
-                }
-            }
-            return null;
+            WriteCommandAction.runWriteCommandAction(project, "Integrate StyleableProperties", null,
+                    () -> StyleablePropertiesIntegrator.integrate(project, currentClass, descriptor, editor));
         }
 
         /**

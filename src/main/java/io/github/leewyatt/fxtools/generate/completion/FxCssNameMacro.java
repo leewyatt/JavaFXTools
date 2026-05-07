@@ -2,6 +2,7 @@ package io.github.leewyatt.fxtools.generate.completion;
 
 import com.intellij.codeInsight.template.*;
 import com.intellij.codeInsight.template.macro.MacroBase;
+import io.github.leewyatt.fxtools.util.FxNamingUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,6 +11,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public class FxCssNameMacro extends MacroBase {
 
+    /**
+     * Creates the {@code fxCssName} live template macro.
+     */
     public FxCssNameMacro() {
         super("fxCssName", "fxCssName(String)");
     }
@@ -28,19 +32,6 @@ public class FxCssNameMacro extends MacroBase {
         if (name.isEmpty()) {
             return new TextResult("-fx-");
         }
-        return new TextResult(toKebabCase(name));
-    }
-
-    @NotNull
-    private static String toKebabCase(@NotNull String camelCase) {
-        StringBuilder sb = new StringBuilder("-fx-");
-        for (int i = 0; i < camelCase.length(); i++) {
-            char c = camelCase.charAt(i);
-            if (Character.isUpperCase(c) && i > 0) {
-                sb.append('-');
-            }
-            sb.append(Character.toLowerCase(c));
-        }
-        return sb.toString();
+        return new TextResult(FxNamingUtil.toFxKebabCase(name));
     }
 }
