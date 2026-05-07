@@ -28,6 +28,7 @@ import io.github.leewyatt.fxtools.fxmlkit.dependency.MavenDependencyInserter;
 import io.github.leewyatt.fxtools.fxmlkit.dependency.ModuleInfoUpdater;
 import io.github.leewyatt.fxtools.fxmlkit.dependency.ParentPomInfo;
 import io.github.leewyatt.fxtools.fxmlkit.dependency.SnippetFormatter;
+import io.github.leewyatt.fxtools.notification.FxNotificationConstants;
 import io.github.leewyatt.fxtools.util.BuildSystemDetector.BuildSystem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -299,7 +300,7 @@ public class AddFxmlKitDependencyDialog extends DialogWrapper {
 
             String moduleName = ctx.getModule().getName();
             NotificationGroupManager.getInstance()
-                    .getNotificationGroup("JavaFX Tools")
+                    .getNotificationGroup(FxNotificationConstants.GROUP_ID)
                     .createNotification(
                             FxToolsBundle.message("fxmlkit.dep.dialog.add.success", moduleName),
                             NotificationType.INFORMATION)

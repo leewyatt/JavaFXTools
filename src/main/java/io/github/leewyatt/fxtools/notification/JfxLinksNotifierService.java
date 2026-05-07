@@ -201,7 +201,7 @@ public final class JfxLinksNotifierService implements Disposable {
         String localDate = formatLocalDate(item.pubDate());
 
         Notification notification = NotificationGroupManager.getInstance()
-                .getNotificationGroup("JavaFX Tools")
+                .getNotificationGroup(FxNotificationConstants.GROUP_ID)
                 .createNotification(
                         "[" + localDate + "] JFX Links of the Week!",
                         item.title(),
