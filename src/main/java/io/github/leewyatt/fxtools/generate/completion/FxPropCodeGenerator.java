@@ -19,48 +19,51 @@ public final class FxPropCodeGenerator {
                 "ReadOnlyStringWrapper", "ReadOnlyStringProperty",
                 "StyleableStringProperty", "SimpleStyleableStringProperty",
                 "javafx.css.StyleConverter.getStringConverter()", "String",
-                "get", "\"\"", "null", false, false),
+                "get", "\"\"", "null", "null", false, false),
         INTEGER("fxpinteger", "IntegerProperty", "int", "SimpleIntegerProperty",
                 "ReadOnlyIntegerWrapper", "ReadOnlyIntegerProperty",
                 "StyleableIntegerProperty", "SimpleStyleableIntegerProperty",
                 "javafx.css.StyleConverter.getSizeConverter()", "Number",
-                "get", "0", "0", false, false),
+                "get", "0", "0", "0", false, false),
         LONG("fxplong", "LongProperty", "long", "SimpleLongProperty",
                 "ReadOnlyLongWrapper", "ReadOnlyLongProperty",
                 "StyleableLongProperty", "SimpleStyleableLongProperty",
                 "javafx.css.StyleConverter.getSizeConverter()", "Number",
-                "get", "0L", "0L", false, false),
+                "get", "0L", "0L", "0L", false, false),
         FLOAT("fxpfloat", "FloatProperty", "float", "SimpleFloatProperty",
                 "ReadOnlyFloatWrapper", "ReadOnlyFloatProperty",
                 "StyleableFloatProperty", "SimpleStyleableFloatProperty",
                 "javafx.css.StyleConverter.getSizeConverter()", "Number",
-                "get", "0.0f", "0.0f", false, false),
+                "get", "0.0f", "0.0f", "0.0f", false, false),
         DOUBLE("fxpdouble", "DoubleProperty", "double", "SimpleDoubleProperty",
                 "ReadOnlyDoubleWrapper", "ReadOnlyDoubleProperty",
                 "StyleableDoubleProperty", "SimpleStyleableDoubleProperty",
                 "javafx.css.StyleConverter.getSizeConverter()", "Number",
-                "get", "0.0", "0.0", false, false),
+                "get", "0.0", "0.0", "0.0", false, false),
         BOOLEAN("fxpboolean", "BooleanProperty", "boolean", "SimpleBooleanProperty",
                 "ReadOnlyBooleanWrapper", "ReadOnlyBooleanProperty",
                 "StyleableBooleanProperty", "SimpleStyleableBooleanProperty",
                 "javafx.css.StyleConverter.getBooleanConverter()", "Boolean",
-                "is", "false", "false", false, false),
+                "is", "false", "false", "false", false, false),
         OBJECT("fxpobject", "ObjectProperty", "Object", "SimpleObjectProperty",
                 "ReadOnlyObjectWrapper", "ReadOnlyObjectProperty",
                 null, null, null, null,
-                "get", "null", "null", true, false),
+                "get", "null", "null", "null", true, false),
         LIST("fxplist", "ListProperty", "javafx.collections.ObservableList", "SimpleListProperty",
                 "ReadOnlyListWrapper", "ReadOnlyListProperty",
                 null, null, null, null,
-                "get", "javafx.collections.FXCollections.observableArrayList()", "null", true, false),
+                "get", "javafx.collections.FXCollections.observableArrayList()", "null",
+                "javafx.collections.FXCollections.observableArrayList()", true, false),
         MAP("fxpmap", "MapProperty", "javafx.collections.ObservableMap", "SimpleMapProperty",
                 "ReadOnlyMapWrapper", "ReadOnlyMapProperty",
                 null, null, null, null,
-                "get", "javafx.collections.FXCollections.observableHashMap()", "null", false, true),
+                "get", "javafx.collections.FXCollections.observableHashMap()", "null",
+                "javafx.collections.FXCollections.observableHashMap()", false, true),
         SET("fxpset", "SetProperty", "javafx.collections.ObservableSet", "SimpleSetProperty",
                 "ReadOnlySetWrapper", "ReadOnlySetProperty",
                 null, null, null, null,
-                "get", "javafx.collections.FXCollections.observableSet()", "null", true, false);
+                "get", "javafx.collections.FXCollections.observableSet()", "null",
+                "javafx.collections.FXCollections.observableSet()", true, false);
 
         final String abbrev;
         final String propertyClass;
@@ -75,6 +78,7 @@ public final class FxPropCodeGenerator {
         final String getterPrefix;
         final String lazyDefault;
         final String nullDefault;
+        final String smartDefault;
         final boolean singleGeneric;
         final boolean dualGeneric;
 
@@ -82,7 +86,7 @@ public final class FxPropCodeGenerator {
                  String roWrapper, String roProperty,
                  String styleableClass, String simpleStyleableClass,
                  String converterExpr, String cssValueType,
-                 String getterPrefix, String lazyDefault, String nullDefault,
+                 String getterPrefix, String lazyDefault, String nullDefault, String smartDefault,
                  boolean singleGeneric, boolean dualGeneric) {
             this.abbrev = abbrev;
             this.propertyClass = propertyClass;
@@ -97,6 +101,7 @@ public final class FxPropCodeGenerator {
             this.getterPrefix = getterPrefix;
             this.lazyDefault = lazyDefault;
             this.nullDefault = nullDefault;
+            this.smartDefault = smartDefault;
             this.singleGeneric = singleGeneric;
             this.dualGeneric = dualGeneric;
         }

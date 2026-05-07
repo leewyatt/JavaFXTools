@@ -44,6 +44,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     private final JBLabel genericValueLabel = new JBLabel();
     private final JCheckBox readonlyCheck;
     private final JCheckBox lazyCheck;
+    private final JCheckBox provideDefaultCheck;
     private final JCheckBox constantCheck;
     private final JCheckBox styleableCheck;
     private final JBLabel cssNameLabel = new JBLabel();
@@ -52,6 +53,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     private final JTextArea lineNumberArea = new JTextArea("1");
     private String generatedCode = "";
     private boolean autoUpdateCssName = true;
+    private FxPropertyType previousType = FxPropertyType.STRING;
 
     /**
      * Creates the JavaFX Property generation dialog.
@@ -69,6 +71,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         this.hasStyleableProperties = hasStyleableProperties;
         readonlyCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.readonly"), false);
         lazyCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.lazy"), false);
+        provideDefaultCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.provide.default"), false);
         constantCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.constant"), false);
         styleableCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.styleable"), false);
 
@@ -106,12 +109,26 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         });
 
         typeCombo.addActionListener(e -> {
+            FxPropertyType current = getSelectedType();
+            // Refill default field when user kept the previous type's smart default
+            // (or field is empty). User-customized values are preserved across type changes.
+            // Refill runs regardless of provideDefaultCheck state — keeping the field in sync
+            // even while disabled means re-enabling shows the right value for the current type.
+            String currentText = defaultValueField.getText().trim();
+            if (currentText.isEmpty() || currentText.equals(previousType.getSmartDefault())) {
+                defaultValueField.setText(current.getSmartDefault());
+            }
+            previousType = current;
             updateGenericFieldsVisibility();
             updateStyleableVisibility();
             updatePreview();
         });
         readonlyCheck.addActionListener(e -> updatePreview());
         lazyCheck.addActionListener(e -> updatePreview());
+        provideDefaultCheck.addActionListener(e -> {
+            updateDefaultValueState();
+            updatePreview();
+        });
         constantCheck.addActionListener(e -> updatePreview());
         styleableCheck.addActionListener(e -> {
             updateStyleableVisibility();
@@ -128,6 +145,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
 
         updateGenericFieldsVisibility();
         updateStyleableVisibility();
+        updateDefaultValueState();
     }
 
     @Override
@@ -155,7 +173,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         root.setPreferredSize(new Dimension(960, 560));
 
         JPanel propertyPanel = new JPanel(new MigLayout(
-                "wrap 2, fillx, insets 14 16 14 16, gapy 8",
+                "wrap 2, fillx, insets 14 16 14 16, gapy 8, hidemode 3",
                 "[right]12[grow,fill]"));
         propertyPanel.setPreferredSize(new Dimension(420, 520));
 
@@ -182,6 +200,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         addSectionTitle(propertyPanel, FxToolsBundle.message("generate.fx.property.section.options"));
         propertyPanel.add(readonlyCheck, "span 2, growx");
         propertyPanel.add(lazyCheck, "span 2, growx");
+        propertyPanel.add(provideDefaultCheck, "span 2, growx");
         propertyPanel.add(constantCheck, "span 2, growx");
 
         addSectionTitle(propertyPanel, FxToolsBundle.message("generate.fx.property.section.css"));
@@ -318,7 +337,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
      */
     @NotNull
     public String getCssDefaultReference() {
-        String defaultVal = normalizeDefaultValue(defaultValueField.getText().trim(), getSelectedType());
+        String defaultVal = computeDefaultValue();
         if (defaultVal.isEmpty()) {
             return "";
         }
@@ -326,6 +345,19 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             return FxNamingUtil.toUpperSnakeCase("DEFAULT_" + getPropertyName());
         }
         return defaultVal;
+    }
+
+    @NotNull
+    private String computeDefaultValue() {
+        if (!provideDefaultCheck.isSelected()) {
+            return "";
+        }
+        FxPropertyType type = getSelectedType();
+        String raw = defaultValueField.getText().trim();
+        if (raw.isEmpty()) {
+            return "";
+        }
+        return type.normalizeDefaultLiteral(normalizeDefaultValue(raw, type));
     }
 
     /**
@@ -366,6 +398,18 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         valueTypeLabel.setText(type.getEffectiveValueType(
                 singleParam ? (gp.isEmpty() ? "Object" : gp) : (twoParams ? (gk.isEmpty() ? "Object" : gk) : ""),
                 twoParams ? (gv.isEmpty() ? "Object" : gv) : ""));
+    }
+
+    private void updateDefaultValueState() {
+        boolean enabled = provideDefaultCheck.isSelected();
+        defaultValueField.setEnabled(enabled);
+        constantCheck.setEnabled(enabled);
+        if (enabled && defaultValueField.getText().trim().isEmpty()) {
+            defaultValueField.setText(getSelectedType().getSmartDefault());
+        }
+        if (!enabled) {
+            constantCheck.setSelected(false);
+        }
     }
 
     private void updateStyleableVisibility() {
@@ -433,7 +477,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         boolean readonly = readonlyCheck.isSelected();
         boolean lazy = lazyCheck.isSelected();
         boolean styleable = styleableCheck.isSelected() && type.isStyleableSupported();
-        String defaultVal = normalizeDefaultValue(defaultValueField.getText().trim(), type);
+        String defaultVal = computeDefaultValue();
         String gp = genericField.getText().trim();
         String gk = genericKeyField.getText().trim();
         String gv = genericValueField.getText().trim();
@@ -653,6 +697,10 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             return raw;
         }
         if (type == FxPropertyType.STRING) {
+            // null is a valid Java expression for any reference type — don't wrap as a literal.
+            if ("null".equals(raw)) {
+                return raw;
+            }
             if (!raw.startsWith("\"")) {
                 return "\"" + raw.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
             }

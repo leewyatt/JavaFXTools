@@ -257,7 +257,7 @@ public class FxPropCompletionContributor extends CompletionContributor {
             }
 
             if (defaultConst) {
-                template.addVariable("DEFAULT", new ConstantNode(type.lazyDefault), true);
+                template.addVariable("DEFAULT", new ConstantNode(type.smartDefault), true);
             }
 
             editor.getCaretModel().moveToOffset(offset);

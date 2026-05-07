@@ -170,6 +170,76 @@ public enum FxPropertyType {
     }
 
     /**
+     * Returns the smart default value expression auto-filled when "Provide default value" is enabled.
+     */
+    @NotNull
+    public String getSmartDefault() {
+        switch (this) {
+            case STRING: return "null";
+            case INTEGER: return "0";
+            case LONG: return "0L";
+            case FLOAT: return "0.0f";
+            case DOUBLE: return "0.0";
+            case BOOLEAN: return "false";
+            case OBJECT: return "null";
+            case LIST: return "javafx.collections.FXCollections.observableArrayList()";
+            case MAP: return "javafx.collections.FXCollections.observableHashMap()";
+            case SET: return "javafx.collections.FXCollections.observableSet()";
+            default: return "";
+        }
+    }
+
+    /**
+     * Adds the {@code L} or {@code f} suffix to a numeric literal when missing.
+     * Non-literal expressions (variables, method calls) are returned unchanged.
+     */
+    @NotNull
+    public String normalizeDefaultLiteral(@NotNull String value) {
+        if (value.isEmpty()) {
+            return value;
+        }
+        boolean isHex = value.startsWith("0x") || value.startsWith("0X");
+        char last = value.charAt(value.length() - 1);
+        // In hex literals, F/D are hex digits, not type suffixes — only L/l acts as a suffix.
+        boolean alreadySuffixed = isHex
+                ? (last == 'l' || last == 'L')
+                : ("lLfFdD".indexOf(last) >= 0);
+        if (alreadySuffixed) {
+            return value;
+        }
+        if (this == LONG) {
+            if (isHex) {
+                try {
+                    Long.parseLong(value.substring(2), 16);
+                    return value + "L";
+                } catch (NumberFormatException ignored) {
+                }
+                return value;
+            }
+            try {
+                Long.parseLong(value);
+                return value + "L";
+            } catch (NumberFormatException ignored) {
+            }
+            return value;
+        }
+        if (this == FLOAT) {
+            // Hex int literals can't take f suffix in Java — leave alone, the int→float widening
+            // is implicit at assignment (e.g., 0x1F → 31.0f).
+            if (isHex) {
+                return value;
+            }
+            try {
+                Double.parseDouble(value);
+                return value + "f";
+            } catch (NumberFormatException ignored) {
+            }
+            return value;
+        }
+        return value;
+    }
+
+    /**
      * Returns the value type for display, considering generic parameters.
      */
     @NotNull
