@@ -52,6 +52,9 @@ import java.util.List;
  */
 public class NewFxmlKitViewDialog extends DialogWrapper {
 
+     private static final JBColor SELECTED_SEGMENT_BG = JBColor.namedColor("Button.default.startBackground",
+                  new JBColor(new Color(0x3574F0), new Color(0x3574F0)));
+
     private static final JBColor VIEW_COLOR =
             new JBColor(new Color(0x3574F0), new Color(0x5A95F5));
     private static final JBColor FXML_COLOR =
@@ -520,17 +523,6 @@ public class NewFxmlKitViewDialog extends DialogWrapper {
         return JBUI.CurrentTheme.DefaultTabs.borderColor();
     }
 
-    private static Color getDefaultButtonBackground() {
-        try {
-            Color c = JBColor.namedColor("Button.default.startBackground", null);
-            if (c != null) {
-                return c;
-            }
-        } catch (Exception ignored) {
-        }
-        return new JBColor(new Color(0x3574F0), new Color(0x3574F0));
-    }
-
     private static Font getMonoFont(int size) {
         try {
             String fontName = EditorColorsManager.getInstance()
@@ -641,7 +633,7 @@ public class NewFxmlKitViewDialog extends DialogWrapper {
 
                 FontMetrics fm = g2.getFontMetrics(boldFont);
                 if (i == selectedIndex) {
-                    g2.setColor(getDefaultButtonBackground());
+                    g2.setColor(SELECTED_SEGMENT_BG);
                     g2.fill(new RoundRectangle2D.Float(x0, pad, segW, h - pad * 2,
                             innerRadius, innerRadius));
                     g2.setColor(Color.WHITE);

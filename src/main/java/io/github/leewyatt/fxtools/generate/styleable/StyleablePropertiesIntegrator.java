@@ -53,6 +53,28 @@ public final class StyleablePropertiesIntegrator {
         appendToStyleableProperties(project, styleableProperties, descriptor, editorForHints);
     }
 
+    /**
+     * Generates the CSS metadata code shown in the property dialog preview.
+     *
+     * @param className containing class name used in generated CssMetaData
+     * @param superClassName superclass used to seed the generated STYLEABLES list
+     * @param useControlCssMetaData true when the containing class extends JavaFX Control
+     * @param hasStyleableProperties true when the class already has a StyleableProperties inner class
+     * @param descriptor styleable property metadata to preview
+     * @return generated CSS metadata code
+     */
+    @NotNull
+    public static String generatePreviewCode(@NotNull String className,
+                                             @NotNull String superClassName,
+                                             boolean useControlCssMetaData,
+                                             boolean hasStyleableProperties,
+                                             @NotNull StyleablePropertyDescriptor descriptor) {
+        if (hasStyleableProperties) {
+            return generateCssMetaDataFieldCode(className, descriptor);
+        }
+        return generateStyleablePropertiesCode(className, descriptor, superClassName, useControlCssMetaData);
+    }
+
     private static void createStyleableProperties(@NotNull Project project,
                                                   @NotNull PsiClass psiClass,
                                                   @NotNull StyleablePropertyDescriptor descriptor,
@@ -180,7 +202,7 @@ public final class StyleablePropertiesIntegrator {
         sb.append("        public boolean isSettable(").append(className).append(" node) {\n");
         sb.append("            return node.").append(descriptor.propertyName()).append(" == null || !node.")
                 .append(descriptor.propertyName()).append(".isBound();\n");
-        sb.append("        }\n");
+        sb.append("        }\n\n");
         sb.append("        @Override\n");
         sb.append("        public javafx.css.StyleableProperty<").append(descriptor.cssValueType())
                 .append("> getStyleableProperty(").append(className).append(" node) {\n");

@@ -5,10 +5,13 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.psi.PsiNameHelper;
 import com.intellij.ui.DocumentAdapter;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
 import io.github.leewyatt.fxtools.FxToolsBundle;
+import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertiesIntegrator;
+import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertyDescriptor;
 import io.github.leewyatt.fxtools.util.FxNamingUtil;
 import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +29,9 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
 
     private final Project project;
     private final String className;
+    private final String superClassName;
+    private final boolean useControlCssMetaData;
+    private final boolean hasStyleableProperties;
     private final JBTextField nameField = new JBTextField();
     private final JComboBox<FxPropertyType> typeCombo = new JComboBox<>(FxPropertyType.values());
     private final JBLabel valueTypeLabel = new JBLabel();
@@ -43,16 +49,24 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     private final JBLabel cssNameLabel = new JBLabel();
     private final JBTextField cssNameField = new JBTextField();
     private final JTextArea previewArea = new JTextArea();
+    private final JTextArea lineNumberArea = new JTextArea("1");
     private String generatedCode = "";
     private boolean autoUpdateCssName = true;
 
     /**
      * Creates the JavaFX Property generation dialog.
      */
-    public FxPropertyGenerateDialog(@NotNull Project project, @NotNull String className) {
+    public FxPropertyGenerateDialog(@NotNull Project project,
+                                    @NotNull String className,
+                                    @NotNull String superClassName,
+                                    boolean useControlCssMetaData,
+                                    boolean hasStyleableProperties) {
         super(project, true);
         this.project = project;
         this.className = className;
+        this.superClassName = superClassName;
+        this.useControlCssMetaData = useControlCssMetaData;
+        this.hasStyleableProperties = hasStyleableProperties;
         readonlyCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.readonly"), false);
         lazyCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.lazy"), false);
         constantCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.constant"), false);
@@ -130,50 +144,111 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             }
         });
 
-        previewArea.setEditable(false);
-        previewArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        previewArea.setRows(16);
-        previewArea.setBackground(UIManager.getColor("TextField.inactiveBackground"));
+        configurePreviewAreas();
 
         genericLabel.setText(FxToolsBundle.message("generate.fx.property.generic.type"));
         genericKeyLabel.setText(FxToolsBundle.message("generate.fx.property.generic.key.type"));
         genericValueLabel.setText(FxToolsBundle.message("generate.fx.property.generic.value.type"));
         cssNameLabel.setText(FxToolsBundle.message("generate.fx.property.css.name"));
 
-        JPanel panel = new JPanel(new MigLayout("wrap 2, fillx, insets dialog", "[right]rel[grow,fill]"));
+        JPanel root = new JPanel(new BorderLayout());
+        root.setPreferredSize(new Dimension(960, 560));
 
-        panel.add(new JBLabel(FxToolsBundle.message("generate.fx.property.name")));
-        panel.add(nameField, "wmin 300");
+        JPanel propertyPanel = new JPanel(new MigLayout(
+                "wrap 2, fillx, insets 14 16 14 16, gapy 8",
+                "[right]12[grow,fill]"));
+        propertyPanel.setPreferredSize(new Dimension(420, 520));
 
-        panel.add(new JBLabel(FxToolsBundle.message("generate.fx.property.type")));
-        panel.add(typeCombo);
+        addSectionTitle(propertyPanel, FxToolsBundle.message("generate.fx.property.section.property"));
+        propertyPanel.add(new JBLabel(FxToolsBundle.message("generate.fx.property.name")));
+        propertyPanel.add(nameField);
 
-        panel.add(genericLabel);
-        panel.add(genericField);
-        panel.add(genericKeyLabel);
-        panel.add(genericKeyField);
-        panel.add(genericValueLabel);
-        panel.add(genericValueField);
+        propertyPanel.add(new JBLabel(FxToolsBundle.message("generate.fx.property.type")));
+        propertyPanel.add(typeCombo);
 
-        panel.add(new JBLabel(FxToolsBundle.message("generate.fx.property.value.type")));
-        panel.add(valueTypeLabel);
+        propertyPanel.add(genericLabel);
+        propertyPanel.add(genericField);
+        propertyPanel.add(genericKeyLabel);
+        propertyPanel.add(genericKeyField);
+        propertyPanel.add(genericValueLabel);
+        propertyPanel.add(genericValueField);
 
-        panel.add(new JBLabel(FxToolsBundle.message("generate.fx.property.default.value")));
-        panel.add(defaultValueField);
+        propertyPanel.add(new JBLabel(FxToolsBundle.message("generate.fx.property.value.type")));
+        propertyPanel.add(valueTypeLabel);
 
-        panel.add(new JSeparator(), "span 2, growx, gaptop 5, gapbottom 5");
-        panel.add(readonlyCheck, "span 2");
-        panel.add(lazyCheck, "span 2");
-        panel.add(constantCheck, "span 2");
-        panel.add(styleableCheck, "span 2");
-        panel.add(cssNameLabel, "hidemode 3");
-        panel.add(cssNameField, "hidemode 3");
+        propertyPanel.add(new JBLabel(FxToolsBundle.message("generate.fx.property.default.value")));
+        propertyPanel.add(defaultValueField);
 
-        panel.add(new JSeparator(), "span 2, growx, gaptop 5, gapbottom 5");
-        panel.add(new JBLabel(FxToolsBundle.message("generate.fx.property.preview")), "span 2");
-        panel.add(new JBScrollPane(previewArea), "span 2, growx, h 200::");
+        addSectionTitle(propertyPanel, FxToolsBundle.message("generate.fx.property.section.options"));
+        propertyPanel.add(readonlyCheck, "span 2, growx");
+        propertyPanel.add(lazyCheck, "span 2, growx");
+        propertyPanel.add(constantCheck, "span 2, growx");
 
-        return panel;
+        addSectionTitle(propertyPanel, FxToolsBundle.message("generate.fx.property.section.css"));
+        propertyPanel.add(styleableCheck, "span 2, growx");
+        propertyPanel.add(cssNameLabel);
+        propertyPanel.add(cssNameField);
+
+        root.add(propertyPanel, BorderLayout.WEST);
+        root.add(createPreviewPanel(), BorderLayout.CENTER);
+
+        return root;
+    }
+
+    private void configurePreviewAreas() {
+        Font previewFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
+        Color previewBackground = colorOrDefault("TextArea.background", JBColor.WHITE);
+        Color gutterBackground = colorOrDefault("Panel.background", JBColor.PanelBackground);
+        Color disabledForeground = colorOrDefault("Label.disabledForeground", JBColor.GRAY);
+
+        previewArea.setEditable(false);
+        previewArea.setFont(previewFont);
+        previewArea.setRows(24);
+        previewArea.setTabSize(4);
+        previewArea.setLineWrap(false);
+        previewArea.setBackground(previewBackground);
+        previewArea.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
+
+        lineNumberArea.setEditable(false);
+        lineNumberArea.setFont(previewFont);
+        lineNumberArea.setBackground(gutterBackground);
+        lineNumberArea.setForeground(disabledForeground);
+        lineNumberArea.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 8));
+        lineNumberArea.setFocusable(false);
+    }
+
+    @NotNull
+    private JPanel createPreviewPanel() {
+        JPanel previewPanel = new JPanel(new BorderLayout());
+        previewPanel.setBorder(BorderFactory.createMatteBorder(
+                0, 1, 0, 0, colorOrDefault("Separator.foreground", JBColor.border())));
+
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBorder(BorderFactory.createEmptyBorder(8, 12, 6, 12));
+        header.add(new JBLabel(FxToolsBundle.message("generate.fx.property.preview")), BorderLayout.WEST);
+
+        JBLabel liveLabel = new JBLabel(FxToolsBundle.message("generate.fx.property.preview.live"));
+        liveLabel.setForeground(new JBColor(new Color(0x5E9F65), new Color(0x6CB76C)));
+        header.add(liveLabel, BorderLayout.EAST);
+        previewPanel.add(header, BorderLayout.NORTH);
+
+        JBScrollPane scrollPane = new JBScrollPane(previewArea);
+        scrollPane.setRowHeaderView(lineNumberArea);
+        previewPanel.add(scrollPane, BorderLayout.CENTER);
+        return previewPanel;
+    }
+
+    private void addSectionTitle(@NotNull JPanel panel, @NotNull String title) {
+        JBLabel label = new JBLabel(title);
+        label.setForeground(colorOrDefault("Label.disabledForeground", JBColor.GRAY));
+        panel.add(label, "span 2, split 2, growx, gaptop 4");
+        panel.add(new JSeparator(), "growx, gapleft 8");
+    }
+
+    @NotNull
+    private Color colorOrDefault(@NotNull String key, @NotNull Color fallback) {
+        Color color = UIManager.getColor(key);
+        return color != null ? color : fallback;
     }
 
     @Override
@@ -253,6 +328,26 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         return defaultVal;
     }
 
+    /**
+     * Returns the descriptor used by the StyleableProperties integrator.
+     */
+    @NotNull
+    public StyleablePropertyDescriptor getStyleableDescriptor() {
+        FxPropertyType type = getPropertyType();
+        String converterExpression = type.getConverterExpression();
+        if (converterExpression == null) {
+            converterExpression = "/* TODO: provide StyleConverter */";
+        }
+        String propertyName = getPropertyName();
+        return new StyleablePropertyDescriptor(
+                propertyName,
+                type.getCssValueType(),
+                converterExpression,
+                getCssName(),
+                getCssDefaultReference(),
+                FxNamingUtil.toUpperSnakeCase(propertyName));
+    }
+
     private void updateGenericFieldsVisibility() {
         FxPropertyType type = getSelectedType();
         boolean singleParam = type.isNeedsTypeParam();
@@ -280,9 +375,9 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             styleableCheck.setSelected(false);
         }
         styleableCheck.setEnabled(supported);
-        boolean show = styleableCheck.isSelected();
-        cssNameLabel.setVisible(show);
-        cssNameField.setVisible(show);
+        boolean enabled = styleableCheck.isSelected();
+        cssNameLabel.setEnabled(enabled);
+        cssNameField.setEnabled(enabled);
     }
 
     private void updatePreview() {
@@ -290,15 +385,50 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         String name = nameField.getText().trim();
         if (name.isEmpty()) {
             previewArea.setText("");
+            updateLineNumbers("");
             generatedCode = "";
             return;
         }
-        generatedCode = generateCode(name);
-        previewArea.setText(generatedCode);
+        generatedCode = generatePropertyCode(name);
+        String previewCode = generatePreviewCode(generatedCode);
+        previewArea.setText(previewCode);
+        previewArea.setCaretPosition(0);
+        updateLineNumbers(previewCode);
+    }
+
+    private void updateLineNumbers(@NotNull String text) {
+        int lines = text.isEmpty() ? 1 : text.split("\n", -1).length;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= lines; i++) {
+            if (i > 1) {
+                sb.append('\n');
+            }
+            sb.append(i);
+        }
+        lineNumberArea.setText(sb.toString());
     }
 
     @NotNull
-    private String generateCode(@NotNull String propName) {
+    private String generatePreviewCode(@NotNull String propertyCode) {
+        if (!isStyleableGenerated()) {
+            return propertyCode;
+        }
+
+        StringBuilder sb = new StringBuilder(propertyCode);
+        if (sb.length() > 0) {
+            sb.append("\n\n");
+        }
+        sb.append(StyleablePropertiesIntegrator.generatePreviewCode(
+                className,
+                superClassName,
+                useControlCssMetaData,
+                hasStyleableProperties,
+                getStyleableDescriptor()));
+        return sb.toString();
+    }
+
+    @NotNull
+    private String generatePropertyCode(@NotNull String propName) {
         FxPropertyType type = getSelectedType();
         boolean readonly = readonlyCheck.isSelected();
         boolean lazy = lazyCheck.isSelected();
@@ -378,7 +508,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         if (!defaultRef.isEmpty()) {
             sb.append(", ").append(defaultRef);
         }
-        sb.append(");\n");
+        sb.append(");\n\n");
 
         appendGetter(sb, propName, getterName, valueType, false, null);
         if (!readonly) {
@@ -398,6 +528,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
                                     @NotNull String valueType, @NotNull String genericSuffix,
                                     @NotNull String defaultRef, @NotNull String defaultLiteralRef) {
         sb.append("private ").append(fieldType).append(" ").append(propName).append(";\n");
+        sb.append("\n");
 
         appendGetter(sb, propName, getterName, valueType, true, defaultLiteralRef);
         if (!readonly) {
@@ -436,6 +567,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
 
         if (lazy) {
             sb.append("private ").append(fieldType).append(" ").append(propName).append(";\n");
+            sb.append("\n");
             appendGetter(sb, propName, getterName, valueType, true, defaultLiteralRef);
             if (!readonly) {
                 appendSetter(sb, propName, capName, valueType, true);
@@ -461,7 +593,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             if (!defaultRef.isEmpty()) {
                 sb.append(", ").append(defaultRef);
             }
-            sb.append(");\n");
+            sb.append(");\n\n");
 
             appendGetter(sb, propName, getterName, valueType, false, null);
             if (!readonly) {
@@ -486,7 +618,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         } else {
             sb.append("    return ").append(propName).append(".get();\n");
         }
-        sb.append("}\n");
+        sb.append("}\n\n");
     }
 
     private void appendSetter(@NotNull StringBuilder sb, @NotNull String propName,
@@ -498,7 +630,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         } else {
             sb.append("    ").append(propName).append(".set(value);\n");
         }
-        sb.append("}\n");
+        sb.append("}\n\n");
     }
 
     private void appendPropertyAccessor(@NotNull StringBuilder sb, @NotNull String propName,

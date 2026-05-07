@@ -11,6 +11,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassInitializer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiField;
@@ -18,13 +19,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiModifier;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertiesIntegrator;
-import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertyDescriptor;
-import io.github.leewyatt.fxtools.util.FxNamingUtil;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -48,7 +49,12 @@ public class FxPropertyGenerateAction extends AnAction {
         }
 
         String className = psiClass.getName() != null ? psiClass.getName() : "MyControl";
-        FxPropertyGenerateDialog dialog = new FxPropertyGenerateDialog(project, className);
+        PsiClass superClass = psiClass.getSuperClass();
+        String superClassName = superClass != null && superClass.getName() != null
+                ? superClass.getName() : "javafx.scene.Node";
+        FxPropertyGenerateDialog dialog = new FxPropertyGenerateDialog(project, className,
+                superClassName, isControlClass(project, psiClass),
+                findStyleablePropertiesClass(psiClass) != null);
         if (!dialog.showAndGet()) {
             return;
         }
@@ -69,7 +75,8 @@ public class FxPropertyGenerateAction extends AnAction {
                 FxToolsBundle.message("generate.fx.property.title"), null, () -> {
                     PsiElementFactory factory = JavaPsiFacade.getElementFactory(project);
 
-                    PsiElement anchor = findInsertionAnchor(psiClass);
+                    int caretOffset = editor.getCaretModel().getOffset();
+                    PsiElement anchor = findInsertionAnchor(psiClass, caretOffset);
 
                     // Parse the entire generated code as a dummy class body and extract members
                     String dummyClass = "class _Dummy_ {\n" + code + "\n}";
@@ -77,7 +84,23 @@ public class FxPropertyGenerateAction extends AnAction {
                             .createFileFromText("_Dummy_.java", JavaLanguage.INSTANCE, dummyClass);
                     PsiClass dummyPsiClass = dummyFile.getClasses()[0];
 
+                    PsiElement constantAnchor = findDefaultConstantAnchor(psiClass);
+                    boolean propertyStartsAtClassTop = anchor == psiClass.getLBrace();
                     for (PsiField field : dummyPsiClass.getFields()) {
+                        if (!isDefaultConstantField(field)) {
+                            continue;
+                        }
+                        PsiElement added = psiClass.addAfter(field, constantAnchor);
+                        constantAnchor = added;
+                        if (propertyStartsAtClassTop) {
+                            anchor = added;
+                        }
+                    }
+
+                    for (PsiField field : dummyPsiClass.getFields()) {
+                        if (isDefaultConstantField(field)) {
+                            continue;
+                        }
                         PsiElement added;
                         if (anchor != null) {
                             added = psiClass.addAfter(field, anchor);
@@ -146,29 +169,68 @@ public class FxPropertyGenerateAction extends AnAction {
                                            @NotNull Project project,
                                            @NotNull PsiClass psiClass,
                                            @NotNull FxPropertyGenerateDialog dialog) {
-        String propertyName = dialog.getPropertyName();
-        FxPropertyType type = dialog.getPropertyType();
-        String converterExpression = type.getConverterExpression();
-        if (converterExpression == null) {
-            converterExpression = "/* TODO: provide StyleConverter */";
-        }
-
-        StyleablePropertiesIntegrator.integrate(project, psiClass,
-                new StyleablePropertyDescriptor(
-                        propertyName,
-                        type.getCssValueType(),
-                        converterExpression,
-                        dialog.getCssName(),
-                        dialog.getCssDefaultReference(),
-                        FxNamingUtil.toUpperSnakeCase(propertyName)),
-                editor);
+        StyleablePropertiesIntegrator.integrate(project, psiClass, dialog.getStyleableDescriptor(), editor);
     }
 
-    private PsiElement findInsertionAnchor(@NotNull PsiClass psiClass) {
-        PsiField[] fields = psiClass.getFields();
-        if (fields.length > 0) {
-            return fields[fields.length - 1];
+    private PsiElement findInsertionAnchor(@NotNull PsiClass psiClass, int caretOffset) {
+        PsiElement anchor = psiClass.getLBrace();
+        for (PsiElement child : psiClass.getChildren()) {
+            if (!isClassMember(child)) {
+                continue;
+            }
+            if (child.getTextOffset() <= caretOffset) {
+                anchor = child;
+            }
         }
-        return psiClass.getLBrace();
+        return anchor;
+    }
+
+    private PsiElement findDefaultConstantAnchor(@NotNull PsiClass psiClass) {
+        PsiElement anchor = psiClass.getLBrace();
+        for (PsiElement child : psiClass.getChildren()) {
+            if (child instanceof PsiField) {
+                PsiField field = (PsiField) child;
+                if (field.hasModifierProperty(PsiModifier.STATIC)
+                        && field.hasModifierProperty(PsiModifier.FINAL)) {
+                    anchor = field;
+                    continue;
+                }
+                break;
+            }
+            if (isClassMember(child)) {
+                break;
+            }
+        }
+        return anchor;
+    }
+
+    private boolean isDefaultConstantField(@NotNull PsiField field) {
+        String name = field.getName();
+        return name != null
+                && name.startsWith("DEFAULT_")
+                && field.hasModifierProperty(PsiModifier.STATIC)
+                && field.hasModifierProperty(PsiModifier.FINAL);
+    }
+
+    private boolean isClassMember(@NotNull PsiElement element) {
+        return element instanceof PsiField
+                || element instanceof PsiMethod
+                || element instanceof PsiClass
+                || element instanceof PsiClassInitializer;
+    }
+
+    private boolean isControlClass(@NotNull Project project, @NotNull PsiClass psiClass) {
+        PsiClass controlClass = JavaPsiFacade.getInstance(project)
+                .findClass("javafx.scene.control.Control", GlobalSearchScope.allScope(project));
+        return controlClass != null && psiClass.isInheritor(controlClass, true);
+    }
+
+    private PsiClass findStyleablePropertiesClass(@NotNull PsiClass parentClass) {
+        for (PsiClass innerClass : parentClass.getInnerClasses()) {
+            if ("StyleableProperties".equals(innerClass.getName())) {
+                return innerClass;
+            }
+        }
+        return null;
     }
 }
