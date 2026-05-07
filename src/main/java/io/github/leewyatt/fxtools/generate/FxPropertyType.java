@@ -81,17 +81,17 @@ public enum FxPropertyType {
     }
 
     /**
-     * Returns the StyleableXxxProperty class simple name, or null if not supported.
+     * Returns the SimpleStyleableXxxProperty class simple name, or null if not supported.
      */
     @Nullable
-    public String getStyleablePropertyName() {
+    public String getSimpleStyleablePropertyName() {
         switch (this) {
-            case STRING: return "StyleableStringProperty";
-            case INTEGER: return "StyleableIntegerProperty";
-            case LONG: return "StyleableLongProperty";
-            case FLOAT: return "StyleableFloatProperty";
-            case DOUBLE: return "StyleableDoubleProperty";
-            case BOOLEAN: return "StyleableBooleanProperty";
+            case STRING: return "SimpleStyleableStringProperty";
+            case INTEGER: return "SimpleStyleableIntegerProperty";
+            case LONG: return "SimpleStyleableLongProperty";
+            case FLOAT: return "SimpleStyleableFloatProperty";
+            case DOUBLE: return "SimpleStyleableDoubleProperty";
+            case BOOLEAN: return "SimpleStyleableBooleanProperty";
             default: return null;
         }
     }

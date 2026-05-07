@@ -332,9 +332,9 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         String fieldType;
         String implClass;
         if (styleable) {
-            String styleableName = type.getStyleablePropertyName();
-            fieldType = "javafx.css." + styleableName + genericSuffix;
-            implClass = null; // styleable uses anonymous class, not Simple impl
+            String simpleStyleableName = type.getSimpleStyleablePropertyName();
+            fieldType = type.getPropertyFqn() + genericSuffix;
+            implClass = "javafx.css." + simpleStyleableName + (genericSuffix.isEmpty() ? "" : "<>");
         } else if (readonly) {
             fieldType = type.getReadOnlyWrapperFqn() + genericSuffix;
             implClass = type.getReadOnlyWrapperFqn() + (genericSuffix.isEmpty() ? "" : "<>");
@@ -352,8 +352,8 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         }
 
         if (styleable) {
-            return generateStyleableCode(sb, propName, capName, getterName, type, readonly, lazy,
-                    fieldType, valueType, genericSuffix, defaultRef, defaultLiteralRef);
+            return generateStyleableCode(sb, propName, capName, getterName, readonly, lazy,
+                    fieldType, implClass, valueType, defaultRef, defaultLiteralRef);
         }
 
         if (lazy) {
@@ -427,17 +427,14 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     @NotNull
     private String generateStyleableCode(@NotNull StringBuilder sb,
                                          @NotNull String propName, @NotNull String capName,
-                                         @NotNull String getterName, @NotNull FxPropertyType type,
+                                         @NotNull String getterName,
                                          boolean readonly, boolean lazy,
-                                         @NotNull String fieldType, @NotNull String valueType,
-                                         @NotNull String genericSuffix, @NotNull String defaultRef,
+                                         @NotNull String fieldType, @NotNull String implClass,
+                                         @NotNull String valueType, @NotNull String defaultRef,
                                          @NotNull String defaultLiteralRef) {
-        String cssValueType = type.getCssValueType();
-        // Styleable property anonymous class body
-        String styleableBody = buildStyleableBody(propName, cssValueType, FxNamingUtil.toUpperSnakeCase(propName));
+        String metaName = FxNamingUtil.toUpperSnakeCase(propName);
 
         if (lazy) {
-            // Lazy: field without initializer
             sb.append("private ").append(fieldType).append(" ").append(propName).append(";\n");
             appendGetter(sb, propName, getterName, valueType, true, defaultLiteralRef);
             if (!readonly) {
@@ -446,26 +443,25 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
 
             sb.append("public final ").append(fieldType).append(" ").append(propName).append("Property() {\n");
             sb.append("    if (").append(propName).append(" == null) {\n");
-            sb.append("        ").append(propName).append(" = new ").append(fieldType).append("(");
+            sb.append("        ").append(propName).append(" = new ").append(implClass)
+                    .append("(StyleableProperties.").append(metaName)
+                    .append(", this, \"").append(propName).append("\"");
             if (!defaultRef.isEmpty()) {
-                sb.append(defaultRef);
+                sb.append(", ").append(defaultRef);
             }
-            sb.append(") {\n");
-            sb.append(styleableBody);
-            sb.append("        };\n");
+            sb.append(");\n");
             sb.append("    }\n");
             sb.append("    return ").append(propName).append(";\n");
             sb.append("}\n");
         } else {
-            // Eager: field with anonymous class initializer
             sb.append("private final ").append(fieldType).append(" ").append(propName)
-                    .append(" = new ").append(fieldType).append("(");
+                    .append(" = new ").append(implClass)
+                    .append("(StyleableProperties.").append(metaName)
+                    .append(", this, \"").append(propName).append("\"");
             if (!defaultRef.isEmpty()) {
-                sb.append(defaultRef);
+                sb.append(", ").append(defaultRef);
             }
-            sb.append(") {\n");
-            sb.append(styleableBody);
-            sb.append("};\n");
+            sb.append(");\n");
 
             appendGetter(sb, propName, getterName, valueType, false, null);
             if (!readonly) {
@@ -477,26 +473,6 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             sb.append("}\n");
         }
 
-        return sb.toString();
-    }
-
-    @NotNull
-    private String buildStyleableBody(@NotNull String propName, @NotNull String cssValueType,
-                                      @NotNull String metaName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("            @Override\n");
-        sb.append("            public javafx.css.CssMetaData<? extends javafx.css.Styleable, ")
-                .append(cssValueType).append("> getCssMetaData() {\n");
-        sb.append("                return StyleableProperties.").append(metaName).append(";\n");
-        sb.append("            }\n");
-        sb.append("            @Override\n");
-        sb.append("            public Object getBean() {\n");
-        sb.append("                return ").append(className).append(".this;\n");
-        sb.append("            }\n");
-        sb.append("            @Override\n");
-        sb.append("            public String getName() {\n");
-        sb.append("                return \"").append(propName).append("\";\n");
-        sb.append("            }\n");
         return sb.toString();
     }
 
