@@ -142,12 +142,15 @@ JavaFX 一站式开发工具包 — CSS 智能提示、Gutter 预览、FXML 代�
 - 尊重用户的 VM 参数：如果命令行里已有 `-Dfxmlkit.devmode=...`（包括 `=false`），保持原值不覆盖
 - 版本低于 1.5.1 时弹出模态对话框，提供 **继续启动** 或 **取消** 选项，可勾选"不再为此版本提示"
 
-**属性生成** (Alt+Insert / Cmd+N)
-- 10 种属性类型：String、Integer、Long、Float、Double、Boolean、Object、List、Map、Set
-- ReadOnly 包装器生成
-- 延迟初始化选项
+**JavaFX 属性工作流** (Alt+Insert / Cmd+N, Alt+Enter)
+- 为 10 种常见类型生成 JavaFX property 字段：String、Integer、Long、Float、Double、Boolean、Object、List、Map、Set
+- ReadOnly 包装器生成与延迟初始化选项
 - CSS Styleable 属性生成，自动创建 `CssMetaData` 样板代码
-- 对话框内实时代码预览
+- 属性生成对话框内实时代码预览
+- 为已有 JavaFX property 字段补全缺失的访问器：getter、setter 和 `xxxProperty()`
+- 针对 `ReadOnlyXxxWrapper` 和 `ReadOnlyXxxProperty` 的只读访问器生成
+- 通过 **Generate -> JavaFX Property Accessors...** 一次为多个字段生成访问器
+- Alt+Enter 快速修复：**Create JavaFX accessors for 'propertyName'**
 
 <img src="screenshots/img_7.png" alt="属性 Live Templates" width="500">
 

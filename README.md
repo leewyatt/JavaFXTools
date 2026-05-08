@@ -142,12 +142,15 @@ A structured MVC pattern for JavaFX with convention-based file resolution.
 - Respects user-set VM args — if `-Dfxmlkit.devmode=...` is already on the command line, it's preserved as-is
 - Version below 1.5.1 → dialog offers **Launch Anyway** or **Cancel** with "don't show again for this version" option
 
-**Property Generation** (Alt+Insert / Cmd+N)
-- 10 property types: String, Integer, Long, Float, Double, Boolean, Object, List, Map, Set
-- ReadOnly wrapper generation
-- Lazy initialization option
+**JavaFX Property Workflow** (Alt+Insert / Cmd+N, Alt+Enter)
+- Generate JavaFX property fields for 10 common types: String, Integer, Long, Float, Double, Boolean, Object, List, Map, Set
+- ReadOnly wrapper generation and lazy initialization options
 - CSS Styleable property generation with `CssMetaData` boilerplate
-- Live code preview in dialog
+- Live code preview in the property generation dialog
+- Create missing JavaFX accessors from existing property fields: getter, setter, and `xxxProperty()`
+- Read-only aware accessor generation for `ReadOnlyXxxWrapper` and `ReadOnlyXxxProperty` fields
+- Multi-field accessor generation via **Generate -> JavaFX Property Accessors...**
+- Alt+Enter intention: **Create JavaFX accessors for 'propertyName'**
 
 <img src="screenshots/img_7.png" alt="Property Live Templates" width="500">
 

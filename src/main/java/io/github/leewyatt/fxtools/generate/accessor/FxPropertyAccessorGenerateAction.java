@@ -16,10 +16,15 @@ import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.ui.components.JBLabel;
+import com.intellij.util.ui.JBUI;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -61,8 +66,11 @@ public class FxPropertyAccessorGenerateAction extends AnAction {
                 candidatesArray,
                 false,
                 true,
-                project);
+                project,
+                false,
+                createHeaderPanel());
         chooser.setTitle(FxToolsBundle.message("generate.fx.property.accessor.dialog.title"));
+        chooser.setCopyJavadocVisible(false);
         chooser.selectElements(candidatesArray);
         if (!chooser.showAndGet()) {
             return;
@@ -126,6 +134,15 @@ public class FxPropertyAccessorGenerateAction extends AnAction {
             return null;
         }
         return psiClass;
+    }
+
+    @NotNull
+    private static JComponent createHeaderPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(JBUI.Borders.emptyBottom(8));
+        panel.add(new JBLabel(FxToolsBundle.message("generate.fx.property.accessor.dialog.description")),
+                BorderLayout.CENTER);
+        return panel;
     }
 
     @NotNull
