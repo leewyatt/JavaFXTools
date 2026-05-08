@@ -32,8 +32,10 @@
     type mismatch, unused fields/methods), fx:id and event handler generation,
     resource path navigation, i18n %key completion.</li>
 
-    <li><b>Property Generation</b> — 10 JavaFX property types with ReadOnly, Lazy,
-    and CSS Styleable (CssMetaData boilerplate) options via Generate menu.</li>
+    <li><b>JavaFX Property Workflow</b> — generate JavaFX property fields for 10 common
+    types with ReadOnly, Lazy, and CSS Styleable (CssMetaData boilerplate) options.
+    Create missing getter, setter, and <code>xxxProperty()</code> accessors from existing
+    JavaFX property fields via Alt+Enter or Generate menu multi-select.</li>
 
     <li><b>Font Actions</b> — Right-click .ttf/.otf to copy font family name or
     @font-face CSS. Smart paste resolves relative paths automatically.</li>
@@ -47,6 +49,23 @@
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.2.0</h3>
+
+<h4>New Features</h4>
+<ul>
+  <li><b>JavaFX property accessor generation</b> — create missing getter, setter, and <code>xxxProperty()</code> methods from existing JavaFX property fields.</li>
+  <li><b>Alt+Enter intention</b> — use <b>Create JavaFX accessors for 'propertyName'</b> directly on a JavaFX property field.</li>
+  <li><b>Generate menu batch action</b> — new <b>JavaFX Property Accessors...</b> action supports selecting multiple JavaFX property fields and generating their missing accessors at once.</li>
+  <li><b>Read-only property support</b> — supports <code>ReadOnlyXxxWrapper</code> and bare <code>ReadOnlyXxxProperty</code> fields, generating read-only getter/property accessors without exposing setters.</li>
+</ul>
+
+<h4>Improvements</h4>
+<ul>
+  <li>Accessor generation reuses one analyzer/generator path for both Alt+Enter and Generate menu actions, keeping behavior consistent.</li>
+  <li>Batch generation now preserves stable insertion placement and avoids interfering with constructor/member layout.</li>
+  <li>JavaFX Generate menu actions are grouped together with a visual separator from IDEA built-in generation actions.</li>
+</ul>
+
 <h3>2.1.1</h3>
 
 <h4>Compatibility</h4>
