@@ -80,12 +80,11 @@ public class FxPropertyAccessorGenerateAction extends AnAction {
             return;
         }
 
-        // Sort by source declaration order. The generator snapshots insertion anchors before
-        // mutating PSI so batch generation keeps the same placement policy as the single-field
-        // intention.
+        // Sort by source declaration order so the generated accessor block follows field order.
         List<PsiFieldMember> ordered = new ArrayList<>(selected);
         ordered.sort(Comparator.comparingInt(m -> m.getElement().getTextOffset()));
 
+        int caretOffset = editor.getCaretModel().getOffset();
         WriteCommandAction.runWriteCommandAction(project,
                 FxToolsBundle.message("action.JavaFX.GeneratePropertyAccessors.text"),
                 null,
@@ -103,7 +102,8 @@ public class FxPropertyAccessorGenerateAction extends AnAction {
                         }
                         descriptors.add(descriptor);
                     }
-                    FxPropertyAccessorGenerator.generateMissingAccessors(project, descriptors);
+                    FxPropertyAccessorGenerator.generateMissingAccessorsAtCaret(
+                            project, descriptors, psiClass, psiFile, caretOffset);
                 });
     }
 

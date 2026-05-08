@@ -3,6 +3,7 @@ package io.github.leewyatt.fxtools.generate;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.psi.PsiNameHelper;
@@ -21,10 +22,29 @@ import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
-import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -39,7 +59,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     private final boolean useControlCssMetaData;
     private final boolean hasStyleableProperties;
     private final JBTextField nameField = new JBTextField();
-    private final JComboBox<FxPropertyType> typeCombo = new JComboBox<>(FxPropertyType.values());
+    private final ComboBox<FxPropertyType> typeCombo = new ComboBox<>(FxPropertyType.values());
     private final JBLabel valueTypeLabel = new JBLabel();
     private final JBTextField defaultValueField = new JBTextField();
     private final BooleanDefaultSelector booleanDefaultSelector = new BooleanDefaultSelector();
@@ -181,11 +201,11 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         cssNameLabel.setText(FxToolsBundle.message("generate.fx.property.css.name"));
 
         JPanel root = new JPanel(new BorderLayout());
-        root.setPreferredSize(JBUI.size(1040, 560));
+        root.setPreferredSize(JBUI.size(800, 500));
 
         JPanel leftColumn = new JPanel(new MigLayout(
                 "wrap 1, fillx, insets 14 16 14 20, gapy 0, hidemode 3"));
-        leftColumn.setPreferredSize(JBUI.size(500, 520));
+        leftColumn.setPreferredSize(JBUI.size(400, 490));
 
         // ==================== Property section ====================
         leftColumn.add(makeSectionTitle(FxToolsBundle.message("generate.fx.property.section.property")), "growx");

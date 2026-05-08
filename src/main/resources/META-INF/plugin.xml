@@ -49,6 +49,15 @@
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.2.1</h3>
+
+<h4>Fixes</h4>
+<ul>
+  <li>HiDPI / display scaling: <b>Generate JavaFX Property</b> dialog no longer truncates input fields or the <code>CSS Styleable (CssMetaData + StyleableProperty)</code> label on lower-resolution or HiDPI displays. Dialog, borders, and segmented controls now scale consistently with the IDE.</li>
+  <li>The code preview font inside the property dialog now follows the IDE editor font instead of a fixed monospace size.</li>
+  <li>Minor scaling fixes in the gradient picker track padding and the SVG Path Tool drop zones.</li>
+</ul>
+
 <h3>2.2.0</h3>
 
 <h4>New Features</h4>
