@@ -11,6 +11,12 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Set;
+
 final class FxPropertyAccessorGenerator {
 
     private FxPropertyAccessorGenerator() {
@@ -18,20 +24,48 @@ final class FxPropertyAccessorGenerator {
 
     static void generateMissingAccessors(@NotNull Project project,
                                          @NotNull FxPropertyAccessorDescriptor descriptor) {
-        PsiElement anchor = findInsertionAnchor(descriptor);
-        PsiElement currentAnchor = anchor;
-        PsiElementFactory factory = JavaPsiFacade.getElementFactory(project);
+        generateMissingAccessors(project, Collections.singletonList(descriptor));
+    }
 
-        for (FxAccessorMethodKind kind : FxAccessorMethodKind.values()) {
-            if (!descriptor.missingMethods().contains(kind)) {
-                continue;
+    static void generateMissingAccessors(@NotNull Project project,
+                                         @NotNull List<FxPropertyAccessorDescriptor> descriptors) {
+        List<GenerationPlan> plans = new ArrayList<>();
+        for (FxPropertyAccessorDescriptor descriptor : descriptors) {
+            if (descriptor.hasMissingMethods()) {
+                plans.add(new GenerationPlan(descriptor, findInsertionAnchor(descriptor)));
             }
-            PsiMethod method = factory.createMethodFromText(methodText(descriptor, kind), descriptor.field());
-            currentAnchor = descriptor.containingClass().addAfter(method, currentAnchor);
+        }
+        if (plans.isEmpty()) {
+            return;
         }
 
-        JavaCodeStyleManager.getInstance(project).shortenClassReferences(descriptor.containingClass());
-        CodeStyleManager.getInstance(project).reformat(descriptor.containingClass());
+        PsiElementFactory factory = JavaPsiFacade.getElementFactory(project);
+        IdentityHashMap<PsiElement, PsiElement> currentAnchors = new IdentityHashMap<>();
+        Set<PsiElement> classesToReformat = Collections.newSetFromMap(new IdentityHashMap<>());
+
+        for (GenerationPlan plan : plans) {
+            FxPropertyAccessorDescriptor descriptor = plan.descriptor();
+            PsiElement currentAnchor = currentAnchors.getOrDefault(plan.anchor(), plan.anchor());
+            for (FxAccessorMethodKind kind : FxAccessorMethodKind.values()) {
+                if (!descriptor.missingMethods().contains(kind)) {
+                    continue;
+                }
+                PsiMethod method = factory.createMethodFromText(methodText(descriptor, kind),
+                        descriptor.field());
+                currentAnchor = descriptor.containingClass().addAfter(method, currentAnchor);
+            }
+            currentAnchors.put(plan.anchor(), currentAnchor);
+            classesToReformat.add(descriptor.containingClass());
+        }
+
+        for (PsiElement containingClass : classesToReformat) {
+            JavaCodeStyleManager.getInstance(project).shortenClassReferences(containingClass);
+            CodeStyleManager.getInstance(project).reformat(containingClass);
+        }
+    }
+
+    private record GenerationPlan(@NotNull FxPropertyAccessorDescriptor descriptor,
+                                  @NotNull PsiElement anchor) {
     }
 
     @NotNull

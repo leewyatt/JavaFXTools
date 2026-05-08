@@ -80,10 +80,9 @@ public class FxPropertyAccessorGenerateAction extends AnAction {
             return;
         }
 
-        // Sort by source declaration order, then iterate in reverse: when multiple fields share
-        // the same insertion anchor (e.g. all sit before the first constructor), the generator's
-        // addAfter(method, anchor) call is LIFO, so generating in reverse order yields the final
-        // PSI in declaration order.
+        // Sort by source declaration order. The generator snapshots insertion anchors before
+        // mutating PSI so batch generation keeps the same placement policy as the single-field
+        // intention.
         List<PsiFieldMember> ordered = new ArrayList<>(selected);
         ordered.sort(Comparator.comparingInt(m -> m.getElement().getTextOffset()));
 
@@ -91,8 +90,9 @@ public class FxPropertyAccessorGenerateAction extends AnAction {
                 FxToolsBundle.message("action.JavaFX.GeneratePropertyAccessors.text"),
                 null,
                 () -> {
-                    for (int i = ordered.size() - 1; i >= 0; i--) {
-                        PsiField field = ordered.get(i).getElement();
+                    List<FxPropertyAccessorDescriptor> descriptors = new ArrayList<>();
+                    for (PsiFieldMember member : ordered) {
+                        PsiField field = member.getElement();
                         if (!field.isValid()) {
                             continue;
                         }
@@ -101,8 +101,9 @@ public class FxPropertyAccessorGenerateAction extends AnAction {
                         if (descriptor == null || !descriptor.hasMissingMethods()) {
                             continue;
                         }
-                        FxPropertyAccessorGenerator.generateMissingAccessors(project, descriptor);
+                        descriptors.add(descriptor);
                     }
+                    FxPropertyAccessorGenerator.generateMissingAccessors(project, descriptors);
                 });
     }
 
