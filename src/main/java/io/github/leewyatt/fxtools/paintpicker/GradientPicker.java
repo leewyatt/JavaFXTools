@@ -159,7 +159,7 @@ public class GradientPicker extends JPanel {
         trackContainer.setMaximumSize(new Dimension(Short.MAX_VALUE, JBUI.scale(32)));
         trackContainer.setBorder(BorderFactory.createCompoundBorder(
                 JBUI.Borders.customLine(TRACK_BORDER),
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+                JBUI.Borders.empty(2)));
         trackContainer.setBackground(TRACK_BG);
 
         trackPane = new JPanel(null); // null layout for absolute positioning

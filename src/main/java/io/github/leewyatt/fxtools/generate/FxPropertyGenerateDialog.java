@@ -1,5 +1,7 @@
 package io.github.leewyatt.fxtools.generate;
 
+import com.intellij.openapi.editor.colors.EditorColorsManager;
+import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
@@ -9,6 +11,7 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
+import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertiesIntegrator;
@@ -178,11 +181,11 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         cssNameLabel.setText(FxToolsBundle.message("generate.fx.property.css.name"));
 
         JPanel root = new JPanel(new BorderLayout());
-        root.setPreferredSize(new Dimension(960, 560));
+        root.setPreferredSize(JBUI.size(1040, 560));
 
         JPanel leftColumn = new JPanel(new MigLayout(
                 "wrap 1, fillx, insets 14 16 14 20, gapy 0, hidemode 3"));
-        leftColumn.setPreferredSize(new Dimension(420, 520));
+        leftColumn.setPreferredSize(JBUI.size(500, 520));
 
         // ==================== Property section ====================
         leftColumn.add(makeSectionTitle(FxToolsBundle.message("generate.fx.property.section.property")), "growx");
@@ -234,7 +237,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         JBLabel label = new JBLabel(text);
         label.setForeground(colorOrDefault("Label.disabledForeground", JBColor.GRAY));
         label.setFont(label.getFont().deriveFont(Font.BOLD));
-        label.setBorder(BorderFactory.createEmptyBorder(0, 2, 4, 2));
+        label.setBorder(JBUI.Borders.empty(0, 2, 4, 2));
         return label;
     }
 
@@ -248,7 +251,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     }
 
     private void configurePreviewAreas() {
-        Font previewFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
+        Font previewFont = EditorColorsManager.getInstance().getGlobalScheme().getFont(EditorFontType.PLAIN);
         Color previewBackground = colorOrDefault("TextArea.background", JBColor.WHITE);
         Color gutterBackground = colorOrDefault("Panel.background", JBColor.PanelBackground);
         Color disabledForeground = colorOrDefault("Label.disabledForeground", JBColor.GRAY);
@@ -259,13 +262,13 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         previewArea.setTabSize(4);
         previewArea.setLineWrap(false);
         previewArea.setBackground(previewBackground);
-        previewArea.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
+        previewArea.setBorder(JBUI.Borders.empty(8, 10));
 
         lineNumberArea.setEditable(false);
         lineNumberArea.setFont(previewFont);
         lineNumberArea.setBackground(gutterBackground);
         lineNumberArea.setForeground(disabledForeground);
-        lineNumberArea.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 8));
+        lineNumberArea.setBorder(JBUI.Borders.empty(8, 10, 8, 8));
         lineNumberArea.setFocusable(false);
     }
 
@@ -275,10 +278,10 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         Color dividerColor = new JBColor(new Color(0xE5E5E5), new Color(0x393B40));
         previewPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 1, 0, 0, dividerColor),
-                BorderFactory.createEmptyBorder(0, 14, 0, 0)));
+                JBUI.Borders.empty(0, 14, 0, 0)));
 
         JPanel header = new JPanel(new BorderLayout());
-        header.setBorder(BorderFactory.createEmptyBorder(8, 12, 6, 12));
+        header.setBorder(JBUI.Borders.empty(8, 12, 6, 12));
         header.add(new JBLabel(FxToolsBundle.message("generate.fx.property.preview")), BorderLayout.WEST);
 
         JBLabel liveLabel = new JBLabel(FxToolsBundle.message("generate.fx.property.preview.live"));
@@ -807,7 +810,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         @Override
         public Dimension getPreferredSize() {
             Dimension d = super.getPreferredSize();
-            return new Dimension(d.width, Math.max(d.height, 28));
+            return new Dimension(d.width, Math.max(d.height, JBUI.scale(28)));
         }
 
         @Override
@@ -838,7 +841,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
 
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(80, 28);
+                return JBUI.size(80, 28);
             }
 
             @Override

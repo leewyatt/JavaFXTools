@@ -323,7 +323,7 @@ public class SvgPathToolPanel extends JPanel {
         JBScrollPane outputScroll = new JBScrollPane(outputArea);
         outputScroll.setAlignmentX(LEFT_ALIGNMENT);
         int outputH = JBUI.scale(150);
-        outputScroll.setPreferredSize(new Dimension(100, outputH));
+        outputScroll.setPreferredSize(new Dimension(JBUI.scale(100), outputH));
         outputScroll.setMaximumSize(new Dimension(Short.MAX_VALUE, outputH));
 
         outputSection = outputScroll;
@@ -349,7 +349,7 @@ public class SvgPathToolPanel extends JPanel {
         zone.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         zone.setAlignmentX(LEFT_ALIGNMENT);
         int h = JBUI.scale(66);
-        zone.setPreferredSize(new Dimension(100, h));
+        zone.setPreferredSize(new Dimension(JBUI.scale(100), h));
         zone.setMaximumSize(new Dimension(Short.MAX_VALUE, h));
         setupDropTarget(zone, zone::setHighlighted);
         zone.addMouseListener(new MouseAdapter() {
