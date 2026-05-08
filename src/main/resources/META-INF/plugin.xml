@@ -263,6 +263,11 @@
                                 implementationClass="io.github.leewyatt.fxtools.generate.completion.FxPropCompletionContributor"/>
         <liveTemplateMacro implementation="io.github.leewyatt.fxtools.generate.completion.FxConstantNameMacro"/>
         <liveTemplateMacro implementation="io.github.leewyatt.fxtools.generate.completion.FxCssNameMacro"/>
+        <intentionAction>
+            <language>JAVA</language>
+            <className>io.github.leewyatt.fxtools.generate.accessor.FxPropertyAccessorIntention</className>
+            <categoryKey>generate.fx.property.accessor.category</categoryKey>
+        </intentionAction>
 
         <!-- ResourceBundle.getBundle() navigation -->
         <psi.referenceContributor language="JAVA"

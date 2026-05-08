@@ -1,0 +1,15 @@
+class MyView {
+    private final BooleanProperty showTitle = new SimpleBooleanProperty(this, "showTitle", false);
+
+    public final boolean isShowTitle() {
+        return showTitle.get();
+    }
+
+    public final void setShowTitle(boolean value) {
+        this.showTitle.set(value);
+    }
+
+    public final BooleanProperty showTitleProperty() {
+        return showTitle;
+    }
+}

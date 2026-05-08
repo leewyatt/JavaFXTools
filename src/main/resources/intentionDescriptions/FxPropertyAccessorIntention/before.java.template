@@ -1,0 +1,3 @@
+class MyView {
+    private final BooleanProperty showTitle = new SimpleBooleanProperty(this, "showTitle", false);
+}
