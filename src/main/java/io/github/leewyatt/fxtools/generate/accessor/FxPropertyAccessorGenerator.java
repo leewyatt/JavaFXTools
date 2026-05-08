@@ -133,7 +133,7 @@ final class FxPropertyAccessorGenerator {
                     .append(descriptor.lazyInitializerText()).append(";\n");
             sb.append("    }\n");
         }
-        if (descriptor.readOnly()) {
+        if (descriptor.readOnlyWrapper()) {
             sb.append("    return ").append(descriptor.fieldName()).append(".getReadOnlyProperty();\n");
         } else {
             sb.append("    return ").append(descriptor.fieldName()).append(";\n");

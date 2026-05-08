@@ -48,7 +48,7 @@ final class FxPropertyFieldAnalyzer {
             return null;
         }
 
-        boolean lazy = isLazy(field);
+        boolean lazy = isLazy(field, match);
         String initializerText = lazyInitializerText(project, field, match);
         if (lazy && initializerText == null) {
             return null;
@@ -71,6 +71,7 @@ final class FxPropertyFieldAnalyzer {
                 containingClass,
                 match.type(),
                 match.readOnly(),
+                match.readOnlyWrapper(),
                 lazy,
                 fieldName,
                 capitalizedName,
@@ -90,18 +91,29 @@ final class FxPropertyFieldAnalyzer {
         PsiType fieldType = field.getType();
         for (FxPropertyType type : FxPropertyType.values()) {
             if (InheritanceUtil.isInheritor(fieldType, type.getReadOnlyWrapperFqn())) {
-                return Match.create(project, field, type, true);
+                return Match.create(project, field, type, true, true,
+                        type.getReadOnlyWrapperFqn());
             }
         }
         for (FxPropertyType type : FxPropertyType.values()) {
             if (InheritanceUtil.isInheritor(fieldType, type.getPropertyFqn())) {
-                return Match.create(project, field, type, false);
+                return Match.create(project, field, type, false, false,
+                        type.getPropertyFqn());
+            }
+        }
+        for (FxPropertyType type : FxPropertyType.values()) {
+            if (InheritanceUtil.isInheritor(fieldType, type.getReadOnlyPropertyFqn())) {
+                return Match.create(project, field, type, true, false,
+                        type.getReadOnlyPropertyFqn());
             }
         }
         return null;
     }
 
-    private static boolean isLazy(@NotNull PsiField field) {
+    private static boolean isLazy(@NotNull PsiField field, @NotNull Match match) {
+        if (match.readOnly() && !match.readOnlyWrapper()) {
+            return false;
+        }
         if (field.hasModifierProperty(PsiModifier.FINAL)) {
             return false;
         }
@@ -117,7 +129,10 @@ final class FxPropertyFieldAnalyzer {
     private static String lazyInitializerText(@NotNull Project project,
                                               @NotNull PsiField field,
                                               @NotNull Match match) {
-        if (!isLazy(field)) {
+        if (!isLazy(field, match)) {
+            return null;
+        }
+        if (match.readOnly() && !match.readOnlyWrapper()) {
             return null;
         }
 
@@ -250,23 +265,25 @@ final class FxPropertyFieldAnalyzer {
 
     private record Match(@NotNull FxPropertyType type,
                          boolean readOnly,
+                         boolean readOnlyWrapper,
                          PsiType @NotNull [] typeArguments) {
 
         @Nullable
         static Match create(@NotNull Project project,
                             @NotNull PsiField field,
                             @NotNull FxPropertyType type,
-                            boolean readOnly) {
-            String baseFqn = readOnly ? type.getReadOnlyWrapperFqn() : type.getPropertyFqn();
+                            boolean readOnly,
+                            boolean readOnlyWrapper,
+                            @NotNull String baseFqn) {
             PsiClass baseClass = JavaPsiFacade.getInstance(project)
                     .findClass(baseFqn, field.getResolveScope());
             if (!(field.getType() instanceof PsiClassType)) {
-                return new Match(type, readOnly, PsiType.EMPTY_ARRAY);
+                return new Match(type, readOnly, readOnlyWrapper, PsiType.EMPTY_ARRAY);
             }
             PsiClassType.ClassResolveResult result = ((PsiClassType) field.getType()).resolveGenerics();
             PsiClass fieldClass = result.getElement();
             if (baseClass == null || fieldClass == null) {
-                return new Match(type, readOnly, PsiType.EMPTY_ARRAY);
+                return new Match(type, readOnly, readOnlyWrapper, PsiType.EMPTY_ARRAY);
             }
 
             PsiSubstitutor substitutor = TypeConversionUtil.getSuperClassSubstitutor(
@@ -278,7 +295,7 @@ final class FxPropertyFieldAnalyzer {
                 args[i] = substituted == null ? PsiType.getJavaLangObject(field.getManager(), field.getResolveScope())
                         : substituted;
             }
-            return new Match(type, readOnly, args);
+            return new Match(type, readOnly, readOnlyWrapper, args);
         }
     }
 }

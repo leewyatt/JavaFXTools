@@ -13,6 +13,7 @@ record FxPropertyAccessorDescriptor(
         @NotNull PsiClass containingClass,
         @NotNull FxPropertyType type,
         boolean readOnly,
+        boolean readOnlyWrapper,
         boolean lazy,
         @NotNull String fieldName,
         @NotNull String capitalizedName,
