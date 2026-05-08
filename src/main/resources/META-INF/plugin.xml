@@ -359,20 +359,15 @@
             <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
         </action>
 
-        <!-- The "before GenerateConstructor" anchor is intentional even though the relative-to ID
-             does not resolve at registration time. The platform falls back to placing the action at
-             the end of the group, which is the desired position; this fallback path additionally
-             keeps the GenerateGroup-internal separator that visually divides built-in IDEA generate
-             actions from plugin-contributed ones. Switching to anchor="last" loses that separator. -->
-        <action id="JavaFX.GenerateProperty"
-                class="io.github.leewyatt.fxtools.generate.FxPropertyGenerateAction">
-            <add-to-group group-id="GenerateGroup" anchor="before" relative-to-action="GenerateConstructor"/>
-        </action>
-
-        <action id="JavaFX.GeneratePropertyAccessors"
-                class="io.github.leewyatt.fxtools.generate.accessor.FxPropertyAccessorGenerateAction">
-            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaFX.GenerateProperty"/>
-        </action>
+        <!-- Keep JavaFX-specific generate actions together without creating a submenu. -->
+        <group id="JavaFX.GeneratePropertyGroup">
+            <separator/>
+            <action id="JavaFX.GenerateProperty"
+                    class="io.github.leewyatt.fxtools.generate.FxPropertyGenerateAction"/>
+            <action id="JavaFX.GeneratePropertyAccessors"
+                    class="io.github.leewyatt.fxtools.generate.accessor.FxPropertyAccessorGenerateAction"/>
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+        </group>
 
         <action id="JavaFX.CopyFontFamilyName"
                 class="io.github.leewyatt.fxtools.action.CopyFontFamilyNameAction">
