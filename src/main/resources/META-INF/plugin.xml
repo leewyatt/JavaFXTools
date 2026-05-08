@@ -364,6 +364,11 @@
             <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
 
+        <action id="JavaFX.GeneratePropertyAccessors"
+                class="io.github.leewyatt.fxtools.generate.accessor.FxPropertyAccessorGenerateAction">
+            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaFX.GenerateProperty"/>
+        </action>
+
         <action id="JavaFX.CopyFontFamilyName"
                 class="io.github.leewyatt.fxtools.action.CopyFontFamilyNameAction">
             <add-to-group group-id="CutCopyPasteGroup" anchor="last"/>
