@@ -124,7 +124,7 @@ public final class FxPropCodeGenerator {
         String gen = genericSuffix(type);
         String diamond = type.singleGeneric || type.dualGeneric ? "<>" : "";
         String valType = valueTypeText(type);
-        String defVal = lazy ? type.lazyDefault : type.nullDefault;
+        String getterDefault = lazy ? type.lazyDefault : type.nullDefault;
 
         StringBuilder sb = new StringBuilder();
 
@@ -132,7 +132,7 @@ public final class FxPropCodeGenerator {
         if (defaultConst) {
             sb.append("private static final ").append(valType)
                     .append(" DEFAULT_$NAME_CONST$ = $DEFAULT$;\n\n");
-            defVal = "DEFAULT_$NAME_CONST$";
+            getterDefault = "DEFAULT_$NAME_CONST$";
         }
 
         // Field — CSS uses standard Property type for declaration, Styleable impl only for new
@@ -150,32 +150,40 @@ public final class FxPropCodeGenerator {
             implExpr = pkg + type.simpleClass + diamond + "(this, \"$NAME$\"";
         }
 
-        // Add default to constructor
         String ctorDefault = defaultConst ? ", DEFAULT_$NAME_CONST$" : (lazy ? ", " + type.lazyDefault : "");
         implExpr += ctorDefault + ")";
 
+        if (lazy) {
+            appendLazyCode(sb, type, fieldType, implExpr, valType, getterDefault, readonly, css);
+        } else {
+            appendEagerCode(sb, type, fieldType, implExpr, valType, readonly, css);
+        }
+
+        return sb.toString();
+    }
+
+    private static void appendLazyCode(@NotNull StringBuilder sb,
+                                       @NotNull PropType type,
+                                       @NotNull String fieldType,
+                                       @NotNull String implExpr,
+                                       @NotNull String valType,
+                                       @NotNull String getterDefault,
+                                       boolean readonly,
+                                       boolean css) {
         sb.append("private ").append(fieldType).append(" $NAME$;\n");
 
-        // Getter
         sb.append("\npublic final ").append(valType).append(" ").append(type.getterPrefix).append("$Name$() {\n");
-        sb.append("    return $NAME$ == null ? ").append(defVal).append(" : $NAME$.get();\n");
+        sb.append("    return $NAME$ == null ? ").append(getterDefault).append(" : $NAME$.get();\n");
         sb.append("}\n");
 
-        // Setter
         if (!readonly) {
             sb.append("\npublic final void set$Name$(").append(valType).append(" value) {\n");
             sb.append("    $NAME$Property().set(value);\n");
             sb.append("}\n");
         }
 
-        // Property accessor
-        String returnType;
-        if (readonly && !css) {
-            returnType = pkg + type.roProperty + gen;
-        } else {
-            returnType = fieldType;
-        }
-        sb.append("\npublic final ").append(returnType).append(" $NAME$Property() {\n");
+        sb.append("\npublic final ").append(propertyReturnType(type, fieldType, readonly, css))
+                .append(" $NAME$Property() {\n");
         sb.append("    if ($NAME$ == null) {\n");
         sb.append("        $NAME$ = new ").append(implExpr).append(";\n");
         sb.append("    }\n");
@@ -185,8 +193,47 @@ public final class FxPropCodeGenerator {
             sb.append("    return $NAME$;\n");
         }
         sb.append("}\n$END$");
+    }
 
-        return sb.toString();
+    private static void appendEagerCode(@NotNull StringBuilder sb,
+                                        @NotNull PropType type,
+                                        @NotNull String fieldType,
+                                        @NotNull String implExpr,
+                                        @NotNull String valType,
+                                        boolean readonly,
+                                        boolean css) {
+        sb.append("private final ").append(fieldType).append(" $NAME$ = new ")
+                .append(implExpr).append(";\n");
+
+        sb.append("\npublic final ").append(valType).append(" ").append(type.getterPrefix).append("$Name$() {\n");
+        sb.append("    return $NAME$.get();\n");
+        sb.append("}\n");
+
+        if (!readonly) {
+            sb.append("\npublic final void set$Name$(").append(valType).append(" value) {\n");
+            sb.append("    this.$NAME$.set(value);\n");
+            sb.append("}\n");
+        }
+
+        sb.append("\npublic final ").append(propertyReturnType(type, fieldType, readonly, css))
+                .append(" $NAME$Property() {\n");
+        if (readonly && !css) {
+            sb.append("    return $NAME$.getReadOnlyProperty();\n");
+        } else {
+            sb.append("    return $NAME$;\n");
+        }
+        sb.append("}\n$END$");
+    }
+
+    @NotNull
+    private static String propertyReturnType(@NotNull PropType type,
+                                             @NotNull String fieldType,
+                                             boolean readonly,
+                                             boolean css) {
+        if (readonly && !css) {
+            return "javafx.beans.property." + type.roProperty + genericSuffix(type);
+        }
+        return fieldType;
     }
 
     @NotNull
