@@ -3,6 +3,7 @@ package io.github.leewyatt.fxtools.generate.styleable;
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
@@ -21,6 +22,7 @@ import com.intellij.psi.PsiStatement;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.search.GlobalSearchScope;
+import io.github.leewyatt.fxtools.generate.FxPropertyType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,6 +41,7 @@ public final class StyleablePropertiesIntegrator {
      * @param psiClass class that owns the generated JavaFX property
      * @param descriptor styleable property metadata to integrate
      * @param editorForHints optional editor used to show generation hints
+     * Caller-owned members inserted outside StyleableProperties still need caller-side formatting.
      */
     public static void integrate(@NotNull Project project,
                                  @NotNull PsiClass psiClass,
@@ -112,6 +115,7 @@ public final class StyleablePropertiesIntegrator {
 
         JavaCodeStyleManager.getInstance(project).shortenClassReferences(psiClass);
         CodeStyleManager.getInstance(project).reformat(psiClass);
+        focusTodoConverter(editorForHints, psiClass, descriptor);
     }
 
     private static void appendToStyleableProperties(@NotNull Project project,
@@ -150,6 +154,8 @@ public final class StyleablePropertiesIntegrator {
 
         JavaCodeStyleManager.getInstance(project).shortenClassReferences(styleableProperties);
         CodeStyleManager.getInstance(project).reformat(styleableProperties);
+        focusTodoConverter(editorForHints,
+                containingClass != null ? containingClass : styleableProperties, descriptor);
     }
 
     @NotNull
@@ -211,6 +217,34 @@ public final class StyleablePropertiesIntegrator {
         sb.append("        }\n");
         sb.append("    };\n");
         return sb.toString();
+    }
+
+    /**
+     * Moves the editor caret to the generated converter T0DO marker when one exists.
+     *
+     * @param editor editor to move, or null when no editor feedback is available
+     * @param searchRoot PSI element that contains the generated CssMetaData
+     * @param descriptor descriptor used for the generated CssMetaData
+     */
+    public static void focusTodoConverter(@Nullable Editor editor,
+                                          @NotNull PsiElement searchRoot,
+                                          @NotNull StyleablePropertyDescriptor descriptor) {
+        if (editor == null
+                || !FxPropertyType.TODO_STYLE_CONVERTER_EXPRESSION.equals(descriptor.converterExpression())) {
+            return;
+        }
+
+        String text = searchRoot.getText();
+        String todoMarker = FxPropertyType.TODO_STYLE_CONVERTER_MARKER;
+        int constOffset = text.indexOf(descriptor.constName());
+        int relativeOffset = text.indexOf(todoMarker, Math.max(0, constOffset));
+        if (relativeOffset < 0) {
+            return;
+        }
+
+        int offset = searchRoot.getTextRange().getStartOffset() + relativeOffset;
+        editor.getCaretModel().moveToOffset(offset);
+        editor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
     }
 
     @Nullable

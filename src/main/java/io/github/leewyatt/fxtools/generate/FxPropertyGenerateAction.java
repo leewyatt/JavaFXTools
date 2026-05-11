@@ -26,6 +26,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertiesIntegrator;
+import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertyDescriptor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -70,6 +71,8 @@ public class FxPropertyGenerateAction extends AnAction {
         if (code.isEmpty()) {
             return;
         }
+        StyleablePropertyDescriptor styleableDescriptor =
+                dialog.isStyleableGenerated() ? dialog.getStyleableDescriptor() : null;
 
         WriteCommandAction.runWriteCommandAction(project,
                 FxToolsBundle.message("generate.fx.property.title"), null, () -> {
@@ -120,12 +123,16 @@ public class FxPropertyGenerateAction extends AnAction {
                         anchor = added;
                     }
 
-                    if (dialog.isStyleableGenerated()) {
-                        ensureStyleableProperties(editor, project, psiClass, dialog);
+                    if (styleableDescriptor != null) {
+                        ensureStyleableProperties(editor, project, psiClass, styleableDescriptor);
                     }
 
                     JavaCodeStyleManager.getInstance(project).shortenClassReferences(psiClass);
                     CodeStyleManager.getInstance(project).reformat(psiClass);
+                    if (styleableDescriptor != null) {
+                        // The whole-class reformat above can shift offsets after integrate() focused the T0DO.
+                        StyleablePropertiesIntegrator.focusTodoConverter(editor, psiClass, styleableDescriptor);
+                    }
                 });
     }
 
@@ -168,8 +175,8 @@ public class FxPropertyGenerateAction extends AnAction {
     private void ensureStyleableProperties(@NotNull Editor editor,
                                            @NotNull Project project,
                                            @NotNull PsiClass psiClass,
-                                           @NotNull FxPropertyGenerateDialog dialog) {
-        StyleablePropertiesIntegrator.integrate(project, psiClass, dialog.getStyleableDescriptor(), editor);
+                                           @NotNull StyleablePropertyDescriptor descriptor) {
+        StyleablePropertiesIntegrator.integrate(project, psiClass, descriptor, editor);
     }
 
     private PsiElement findInsertionAnchor(@NotNull PsiClass psiClass, int caretOffset) {

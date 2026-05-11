@@ -79,6 +79,8 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     private final JBLabel genericLabel = new JBLabel();
     private final JBLabel genericKeyLabel = new JBLabel();
     private final JBLabel genericValueLabel = new JBLabel();
+    private final JBLabel converterModeLabel = new JBLabel();
+    private final ComboBox<CssConverterMode> converterModeCombo = new ComboBox<>(CssConverterMode.values());
     private final ButtonGroup accessModeGroup = new ButtonGroup();
     private final JRadioButton readonlyRadio;
     private final JRadioButton standardRadio;
@@ -153,6 +155,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
                 updatePreview();
             }
         });
+        converterModeCombo.addActionListener(e -> updatePreview());
 
         typeCombo.addActionListener(e -> {
             FxPropertyType current = getSelectedType();
@@ -197,15 +200,28 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
                 return this;
             }
         });
+        converterModeCombo.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value,
+                                                          int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof CssConverterMode) {
+                    setText(((CssConverterMode) value).getDisplayName());
+                }
+                return this;
+            }
+        });
 
         configurePreviewAreas();
         // IntelliJ ComboBox reports its own preferred width; keep it aligned with the fixed form column.
         typeCombo.setMinimumAndPreferredWidth(JBUI.scale(FIELD_COLUMN_WIDTH));
+        converterModeCombo.setMinimumAndPreferredWidth(JBUI.scale(FIELD_COLUMN_WIDTH));
 
         genericLabel.setText(FxToolsBundle.message("generate.fx.property.generic.type"));
         genericKeyLabel.setText(FxToolsBundle.message("generate.fx.property.generic.key.type"));
         genericValueLabel.setText(FxToolsBundle.message("generate.fx.property.generic.value.type"));
         cssNameLabel.setText(FxToolsBundle.message("generate.fx.property.css.name"));
+        converterModeLabel.setText(FxToolsBundle.message("generate.fx.property.css.converter"));
 
         JPanel root = new JPanel(new BorderLayout());
         root.setPreferredSize(JBUI.size(850, 500));
@@ -243,6 +259,8 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         accessSection.add(accessRadioPanel, "span 2, growx");
         accessSection.add(cssNameLabel);
         accessSection.add(cssNameField);
+        accessSection.add(converterModeLabel);
+        accessSection.add(wrapComboBox(converterModeCombo));
         leftColumn.add(accessSection, "growx");
         leftColumn.add(new JSeparator(), "growx, gaptop 12, gapbottom 12");
 
@@ -460,10 +478,14 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         String genericParam = genericField.getText().trim();
         String cssValueType = type.getCssValueType(genericParam);
         if (type == FxPropertyType.OBJECT) {
-            StyleableConverterResolver.Result result =
-                    StyleableConverterResolver.resolveObjectProperty(genericParam, project);
-            cssValueType = result.cssValueType();
-            converterExpression = result.converterExpression();
+            if (converterModeCombo.getSelectedItem() == CssConverterMode.CUSTOM) {
+                converterExpression = FxPropertyType.TODO_STYLE_CONVERTER_EXPRESSION;
+            } else {
+                StyleableConverterResolver.Result result =
+                        StyleableConverterResolver.resolveObjectProperty(genericParam, project);
+                cssValueType = result.cssValueType();
+                converterExpression = result.converterExpression();
+            }
         } else if (converterExpression == null) {
             converterExpression = FxPropertyType.TODO_STYLE_CONVERTER_EXPRESSION;
         }
@@ -532,6 +554,9 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         boolean cssVisible = styleableRadio.isSelected();
         cssNameLabel.setVisible(cssVisible);
         cssNameField.setVisible(cssVisible);
+        boolean converterModeVisible = cssVisible && type == FxPropertyType.OBJECT;
+        converterModeLabel.setVisible(converterModeVisible);
+        converterModeCombo.setVisible(converterModeVisible);
     }
 
     private void handleAccessModeChange() {
@@ -850,6 +875,22 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     private FxPropertyType getSelectedType() {
         Object selected = typeCombo.getSelectedItem();
         return selected instanceof FxPropertyType ? (FxPropertyType) selected : FxPropertyType.STRING;
+    }
+
+    private enum CssConverterMode {
+        AUTO("generate.fx.property.css.converter.auto"),
+        CUSTOM("generate.fx.property.css.converter.custom");
+
+        private final String messageKey;
+
+        CssConverterMode(@NotNull String messageKey) {
+            this.messageKey = messageKey;
+        }
+
+        @NotNull
+        String getDisplayName() {
+            return FxToolsBundle.message(messageKey);
+        }
     }
 
     /**

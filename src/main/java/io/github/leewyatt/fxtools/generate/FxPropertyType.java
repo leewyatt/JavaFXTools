@@ -39,7 +39,8 @@ public enum FxPropertyType {
             "ReadOnlySetWrapper", "ReadOnlySetProperty",
             "javafx.beans.property", true, false, "get");
 
-    public static final String TODO_STYLE_CONVERTER_EXPRESSION = "/* TODO: provide StyleConverter */";
+    public static final String TODO_STYLE_CONVERTER_MARKER = "TODO: provide StyleConverter";
+    public static final String TODO_STYLE_CONVERTER_EXPRESSION = "/* " + TODO_STYLE_CONVERTER_MARKER + " */";
 
     private final String propertyTypeName;
     private final String valueTypeName;
