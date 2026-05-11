@@ -220,7 +220,7 @@ public final class StyleablePropertiesIntegrator {
     }
 
     /**
-     * Moves the editor caret to the generated converter T0DO marker when one exists.
+     * Moves the editor caret to the generated converter placeholder marker when one exists.
      *
      * @param editor editor to move, or null when no editor feedback is available
      * @param searchRoot PSI element that contains the generated CssMetaData

@@ -130,7 +130,7 @@ public class FxPropertyGenerateAction extends AnAction {
                     JavaCodeStyleManager.getInstance(project).shortenClassReferences(psiClass);
                     CodeStyleManager.getInstance(project).reformat(psiClass);
                     if (styleableDescriptor != null) {
-                        // The whole-class reformat above can shift offsets after integrate() focused the T0DO.
+                        // The whole-class reformat above can shift offsets after integrate() focused the placeholder.
                         StyleablePropertiesIntegrator.focusTodoConverter(editor, psiClass, styleableDescriptor);
                     }
                 });
