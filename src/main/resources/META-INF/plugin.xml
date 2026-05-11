@@ -49,6 +49,14 @@
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.2.3</h3>
+
+<h4>Improvements</h4>
+<ul>
+  <li>ReadOnly property generation now matches the JavaFX style with a private setter and lazy <code>propertyImpl()</code> helper.</li>
+  <li>Styleable <code>ObjectProperty&lt;T&gt;</code> auto-picks a matching <code>StyleConverter</code> when one exists.</li>
+</ul>
+
 <h3>2.2.2</h3>
 
 <h4>Fixes</h4>
