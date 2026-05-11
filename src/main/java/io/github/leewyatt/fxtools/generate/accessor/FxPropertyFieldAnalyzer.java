@@ -58,13 +58,15 @@ final class FxPropertyFieldAnalyzer {
         String getterName = match.type().getGetterPrefix() + capitalizedName;
         String setterName = "set" + capitalizedName;
         String propertyMethodName = fieldName + "Property";
+        String propertyImplMethodName = fieldName + "PropertyImpl";
         String valueTypeText = valueTypeText(match);
         PsiType valueType = JavaPsiFacade.getElementFactory(project).createTypeFromText(valueTypeText, field);
         String propertyReturnTypeText = propertyReturnTypeText(match);
+        String propertyImplReturnTypeText = propertyImplReturnTypeText(match);
 
         EnumSet<FxAccessorMethodKind> missing = missingMethods(
                 containingClass, match.readOnly(), getterName, setterName,
-                propertyMethodName, valueType);
+                propertyMethodName, propertyImplMethodName, valueType, match.readOnlyWrapper(), lazy);
 
         return new FxPropertyAccessorDescriptor(
                 field,
@@ -78,9 +80,11 @@ final class FxPropertyFieldAnalyzer {
                 getterName,
                 setterName,
                 propertyMethodName,
+                propertyImplMethodName,
                 valueTypeText,
                 valueType,
                 propertyReturnTypeText,
+                propertyImplReturnTypeText,
                 initializerText == null ? "" : initializerText,
                 lazyFallbackText(match.type()),
                 missing);
@@ -180,6 +184,14 @@ final class FxPropertyFieldAnalyzer {
     }
 
     @NotNull
+    private static String propertyImplReturnTypeText(@NotNull Match match) {
+        String base = match.readOnlyWrapper()
+                ? match.type().getReadOnlyWrapperFqn()
+                : match.type().getPropertyFqn();
+        return base + genericSuffix(match.typeArguments());
+    }
+
+    @NotNull
     private static String collectionValueType(@NotNull String base, PsiType @NotNull [] args) {
         return args.length == 0 ? base : base + genericSuffix(args);
     }
@@ -228,16 +240,26 @@ final class FxPropertyFieldAnalyzer {
                                                                 @NotNull String getterName,
                                                                 @NotNull String setterName,
                                                                 @NotNull String propertyMethodName,
-                                                                @NotNull PsiType valueType) {
+                                                                @NotNull String propertyImplMethodName,
+                                                                @NotNull PsiType valueType,
+                                                                boolean readOnlyWrapper,
+                                                                boolean lazy) {
         EnumSet<FxAccessorMethodKind> missing = EnumSet.noneOf(FxAccessorMethodKind.class);
         if (!hasNoArgMethod(psiClass, getterName)) {
             missing.add(FxAccessorMethodKind.GETTER);
         }
-        if (!readOnly && !hasSetter(psiClass, setterName, valueType)) {
+        if (readOnlyWrapper && !hasSetter(psiClass, setterName, valueType)) {
+            missing.add(FxAccessorMethodKind.PRIVATE_SETTER);
+        } else if (!readOnly && !hasSetter(psiClass, setterName, valueType)) {
             missing.add(FxAccessorMethodKind.SETTER);
         }
         if (!hasNoArgMethod(psiClass, propertyMethodName)) {
             missing.add(FxAccessorMethodKind.PROPERTY);
+        }
+        if (readOnlyWrapper && lazy && (missing.contains(FxAccessorMethodKind.PRIVATE_SETTER)
+                || missing.contains(FxAccessorMethodKind.PROPERTY))
+                && !hasNoArgMethod(psiClass, propertyImplMethodName)) {
+            missing.add(FxAccessorMethodKind.PROPERTY_IMPL);
         }
         return missing;
     }

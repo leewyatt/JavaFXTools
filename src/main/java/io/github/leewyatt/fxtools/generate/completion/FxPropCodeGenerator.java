@@ -178,7 +178,11 @@ public final class FxPropCodeGenerator {
         sb.append("    return $NAME$ == null ? ").append(getterDefault).append(" : $NAME$.get();\n");
         sb.append("}\n");
 
-        if (!readonly) {
+        if (readonly && !css) {
+            sb.append("\nprivate void set$Name$(").append(valType).append(" value) {\n");
+            sb.append("    $NAME$PropertyImpl().set(value);\n");
+            sb.append("}\n");
+        } else if (!readonly) {
             sb.append("\npublic final void set$Name$(").append(valType).append(" value) {\n");
             sb.append("    $NAME$Property().set(value);\n");
             sb.append("}\n");
@@ -186,15 +190,25 @@ public final class FxPropCodeGenerator {
 
         sb.append("\npublic final ").append(propertyReturnType(type, fieldType, readonly, css))
                 .append(" $NAME$Property() {\n");
-        sb.append("    if ($NAME$ == null) {\n");
-        sb.append("        $NAME$ = new ").append(implExpr).append(";\n");
-        sb.append("    }\n");
         if (readonly && !css) {
-            sb.append("    return $NAME$.getReadOnlyProperty();\n");
+            sb.append("    return $NAME$PropertyImpl().getReadOnlyProperty();\n");
         } else {
+            sb.append("    if ($NAME$ == null) {\n");
+            sb.append("        $NAME$ = new ").append(implExpr).append(";\n");
+            sb.append("    }\n");
             sb.append("    return $NAME$;\n");
         }
-        sb.append("}\n$END$");
+        sb.append("}\n");
+
+        if (readonly && !css) {
+            sb.append("\nprivate ").append(fieldType).append(" $NAME$PropertyImpl() {\n");
+            sb.append("    if ($NAME$ == null) {\n");
+            sb.append("        $NAME$ = new ").append(implExpr).append(";\n");
+            sb.append("    }\n");
+            sb.append("    return $NAME$;\n");
+            sb.append("}\n");
+        }
+        sb.append("$END$");
     }
 
     private static void appendEagerCode(@NotNull StringBuilder sb,
@@ -211,7 +225,11 @@ public final class FxPropCodeGenerator {
         sb.append("    return $NAME$.get();\n");
         sb.append("}\n");
 
-        if (!readonly) {
+        if (readonly && !css) {
+            sb.append("\nprivate void set$Name$(").append(valType).append(" value) {\n");
+            sb.append("    this.$NAME$.set(value);\n");
+            sb.append("}\n");
+        } else if (!readonly) {
             sb.append("\npublic final void set$Name$(").append(valType).append(" value) {\n");
             sb.append("    this.$NAME$.set(value);\n");
             sb.append("}\n");

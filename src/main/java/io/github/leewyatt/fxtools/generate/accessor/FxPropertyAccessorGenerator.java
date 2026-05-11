@@ -169,7 +169,8 @@ final class FxPropertyAccessorGenerator {
         String name = method.getName();
         return descriptor.getterName().equals(name)
                 || descriptor.setterName().equals(name)
-                || descriptor.propertyMethodName().equals(name);
+                || descriptor.propertyMethodName().equals(name)
+                || descriptor.propertyImplMethodName().equals(name);
     }
 
     @NotNull
@@ -178,10 +179,14 @@ final class FxPropertyAccessorGenerator {
         switch (kind) {
             case GETTER:
                 return getterText(descriptor);
+            case PRIVATE_SETTER:
+                return privateSetterText(descriptor);
             case SETTER:
                 return setterText(descriptor);
             case PROPERTY:
                 return propertyText(descriptor);
+            case PROPERTY_IMPL:
+                return propertyImplText(descriptor);
             default:
                 throw new IllegalArgumentException("Unsupported accessor kind: " + kind);
         }
@@ -198,6 +203,20 @@ final class FxPropertyAccessorGenerator {
                     .append(descriptor.fieldName()).append(".get();\n");
         } else {
             sb.append("    return ").append(descriptor.fieldName()).append(".get();\n");
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+
+    @NotNull
+    private static String privateSetterText(@NotNull FxPropertyAccessorDescriptor descriptor) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("private void ").append(descriptor.setterName()).append("(")
+                .append(descriptor.valueTypeText()).append(" value) {\n");
+        if (descriptor.lazy()) {
+            sb.append("    ").append(descriptor.propertyImplMethodName()).append("().set(value);\n");
+        } else {
+            sb.append("    ").append(descriptor.fieldName()).append(".set(value);\n");
         }
         sb.append("}");
         return sb.toString();
@@ -223,16 +242,35 @@ final class FxPropertyAccessorGenerator {
         sb.append("public final ").append(descriptor.propertyReturnTypeText()).append(" ")
                 .append(descriptor.propertyMethodName()).append("() {\n");
         if (descriptor.lazy()) {
-            sb.append("    if (").append(descriptor.fieldName()).append(" == null) {\n");
-            sb.append("        ").append(descriptor.fieldName()).append(" = ")
-                    .append(descriptor.lazyInitializerText()).append(";\n");
-            sb.append("    }\n");
+            if (descriptor.readOnlyWrapper()) {
+                sb.append("    return ").append(descriptor.propertyImplMethodName())
+                        .append("().getReadOnlyProperty();\n");
+            } else {
+                sb.append("    if (").append(descriptor.fieldName()).append(" == null) {\n");
+                sb.append("        ").append(descriptor.fieldName()).append(" = ")
+                        .append(descriptor.lazyInitializerText()).append(";\n");
+                sb.append("    }\n");
+            }
         }
-        if (descriptor.readOnlyWrapper()) {
+        if (descriptor.readOnlyWrapper() && !descriptor.lazy()) {
             sb.append("    return ").append(descriptor.fieldName()).append(".getReadOnlyProperty();\n");
-        } else {
+        } else if (!descriptor.readOnlyWrapper()) {
             sb.append("    return ").append(descriptor.fieldName()).append(";\n");
         }
+        sb.append("}");
+        return sb.toString();
+    }
+
+    @NotNull
+    private static String propertyImplText(@NotNull FxPropertyAccessorDescriptor descriptor) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("private ").append(descriptor.propertyImplReturnTypeText()).append(" ")
+                .append(descriptor.propertyImplMethodName()).append("() {\n");
+        sb.append("    if (").append(descriptor.fieldName()).append(" == null) {\n");
+        sb.append("        ").append(descriptor.fieldName()).append(" = ")
+                .append(descriptor.lazyInitializerText()).append(";\n");
+        sb.append("    }\n");
+        sb.append("    return ").append(descriptor.fieldName()).append(";\n");
         sb.append("}");
         return sb.toString();
     }

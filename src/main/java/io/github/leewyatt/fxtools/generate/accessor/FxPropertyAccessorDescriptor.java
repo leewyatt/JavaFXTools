@@ -20,9 +20,11 @@ record FxPropertyAccessorDescriptor(
         @NotNull String getterName,
         @NotNull String setterName,
         @NotNull String propertyMethodName,
+        @NotNull String propertyImplMethodName,
         @NotNull String valueTypeText,
         @NotNull PsiType valueType,
         @NotNull String propertyReturnTypeText,
+        @NotNull String propertyImplReturnTypeText,
         @NotNull String lazyInitializerText,
         @NotNull String lazyFallbackText,
         @NotNull EnumSet<FxAccessorMethodKind> missingMethods

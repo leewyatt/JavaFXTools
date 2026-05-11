@@ -703,7 +703,9 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         sb.append(");\n\n");
 
         appendGetter(sb, propName, getterName, valueType, false, null);
-        if (!readonly) {
+        if (readonly) {
+            appendPrivateSetter(sb, propName, capName, valueType, false);
+        } else {
             appendSetter(sb, propName, capName, valueType, false);
         }
         appendPropertyAccessor(sb, propName, type, fieldType, genericSuffix, readonly);
@@ -723,16 +725,43 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         sb.append("\n");
 
         appendGetter(sb, propName, getterName, valueType, true, defaultLiteralRef);
-        if (!readonly) {
+        if (readonly) {
+            appendPrivateSetter(sb, propName, capName, valueType, true);
+        } else {
             appendSetter(sb, propName, capName, valueType, true);
         }
 
         if (readonly) {
             String roType = type.getReadOnlyPropertyFqn() + genericSuffix;
             sb.append("public final ").append(roType).append(" ").append(propName).append("Property() {\n");
+            sb.append("    return ").append(propName).append("PropertyImpl().getReadOnlyProperty();\n");
         } else {
             sb.append("public final ").append(fieldType).append(" ").append(propName).append("Property() {\n");
+            sb.append("    if (").append(propName).append(" == null) {\n");
+            sb.append("        ").append(propName).append(" = new ").append(implClass)
+                    .append("(this, \"").append(propName).append("\"");
+            if (!defaultRef.isEmpty()) {
+                sb.append(", ").append(defaultRef);
+            }
+            sb.append(");\n");
+            sb.append("    }\n");
+            sb.append("    return ").append(propName).append(";\n");
         }
+        sb.append("}\n");
+
+        if (readonly) {
+            appendReadOnlyPropertyImpl(sb, propName, fieldType, implClass, defaultRef);
+        }
+
+        return sb.toString();
+    }
+
+    private void appendReadOnlyPropertyImpl(@NotNull StringBuilder sb,
+                                            @NotNull String propName,
+                                            @NotNull String fieldType,
+                                            @NotNull String implClass,
+                                            @NotNull String defaultRef) {
+        sb.append("\nprivate ").append(fieldType).append(" ").append(propName).append("PropertyImpl() {\n");
         sb.append("    if (").append(propName).append(" == null) {\n");
         sb.append("        ").append(propName).append(" = new ").append(implClass)
                 .append("(this, \"").append(propName).append("\"");
@@ -741,10 +770,8 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         }
         sb.append(");\n");
         sb.append("    }\n");
-        sb.append("    return ").append(readonly ? propName + ".getReadOnlyProperty()" : propName).append(";\n");
+        sb.append("    return ").append(propName).append(";\n");
         sb.append("}\n");
-
-        return sb.toString();
     }
 
     @NotNull
@@ -819,6 +846,18 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         sb.append("public final void set").append(capName).append("(").append(valueType).append(" value) {\n");
         if (lazy) {
             sb.append("    ").append(propName).append("Property().set(value);\n");
+        } else {
+            sb.append("    ").append(propName).append(".set(value);\n");
+        }
+        sb.append("}\n\n");
+    }
+
+    private void appendPrivateSetter(@NotNull StringBuilder sb, @NotNull String propName,
+                                     @NotNull String capName, @NotNull String valueType,
+                                     boolean lazy) {
+        sb.append("private void set").append(capName).append("(").append(valueType).append(" value) {\n");
+        if (lazy) {
+            sb.append("    ").append(propName).append("PropertyImpl().set(value);\n");
         } else {
             sb.append("    ").append(propName).append(".set(value);\n");
         }
