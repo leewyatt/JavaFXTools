@@ -228,6 +228,14 @@ public class FxPropCompletionContributor extends CompletionContributor {
                             }
                             e.consume();
                             break;
+                        case KeyEvent.VK_UP:
+                            selectAdjacentAccessMode(readonlyRadio, standardRadio, styleableRadio, -1);
+                            e.consume();
+                            break;
+                        case KeyEvent.VK_DOWN:
+                            selectAdjacentAccessMode(readonlyRadio, standardRadio, styleableRadio, 1);
+                            e.consume();
+                            break;
                         case KeyEvent.VK_D:
                             defaultBox.setSelected(!defaultBox.isSelected());
                             e.consume();
@@ -249,6 +257,24 @@ public class FxPropCompletionContributor extends CompletionContributor {
             cancelButton.addKeyListener(keyHandler);
 
             popup.showInBestPositionFor(editor);
+        }
+
+        private void selectAdjacentAccessMode(@NotNull JRadioButton readonlyRadio,
+                                              @NotNull JRadioButton standardRadio,
+                                              @NotNull JRadioButton styleableRadio,
+                                              int direction) {
+            JRadioButton[] radios = type.supportsCss()
+                    ? new JRadioButton[]{readonlyRadio, standardRadio, styleableRadio}
+                    : new JRadioButton[]{readonlyRadio, standardRadio};
+            int selectedIndex = 0;
+            for (int i = 0; i < radios.length; i++) {
+                if (radios[i].isSelected()) {
+                    selectedIndex = i;
+                    break;
+                }
+            }
+            int nextIndex = Math.floorMod(selectedIndex + direction, radios.length);
+            radios[nextIndex].setSelected(true);
         }
 
         private void generateCode(@NotNull Editor editor, @NotNull Project project,
