@@ -23,11 +23,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -47,11 +49,18 @@ import java.awt.GridLayout;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Dialog for generating JavaFX Property fields with getter/setter/property methods.
  */
 public class FxPropertyGenerateDialog extends DialogWrapper {
+
+    private static final int LABEL_COLUMN_WIDTH = 100;
+    private static final int FIELD_COLUMN_WIDTH = 270;
+    private static final int INDENTED_FIELD_COLUMN_WIDTH = 236;
+    private static final int DEFAULT_FIELD_HEIGHT = 28;
 
     private final Project project;
     private final String className;
@@ -70,11 +79,13 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     private final JBLabel genericLabel = new JBLabel();
     private final JBLabel genericKeyLabel = new JBLabel();
     private final JBLabel genericValueLabel = new JBLabel();
-    private final JCheckBox readonlyCheck;
+    private final ButtonGroup accessModeGroup = new ButtonGroup();
+    private final JRadioButton readonlyRadio;
+    private final JRadioButton standardRadio;
+    private final JRadioButton styleableRadio;
     private final JCheckBox lazyCheck;
     private final JCheckBox provideDefaultCheck;
     private final JCheckBox constantCheck;
-    private final JCheckBox styleableCheck;
     private final JBLabel cssNameLabel = new JBLabel();
     private final JBTextField cssNameField = new JBTextField();
     private final JTextArea previewArea = new JTextArea();
@@ -96,11 +107,15 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         this.superClassName = superClassName;
         this.useControlCssMetaData = useControlCssMetaData;
         this.hasStyleableProperties = hasStyleableProperties;
-        readonlyCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.readonly"), false);
+        readonlyRadio = new JRadioButton(FxToolsBundle.message("generate.fx.property.access.readonly"), false);
+        standardRadio = new JRadioButton(FxToolsBundle.message("generate.fx.property.access.standard"), true);
+        styleableRadio = new JRadioButton(FxToolsBundle.message("generate.fx.property.access.styleable"), false);
+        accessModeGroup.add(readonlyRadio);
+        accessModeGroup.add(standardRadio);
+        accessModeGroup.add(styleableRadio);
         lazyCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.lazy"), false);
         provideDefaultCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.provide.default"), false);
         constantCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.constant"), false);
-        styleableCheck = new JCheckBox(FxToolsBundle.message("generate.fx.property.styleable"), false);
 
         setTitle(FxToolsBundle.message("generate.fx.property.title"));
         init();
@@ -115,7 +130,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         nameField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                if (autoUpdateCssName && styleableCheck.isSelected()) {
+                if (autoUpdateCssName && styleableRadio.isSelected()) {
                     String name = nameField.getText().trim();
                     cssNameField.setText(name.isEmpty() ? "" : FxNamingUtil.toFxKebabCase(name));
                     SwingUtilities.invokeLater(cssNameField::selectAll);
@@ -150,31 +165,21 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
             }
             showDefaultValueComponent(current);
             updateGenericFieldsVisibility();
-            updateStyleableVisibility();
+            updateAccessModeAvailability();
             updatePreview();
         });
-        readonlyCheck.addActionListener(e -> updatePreview());
+        readonlyRadio.addActionListener(e -> handleAccessModeChange());
+        standardRadio.addActionListener(e -> handleAccessModeChange());
+        styleableRadio.addActionListener(e -> handleAccessModeChange());
         lazyCheck.addActionListener(e -> updatePreview());
         provideDefaultCheck.addActionListener(e -> {
             updateDefaultValueState();
             updatePreview();
         });
         constantCheck.addActionListener(e -> updatePreview());
-        styleableCheck.addActionListener(e -> {
-            updateStyleableVisibility();
-            if (styleableCheck.isSelected()) {
-                autoUpdateCssName = true;
-                String name = nameField.getText().trim();
-                if (!name.isEmpty()) {
-                    cssNameField.setText(FxNamingUtil.toFxKebabCase(name));
-                    SwingUtilities.invokeLater(cssNameField::selectAll);
-                }
-            }
-            updatePreview();
-        });
 
         updateGenericFieldsVisibility();
-        updateStyleableVisibility();
+        updateAccessModeAvailability();
         updateDefaultValueState();
         showDefaultValueComponent(getSelectedType());
     }
@@ -194,6 +199,8 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         });
 
         configurePreviewAreas();
+        // IntelliJ ComboBox reports its own preferred width; keep it aligned with the fixed form column.
+        typeCombo.setMinimumAndPreferredWidth(JBUI.scale(FIELD_COLUMN_WIDTH));
 
         genericLabel.setText(FxToolsBundle.message("generate.fx.property.generic.type"));
         genericKeyLabel.setText(FxToolsBundle.message("generate.fx.property.generic.key.type"));
@@ -201,50 +208,67 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         cssNameLabel.setText(FxToolsBundle.message("generate.fx.property.css.name"));
 
         JPanel root = new JPanel(new BorderLayout());
-        root.setPreferredSize(JBUI.size(800, 500));
+        root.setPreferredSize(JBUI.size(850, 500));
 
         JPanel leftColumn = new JPanel(new MigLayout(
                 "wrap 1, fillx, insets 14 16 14 20, gapy 0, hidemode 3"));
-        leftColumn.setPreferredSize(JBUI.size(400, 490));
+        leftColumn.setPreferredSize(JBUI.size(450, 490));
 
         // ==================== Property section ====================
         leftColumn.add(makeSectionTitle(FxToolsBundle.message("generate.fx.property.section.property")), "growx");
         JPanel propertySection = makeSectionPanel();
         propertySection.add(new JBLabel(FxToolsBundle.message("generate.fx.property.name")));
-        propertySection.add(nameField, "growx, sg field");
+        propertySection.add(nameField);
         propertySection.add(new JBLabel(FxToolsBundle.message("generate.fx.property.type")));
-        propertySection.add(typeCombo, "growx, sg field");
+        // Wrap IntelliJ ComboBox so MigLayout treats it like the text fields in the fixed-width column.
+        propertySection.add(wrapComboBox(typeCombo));
         propertySection.add(genericLabel);
-        propertySection.add(genericField, "growx, sg field");
+        propertySection.add(genericField);
         propertySection.add(genericKeyLabel);
-        propertySection.add(genericKeyField, "growx, sg field");
+        propertySection.add(genericKeyField);
         propertySection.add(genericValueLabel);
-        propertySection.add(genericValueField, "growx, sg field");
-        propertySection.add(readonlyCheck, "span 2, growx");
-        propertySection.add(lazyCheck, "span 2, growx");
+        propertySection.add(genericValueField);
+        propertySection.add(lazyCheck, "span 2, growx, gaptop 4");
         leftColumn.add(propertySection, "growx");
+        leftColumn.add(new JSeparator(), "growx, gaptop 12, gapbottom 12");
+
+        // ==================== Property Access section ====================
+        leftColumn.add(makeSectionTitle(FxToolsBundle.message("generate.fx.property.section.access")), "growx");
+        JPanel accessSection = makeSectionPanel();
+        JPanel accessRadioPanel = new JPanel(new MigLayout("insets 0, gap 16, flowx"));
+        accessRadioPanel.setOpaque(false);
+        accessRadioPanel.add(readonlyRadio);
+        accessRadioPanel.add(standardRadio);
+        accessRadioPanel.add(styleableRadio);
+        accessSection.add(accessRadioPanel, "span 2, growx");
+        accessSection.add(cssNameLabel);
+        accessSection.add(cssNameField);
+        leftColumn.add(accessSection, "growx");
         leftColumn.add(new JSeparator(), "growx, gaptop 12, gapbottom 12");
 
         // ==================== Default Value section ====================
         leftColumn.add(makeSectionTitle(FxToolsBundle.message("generate.fx.property.section.default")), "growx");
         JPanel defaultSection = makeSectionPanel();
         defaultSection.add(provideDefaultCheck, "span 2, growx");
-        defaultSection.add(new JBLabel(FxToolsBundle.message("generate.fx.property.value.type")));
-        defaultSection.add(valueTypeLabel, "growx");
-        defaultSection.add(new JBLabel(FxToolsBundle.message("generate.fx.property.default.value")));
+
+        JPanel defaultIndented = new JPanel(new MigLayout(
+                "wrap 2, insets 0, gapy 6, hidemode 3",
+                "[" + LABEL_COLUMN_WIDTH + "!,left]10[" + INDENTED_FIELD_COLUMN_WIDTH + "!,fill]"));
+        defaultIndented.setOpaque(false);
+        defaultIndented.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 2, 0, 0,
+                        new JBColor(new Color(0xB8B8B8), new Color(0x5A5D63))),
+                JBUI.Borders.emptyLeft(12)));
+        defaultIndented.add(new JBLabel(FxToolsBundle.message("generate.fx.property.value.type")));
+        defaultIndented.add(valueTypeLabel);
+        defaultIndented.add(new JBLabel(FxToolsBundle.message("generate.fx.property.default.value")));
         defaultValueCard.setOpaque(false);
-        defaultSection.add(defaultValueCard, "growx, sg field");
+        // CardLayout reports a short preferred height for the text field card; keep it aligned with other fields.
+        defaultIndented.add(defaultValueCard, "height " + DEFAULT_FIELD_HEIGHT + "!");
+        defaultSection.add(defaultIndented, "span 2, gapleft 20");
+
         defaultSection.add(constantCheck, "span 2, growx");
         leftColumn.add(defaultSection, "growx");
-        leftColumn.add(new JSeparator(), "growx, gaptop 12, gapbottom 12");
-
-        // ==================== CSS Integration section ====================
-        leftColumn.add(makeSectionTitle(FxToolsBundle.message("generate.fx.property.section.css")), "growx");
-        JPanel cssSection = makeSectionPanel();
-        cssSection.add(styleableCheck, "span 2, growx");
-        cssSection.add(cssNameLabel);
-        cssSection.add(cssNameField, "growx, sg field");
-        leftColumn.add(cssSection, "growx");
 
         root.add(leftColumn, BorderLayout.WEST);
         root.add(createPreviewPanel(), BorderLayout.CENTER);
@@ -255,8 +279,6 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     @NotNull
     private JBLabel makeSectionTitle(@NotNull String text) {
         JBLabel label = new JBLabel(text);
-        label.setForeground(colorOrDefault("Label.disabledForeground", JBColor.GRAY));
-        label.setFont(label.getFont().deriveFont(Font.BOLD));
         label.setBorder(JBUI.Borders.empty(0, 2, 4, 2));
         return label;
     }
@@ -265,9 +287,17 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     private JPanel makeSectionPanel() {
         JPanel panel = new JPanel(new MigLayout(
                 "wrap 2, fillx, insets 4 14 4 14, gapy 6, hidemode 3",
-                "[110!,left]12[grow,fill]"));
+                "[" + LABEL_COLUMN_WIDTH + "!,left]10[" + FIELD_COLUMN_WIDTH + "!,fill]"));
         panel.setOpaque(false);
         return panel;
+    }
+
+    @NotNull
+    private JPanel wrapComboBox(@NotNull JComponent component) {
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setOpaque(false);
+        wrapper.add(component, BorderLayout.CENTER);
+        return wrapper;
     }
 
     private void configurePreviewAreas() {
@@ -352,7 +382,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
      * Returns whether the generated property uses JavaFX CSS metadata.
      */
     public boolean isStyleableGenerated() {
-        return styleableCheck.isSelected() && getSelectedType().isStyleableSupported();
+        return styleableRadio.isSelected() && getSelectedType().isStyleableSupported();
     }
 
     /**
@@ -427,12 +457,13 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         FxPropertyType type = getPropertyType();
         String converterExpression = type.getConverterExpression();
         if (converterExpression == null) {
-            converterExpression = "/* TODO: provide StyleConverter */";
+            converterExpression = FxPropertyType.TODO_STYLE_CONVERTER_EXPRESSION;
         }
         String propertyName = getPropertyName();
+        String genericParam = genericField.getText().trim();
         return new StyleablePropertyDescriptor(
                 propertyName,
-                type.getCssValueType(),
+                type.getCssValueType(genericParam),
                 converterExpression,
                 getCssName(),
                 getCssDefaultReference(),
@@ -450,6 +481,18 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         genericKeyField.setVisible(twoParams);
         genericValueLabel.setVisible(twoParams);
         genericValueField.setVisible(twoParams);
+
+        if (singleParam && genericField.getText().trim().isEmpty()) {
+            genericField.setText("Object");
+        }
+        if (twoParams) {
+            if (genericKeyField.getText().trim().isEmpty()) {
+                genericKeyField.setText("Object");
+            }
+            if (genericValueField.getText().trim().isEmpty()) {
+                genericValueField.setText("Object");
+            }
+        }
 
         String gp = genericField.getText().trim();
         String gk = genericKeyField.getText().trim();
@@ -472,16 +515,30 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         }
     }
 
-    private void updateStyleableVisibility() {
+    private void updateAccessModeAvailability() {
         FxPropertyType type = getSelectedType();
-        boolean supported = type.isStyleableSupported();
-        if (!supported) {
-            styleableCheck.setSelected(false);
+        boolean styleableSupported = type.isStyleableSupported();
+        if (!styleableSupported && styleableRadio.isSelected()) {
+            standardRadio.setSelected(true);
         }
-        styleableCheck.setEnabled(supported);
-        boolean enabled = styleableCheck.isSelected();
-        cssNameLabel.setEnabled(enabled);
-        cssNameField.setEnabled(enabled);
+        styleableRadio.setEnabled(styleableSupported);
+
+        boolean cssVisible = styleableRadio.isSelected();
+        cssNameLabel.setVisible(cssVisible);
+        cssNameField.setVisible(cssVisible);
+    }
+
+    private void handleAccessModeChange() {
+        updateAccessModeAvailability();
+        if (styleableRadio.isSelected()) {
+            autoUpdateCssName = true;
+            String name = nameField.getText().trim();
+            if (!name.isEmpty()) {
+                cssNameField.setText(FxNamingUtil.toFxKebabCase(name));
+                SwingUtilities.invokeLater(cssNameField::selectAll);
+            }
+        }
+        updatePreview();
     }
 
     private void updatePreview() {
@@ -534,9 +591,9 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     @NotNull
     private String generatePropertyCode(@NotNull String propName) {
         FxPropertyType type = getSelectedType();
-        boolean readonly = readonlyCheck.isSelected();
+        boolean readonly = readonlyRadio.isSelected();
         boolean lazy = lazyCheck.isSelected();
-        boolean styleable = styleableCheck.isSelected() && type.isStyleableSupported();
+        boolean styleable = styleableRadio.isSelected() && type.isStyleableSupported();
         String defaultVal = computeDefaultValue();
         String gp = genericField.getText().trim();
         String gk = genericKeyField.getText().trim();
@@ -802,7 +859,7 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
         private static final JBColor INACTIVE_DOT = new JBColor(new Color(0xB0B0B0), new Color(0x6E6E6E));
 
         private boolean value = false;
-        private final java.util.List<Runnable> changeListeners = new java.util.ArrayList<>();
+        private final List<Runnable> changeListeners = new ArrayList<>();
 
         BooleanDefaultSelector() {
             super(new GridLayout(1, 2, 0, 0));

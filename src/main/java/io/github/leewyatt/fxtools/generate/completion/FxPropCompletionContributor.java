@@ -22,16 +22,19 @@ import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ProcessingContext;
+import io.github.leewyatt.fxtools.FxToolsBundle;
 import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertiesIntegrator;
 import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertyDescriptor;
 import io.github.leewyatt.fxtools.util.FxNamingUtil;
@@ -39,9 +42,11 @@ import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -134,20 +139,31 @@ public class FxPropCompletionContributor extends CompletionContributor {
         }
 
         private void showOptionsPopup(@NotNull Editor editor, @NotNull Project project, int offset) {
-            JCheckBox lazyBox = new JCheckBox("[L] Lazy initialization");
-            JCheckBox cssBox = new JCheckBox("[C] CSS Styleable");
-            JCheckBox readonlyBox = new JCheckBox("[R] Read-only (no setter)");
-            JCheckBox defaultBox = new JCheckBox("[D] Default as constant");
+            JRadioButton readonlyRadio = new JRadioButton(
+                    "[R] " + FxToolsBundle.message("generate.fx.property.access.readonly"), false);
+            JRadioButton standardRadio = new JRadioButton(
+                    "[S] " + FxToolsBundle.message("generate.fx.property.access.standard"), true);
+            JRadioButton styleableRadio = new JRadioButton(
+                    "[C] " + FxToolsBundle.message("generate.fx.property.access.styleable"), false);
+            ButtonGroup accessGroup = new ButtonGroup();
+            accessGroup.add(readonlyRadio);
+            accessGroup.add(standardRadio);
+            accessGroup.add(styleableRadio);
+
+            JCheckBox lazyBox = new JCheckBox("[L] " + FxToolsBundle.message("generate.fx.property.lazy"));
+            JCheckBox defaultBox = new JCheckBox("[D] " + FxToolsBundle.message("generate.fx.property.constant"));
 
             JPanel checkPanel = new JPanel(new MigLayout("wrap 1, insets 0, gap 2"));
-            checkPanel.add(lazyBox);
+            checkPanel.add(readonlyRadio);
+            checkPanel.add(standardRadio);
             if (type.supportsCss()) {
-                checkPanel.add(cssBox);
+                checkPanel.add(styleableRadio);
             }
-            checkPanel.add(readonlyBox);
+            checkPanel.add(new JSeparator(), "growx, gaptop 4, gapbottom 4");
+            checkPanel.add(lazyBox);
             checkPanel.add(defaultBox);
 
-            JBLabel hintLabel = new JBLabel("Press letter to toggle, Enter to confirm");
+            JBLabel hintLabel = new JBLabel(FxToolsBundle.message("generate.fx.property.completion.options.hint"));
             hintLabel.setForeground(JBColor.namedColor(
                     "Link.activeForeground", new JBColor(0x2470B3, 0x589DF6)));
             hintLabel.setFont(hintLabel.getFont().deriveFont(java.awt.Font.BOLD));
@@ -181,8 +197,8 @@ public class FxPropCompletionContributor extends CompletionContributor {
                 popup.cancel();
                 generateCode(editor, project, offset,
                         lazyBox.isSelected(),
-                        cssBox.isSelected() && type.supportsCss(),
-                        readonlyBox.isSelected(),
+                        styleableRadio.isSelected() && type.supportsCss(),
+                        readonlyRadio.isSelected(),
                         defaultBox.isSelected());
             };
 
@@ -197,14 +213,18 @@ public class FxPropCompletionContributor extends CompletionContributor {
                             lazyBox.setSelected(!lazyBox.isSelected());
                             e.consume();
                             break;
-                        case KeyEvent.VK_C:
-                            if (type.supportsCss()) {
-                                cssBox.setSelected(!cssBox.isSelected());
-                            }
+                        case KeyEvent.VK_R:
+                            readonlyRadio.setSelected(true);
                             e.consume();
                             break;
-                        case KeyEvent.VK_R:
-                            readonlyBox.setSelected(!readonlyBox.isSelected());
+                        case KeyEvent.VK_S:
+                            standardRadio.setSelected(true);
+                            e.consume();
+                            break;
+                        case KeyEvent.VK_C:
+                            if (type.supportsCss()) {
+                                styleableRadio.setSelected(true);
+                            }
                             e.consume();
                             break;
                         case KeyEvent.VK_D:
@@ -220,8 +240,9 @@ public class FxPropCompletionContributor extends CompletionContributor {
             };
             panel.addKeyListener(keyHandler);
             lazyBox.addKeyListener(keyHandler);
-            cssBox.addKeyListener(keyHandler);
-            readonlyBox.addKeyListener(keyHandler);
+            readonlyRadio.addKeyListener(keyHandler);
+            standardRadio.addKeyListener(keyHandler);
+            styleableRadio.addKeyListener(keyHandler);
             defaultBox.addKeyListener(keyHandler);
             okButton.addKeyListener(keyHandler);
             cancelButton.addKeyListener(keyHandler);
@@ -309,9 +330,10 @@ public class FxPropCompletionContributor extends CompletionContributor {
                 defaultReference = type.lazyDefault;
             }
 
+            String cssValueType = resolveCssValueType(currentClass, propertyName);
             StyleablePropertyDescriptor descriptor = new StyleablePropertyDescriptor(
                     propertyName,
-                    type.cssValueType,
+                    cssValueType,
                     type.converterExpr,
                     FxNamingUtil.toFxKebabCase(propertyName),
                     defaultReference,
@@ -319,6 +341,30 @@ public class FxPropCompletionContributor extends CompletionContributor {
 
             WriteCommandAction.runWriteCommandAction(project, "Integrate StyleableProperties", null,
                     () -> StyleablePropertiesIntegrator.integrate(project, currentClass, descriptor, editor));
+        }
+
+        /**
+         * Resolves the CssMetaData value type. For ObjectProperty<T>, the actual generic
+         * is read from the just-inserted PsiField so the generated CssMetaData uses the
+         * concrete type rather than a loose Object cast.
+         */
+        @NotNull
+        private String resolveCssValueType(@NotNull PsiClass psiClass, @NotNull String propertyName) {
+            if (type != FxPropCodeGenerator.PropType.OBJECT) {
+                return type.cssValueType;
+            }
+            PsiField field = psiClass.findFieldByName(propertyName, false);
+            if (field == null) {
+                return "Object";
+            }
+            PsiType fieldType = field.getType();
+            if (fieldType instanceof PsiClassType) {
+                PsiType[] params = ((PsiClassType) fieldType).getParameters();
+                if (params.length == 1) {
+                    return params[0].getCanonicalText();
+                }
+            }
+            return "Object";
         }
 
         /**

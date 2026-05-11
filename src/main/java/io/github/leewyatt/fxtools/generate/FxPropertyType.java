@@ -39,6 +39,8 @@ public enum FxPropertyType {
             "ReadOnlySetWrapper", "ReadOnlySetProperty",
             "javafx.beans.property", true, false, "get");
 
+    public static final String TODO_STYLE_CONVERTER_EXPRESSION = "/* TODO: provide StyleConverter */";
+
     private final String propertyTypeName;
     private final String valueTypeName;
     private final String simpleClassName;
@@ -75,9 +77,11 @@ public enum FxPropertyType {
 
     /**
      * Returns whether this type supports CSS styleable generation.
+     * LIST/MAP/SET are excluded because JavaFX does not provide
+     * SimpleStyleableListProperty / SimpleStyleableMapProperty / SimpleStyleableSetProperty.
      */
     public boolean isStyleableSupported() {
-        return this != OBJECT && this != LIST && this != MAP && this != SET;
+        return this != LIST && this != MAP && this != SET;
     }
 
     /**
@@ -92,6 +96,7 @@ public enum FxPropertyType {
             case FLOAT: return "SimpleStyleableFloatProperty";
             case DOUBLE: return "SimpleStyleableDoubleProperty";
             case BOOLEAN: return "SimpleStyleableBooleanProperty";
+            case OBJECT: return "SimpleStyleableObjectProperty";
             default: return null;
         }
     }
@@ -121,6 +126,21 @@ public enum FxPropertyType {
             case INTEGER: case LONG: case FLOAT: case DOUBLE: return "Number";
             default: return "Object";
         }
+    }
+
+    /**
+     * Returns the CssMetaData value type, resolving the generic parameter for ObjectProperty.
+     * For {@code ObjectProperty<Color>}, callers want {@code CssMetaData<..., Color>} rather
+     * than the loose {@code CssMetaData<..., Object>}.
+     *
+     * @param genericParam the generic type the user typed (may be empty)
+     */
+    @NotNull
+    public String getCssValueType(@NotNull String genericParam) {
+        if (this == OBJECT && !genericParam.isEmpty()) {
+            return genericParam;
+        }
+        return getCssValueType();
     }
 
     /**

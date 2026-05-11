@@ -1,5 +1,6 @@
 package io.github.leewyatt.fxtools.generate.completion;
 
+import io.github.leewyatt.fxtools.generate.FxPropertyType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +48,8 @@ public final class FxPropCodeGenerator {
                 "is", "false", "false", "false", false, false),
         OBJECT("fxpobject", "ObjectProperty", "Object", "SimpleObjectProperty",
                 "ReadOnlyObjectWrapper", "ReadOnlyObjectProperty",
-                null, null, null, null,
+                "StyleableObjectProperty", "SimpleStyleableObjectProperty",
+                FxPropertyType.TODO_STYLE_CONVERTER_EXPRESSION, "Object",
                 "get", "null", "null", "null", true, false),
         LIST("fxplist", "ListProperty", "javafx.collections.ObservableList", "SimpleListProperty",
                 "ReadOnlyListWrapper", "ReadOnlyListProperty",
