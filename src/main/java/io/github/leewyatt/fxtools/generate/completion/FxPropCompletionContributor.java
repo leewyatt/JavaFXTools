@@ -35,6 +35,7 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ProcessingContext;
 import io.github.leewyatt.fxtools.FxToolsBundle;
+import io.github.leewyatt.fxtools.generate.StyleableConverterResolver;
 import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertiesIntegrator;
 import io.github.leewyatt.fxtools.generate.styleable.StyleablePropertyDescriptor;
 import io.github.leewyatt.fxtools.util.FxNamingUtil;
@@ -330,11 +331,12 @@ public class FxPropCompletionContributor extends CompletionContributor {
                 defaultReference = type.lazyDefault;
             }
 
-            String cssValueType = resolveCssValueType(currentClass, propertyName);
+            StyleableConverterResolver.Result conversion =
+                    resolveStyleableConversion(currentClass, propertyName);
             StyleablePropertyDescriptor descriptor = new StyleablePropertyDescriptor(
                     propertyName,
-                    cssValueType,
-                    type.converterExpr,
+                    conversion.cssValueType(),
+                    conversion.converterExpression(),
                     FxNamingUtil.toFxKebabCase(propertyName),
                     defaultReference,
                     constName);
@@ -344,27 +346,27 @@ public class FxPropCompletionContributor extends CompletionContributor {
         }
 
         /**
-         * Resolves the CssMetaData value type. For ObjectProperty<T>, the actual generic
-         * is read from the just-inserted PsiField so the generated CssMetaData uses the
-         * concrete type rather than a loose Object cast.
+         * Resolves the CssMetaData type and converter. For ObjectProperty<T>, the
+         * just-inserted PsiField gives us the concrete generic type.
          */
         @NotNull
-        private String resolveCssValueType(@NotNull PsiClass psiClass, @NotNull String propertyName) {
+        private StyleableConverterResolver.Result resolveStyleableConversion(@NotNull PsiClass psiClass,
+                                                                             @NotNull String propertyName) {
             if (type != FxPropCodeGenerator.PropType.OBJECT) {
-                return type.cssValueType;
+                return new StyleableConverterResolver.Result(type.cssValueType, type.converterExpr);
             }
             PsiField field = psiClass.findFieldByName(propertyName, false);
             if (field == null) {
-                return "Object";
+                return StyleableConverterResolver.resolveObjectProperty((PsiType) null);
             }
             PsiType fieldType = field.getType();
-            if (fieldType instanceof PsiClassType) {
-                PsiType[] params = ((PsiClassType) fieldType).getParameters();
-                if (params.length == 1) {
-                    return params[0].getCanonicalText();
-                }
+            if (!(fieldType instanceof PsiClassType)) {
+                return StyleableConverterResolver.resolveObjectProperty((PsiType) null);
             }
-            return "Object";
+            PsiType[] params = ((PsiClassType) fieldType).getParameters();
+            return params.length == 1
+                    ? StyleableConverterResolver.resolveObjectProperty(params[0])
+                    : StyleableConverterResolver.resolveObjectProperty((PsiType) null);
         }
 
         /**

@@ -456,14 +456,20 @@ public class FxPropertyGenerateDialog extends DialogWrapper {
     public StyleablePropertyDescriptor getStyleableDescriptor() {
         FxPropertyType type = getPropertyType();
         String converterExpression = type.getConverterExpression();
-        if (converterExpression == null) {
-            converterExpression = FxPropertyType.TODO_STYLE_CONVERTER_EXPRESSION;
-        }
         String propertyName = getPropertyName();
         String genericParam = genericField.getText().trim();
+        String cssValueType = type.getCssValueType(genericParam);
+        if (type == FxPropertyType.OBJECT) {
+            StyleableConverterResolver.Result result =
+                    StyleableConverterResolver.resolveObjectProperty(genericParam, project);
+            cssValueType = result.cssValueType();
+            converterExpression = result.converterExpression();
+        } else if (converterExpression == null) {
+            converterExpression = FxPropertyType.TODO_STYLE_CONVERTER_EXPRESSION;
+        }
         return new StyleablePropertyDescriptor(
                 propertyName,
-                type.getCssValueType(genericParam),
+                cssValueType,
                 converterExpression,
                 getCssName(),
                 getCssDefaultReference(),
