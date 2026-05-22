@@ -2,7 +2,7 @@ package io.github.leewyatt.fxtools.css.preview;
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
-import com.intellij.ide.plugins.PluginManagerCore;
+import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.progress.ProgressManager;
@@ -36,7 +36,7 @@ public class FxCssColorPreviewProvider implements LineMarkerProvider {
     private static final Pattern PROPERTY_PATTERN =
             Pattern.compile("([\\w-]+)\\s*:\\s*([^;{}]+?)\\s*;");
     private static final boolean ULTIMATE_CSS_AVAILABLE =
-            PluginManagerCore.getPlugin(PluginId.getId("com.intellij.css")) != null;
+            PluginManager.getInstance().findEnabledPlugin(PluginId.getId("com.intellij.css")) != null;
 
     @Override
     public @Nullable LineMarkerInfo<?> getLineMarkerInfo(@NotNull PsiElement element) {

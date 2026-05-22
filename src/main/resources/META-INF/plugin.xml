@@ -49,6 +49,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.2.4</h3>
+
+<h4>Fixes</h4>
+<ul>
+  <li>Replaced an internal IntelliJ Platform API call with its public equivalent to clear a compatibility issue reported by JetBrains plugin verification. No change to existing behavior.</li>
+</ul>
+
 <h3>2.2.3</h3>
 
 <h4>Improvements</h4>
