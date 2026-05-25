@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.JBPopupListener;
@@ -50,7 +51,10 @@ public final class JavaColorGutterHandler {
         Document document = editor.getDocument();
         var range = expression.replaceRange();
         RangeMarker marker = document.createRangeMarker(range.getStartOffset(), range.getEndOffset());
-        marker.setGreedyToRight(false);
+        // Greedy so the marker absorbs the new text on each picker change event;
+        // without this, after the first replaceString the marker collapses to an
+        // empty range and subsequent edits insert at the start instead of overwriting.
+        marker.setGreedyToRight(true);
 
         PaintPicker picker = PaintPicker.createColorPicker();
         picker.setPaintProperty(expression.color());
@@ -63,6 +67,11 @@ public final class JavaColorGutterHandler {
                 return;
             }
             String newText = JavaColorWriter.format(expression, newColor);
+            String currentText = document.getText(
+                    new TextRange(marker.getStartOffset(), marker.getEndOffset()));
+            if (newText.equals(currentText)) {
+                return;
+            }
             WriteCommandAction.runWriteCommandAction(project, "Change Color", groupId, () -> {
                 document.replaceString(marker.getStartOffset(), marker.getEndOffset(), newText);
             });

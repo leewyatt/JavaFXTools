@@ -45,7 +45,10 @@ public final class JavaFxWebStringParser {
      *   <li>For hex inputs — {@code hexPrefix}, {@code hexLength} (3/4/6/8),
      *       {@code hexUpperCase}.</li>
      *   <li>For named — {@code namedOriginal} (raw author text, preserving case).</li>
-     *   <li>For functional rgb/rgba — {@code rgbStyles} of length 3.</li>
+     *   <li>For functional rgb/rgba — {@code rgbStyles} of length 3,
+     *       {@code rgbTokens} of length 3 (trimmed original token text), and
+     *       {@code rgbBytes} of length 3 (the 0-255 value each token parsed to,
+     *       used to detect unchanged components on write-back).</li>
      * </ul>
      */
     public static final class Result {
@@ -56,10 +59,12 @@ public final class JavaFxWebStringParser {
         public final boolean hexUpperCase;
         public final String namedOriginal;
         public final ComponentStyle[] rgbStyles;
+        public final String[] rgbTokens;
+        public final int[] rgbBytes;
 
         private Result(Color color, Subformat subformat, HexPrefix hexPrefix,
                        int hexLength, boolean hexUpperCase, String namedOriginal,
-                       ComponentStyle[] rgbStyles) {
+                       ComponentStyle[] rgbStyles, String[] rgbTokens, int[] rgbBytes) {
             this.color = color;
             this.subformat = subformat;
             this.hexPrefix = hexPrefix;
@@ -67,6 +72,8 @@ public final class JavaFxWebStringParser {
             this.hexUpperCase = hexUpperCase;
             this.namedOriginal = namedOriginal;
             this.rgbStyles = rgbStyles;
+            this.rgbTokens = rgbTokens;
+            this.rgbBytes = rgbBytes;
         }
     }
 
@@ -90,6 +97,9 @@ public final class JavaFxWebStringParser {
         if (raw.isEmpty()) {
             return null;
         }
+        // Mirror the upstream Color.web behavior: no overall trim; just lowercase.
+        // Whitespace inside functional component tokens is handled per-component
+        // in parseComponent.
         String input = raw;
         String lower = input.toLowerCase(Locale.ROOT);
         HexPrefix prefix;
@@ -125,7 +135,7 @@ public final class JavaFxWebStringParser {
                 }
                 Color withOpacity = withAlphaMultiplier(nc, opacity);
                 return new Result(withOpacity, Subformat.NAMED, null, 0, false,
-                        raw, null);
+                        raw, null, null, null);
             }
             prefix = HexPrefix.NONE;
             hexStart = 0;
@@ -147,7 +157,7 @@ public final class JavaFxWebStringParser {
             case OX -> Subformat.HEX_0X;
             case NONE -> Subformat.HEX_BARE;
         };
-        return new Result(base, sf, prefix, len, upper, null, null);
+        return new Result(base, sf, prefix, len, upper, null, null, null, null);
     }
 
     /** Parses a hex body (no prefix) of length 3/4/6/8 with optional opacity multiplier. */
@@ -262,8 +272,10 @@ public final class JavaFxWebStringParser {
                         g.percent ? ComponentStyle.PERCENT : ComponentStyle.INTEGER,
                         b.percent ? ComponentStyle.PERCENT : ComponentStyle.INTEGER
                 };
+                String[] tokens = new String[]{r.originalText, g.originalText, b.originalText};
+                int[] bytes = new int[]{rb, gb, bb};
                 Subformat sf = hasAlpha ? Subformat.FUNC_RGBA : Subformat.FUNC_RGB;
-                return new Result(color, sf, null, 0, false, null, styles);
+                return new Result(color, sf, null, 0, false, null, styles, tokens, bytes);
             } else {
                 // hsl(h, s%, l%) — JavaFX treats this as hsb(h, s, l, a).
                 ComponentInfo h = parseComponent(lower, firstOff, p0End, false, true);
@@ -289,7 +301,7 @@ public final class JavaFxWebStringParser {
                 double bri = Math.max(0.0, Math.min(1.0, l.value));
                 Color color = hsbToColor(hue, sat, bri, clampAlpha(a));
                 Subformat sf = hasAlpha ? Subformat.FUNC_HSLA : Subformat.FUNC_HSL;
-                return new Result(color, sf, null, 0, false, null, null);
+                return new Result(color, sf, null, 0, false, null, null, null, null);
             }
         } catch (NumberFormatException nfe) {
             return null;
@@ -304,10 +316,11 @@ public final class JavaFxWebStringParser {
     @Nullable
     private static ComponentInfo parseComponent(@NotNull String src, int from, int to,
                                                 boolean isAlpha, boolean isAngle) {
-        String token = src.substring(from, to).trim();
-        if (token.isEmpty()) {
+        String original = src.substring(from, to).trim();
+        if (original.isEmpty()) {
             return null;
         }
+        String token = original;
         boolean percent = token.endsWith("%");
         if (percent) {
             if (isAlpha || isAngle) {
@@ -318,21 +331,21 @@ public final class JavaFxWebStringParser {
         try {
             if (isAngle) {
                 double d = Double.parseDouble(token);
-                return new ComponentInfo(d, false);
+                return new ComponentInfo(d, false, original);
             }
             if (percent) {
                 double d = Double.parseDouble(token);
                 double clamped = d <= 0.0 ? 0.0 : (d >= 100.0 ? 1.0 : d / 100.0);
-                return new ComponentInfo(clamped, true);
+                return new ComponentInfo(clamped, true, original);
             }
             if (isAlpha) {
                 double d = Double.parseDouble(token);
-                return new ComponentInfo(d, false);
+                return new ComponentInfo(d, false, original);
             }
             // RGB int form
             int i = Integer.parseInt(token);
             double v = i <= 0 ? 0.0 : (i >= 255 ? 1.0 : i / 255.0);
-            return new ComponentInfo(v, false);
+            return new ComponentInfo(v, false, original);
         } catch (NumberFormatException nfe) {
             return null;
         }
@@ -364,9 +377,11 @@ public final class JavaFxWebStringParser {
     private static final class ComponentInfo {
         final double value;
         final boolean percent;
-        ComponentInfo(double value, boolean percent) {
+        final String originalText;
+        ComponentInfo(double value, boolean percent, String originalText) {
             this.value = value;
             this.percent = percent;
+            this.originalText = originalText;
         }
     }
 }

@@ -13,7 +13,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,8 +33,25 @@ public final class FxNamedColorsReverseIndex {
 
     private static final Logger LOG = Logger.getInstance(FxNamedColorsReverseIndex.class);
 
-    private static volatile Map<String, String> HEX_TO_NAME;
-    private static volatile Set<String> ALL_UPPER_NAMES;
+    /**
+     * Immutable holder published as a single volatile reference so that the
+     * two tables are observed atomically: either both visible (after the
+     * volatile store on {@link #TABLES}) or neither (before it). Avoids the
+     * partial-initialization window that would exist if {@code hexToName} and
+     * {@code allUpperNames} were two separate volatile fields written in
+     * sequence.
+     */
+    private static final class Tables {
+        final Map<String, String> hexToName;
+        final Set<String> allUpperNames;
+
+        Tables(Map<String, String> hexToName, Set<String> allUpperNames) {
+            this.hexToName = hexToName;
+            this.allUpperNames = allUpperNames;
+        }
+    }
+
+    private static volatile Tables TABLES;
 
     private FxNamedColorsReverseIndex() {
     }
@@ -48,74 +67,80 @@ public final class FxNamedColorsReverseIndex {
         }
         String key = String.format("%02x%02x%02x",
                 color.getRed(), color.getGreen(), color.getBlue());
-        return getMap().get(key);
+        return tables().hexToName.get(key);
     }
 
     /**
-     * Returns the set of all named-color constant names in uppercase form
-     * (e.g. {@code DARKORANGE}). Used as a leaf-text prefilter so that the
-     * detector does not call {@code resolve()} on every identifier.
+     * Returns the set of all named-color constant names in uppercase form,
+     * <b>including alias spellings</b> like {@code DARKGREY} and {@code GREY}.
+     * Used as a leaf-text prefilter so that the detector does not call
+     * {@code resolve()} on every identifier.
      */
     @NotNull
     public static Set<String> allUpperCaseNames() {
-        getMap();
-        return ALL_UPPER_NAMES;
+        return tables().allUpperNames;
     }
 
     @NotNull
-    private static Map<String, String> getMap() {
-        Map<String, String> result = HEX_TO_NAME;
-        if (result == null) {
+    private static Tables tables() {
+        Tables local = TABLES;
+        if (local == null) {
             synchronized (FxNamedColorsReverseIndex.class) {
-                result = HEX_TO_NAME;
-                if (result == null) {
-                    result = load();
-                    HEX_TO_NAME = result;
-                    Set<String> upper = new java.util.HashSet<>(result.size());
-                    for (String name : result.values()) {
-                        upper.add(name);
-                    }
-                    ALL_UPPER_NAMES = Collections.unmodifiableSet(upper);
+                local = TABLES;
+                if (local == null) {
+                    local = load();
+                    TABLES = local;
                 }
             }
         }
-        return result;
+        return local;
     }
 
+    /**
+     * Loads both tables:
+     * <ul>
+     *   <li>{@code hexToName} — hex (lowercase 6 digits) → preferred US
+     *       spelling (first occurrence wins).</li>
+     *   <li>{@code allUpperNames} — all JSON names uppercased, including
+     *       alias spellings, so the leaf-text prefilter accepts
+     *       {@code Color.DARKGREY} as well as {@code Color.DARKGRAY}.</li>
+     * </ul>
+     */
     @NotNull
-    private static Map<String, String> load() {
-        Map<String, String> result = new HashMap<>();
+    private static Tables load() {
+        Map<String, String> hexToName = new HashMap<>();
+        Set<String> allNames = new HashSet<>();
         try (InputStream is = FxNamedColorsReverseIndex.class
                 .getResourceAsStream("/data/fx-named-colors.json")) {
             if (is == null) {
                 LOG.warn("fx-named-colors.json not found");
-                return result;
+                return new Tables(hexToName, Collections.unmodifiableSet(allNames));
             }
             Gson gson = new Gson();
             Type type = new TypeToken<LinkedHashMap<String, String>>() {}.getType();
             LinkedHashMap<String, String> raw = gson.fromJson(
                     new InputStreamReader(is, StandardCharsets.UTF_8), type);
-            if (raw == null) {
-                return result;
-            }
-            for (Map.Entry<String, String> entry : raw.entrySet()) {
-                String name = entry.getKey();
-                if ("transparent".equalsIgnoreCase(name)) {
-                    continue;
+            if (raw != null) {
+                for (Map.Entry<String, String> entry : raw.entrySet()) {
+                    String name = entry.getKey();
+                    if ("transparent".equalsIgnoreCase(name)) {
+                        continue;
+                    }
+                    String upper = name.toUpperCase(Locale.ROOT);
+                    allNames.add(upper);
+
+                    String normalized = normalizeHex(entry.getValue());
+                    if (normalized != null) {
+                        // Keep the first occurrence — the canonical US spelling
+                        // (DARKGRAY before DARKGREY, etc.).
+                        hexToName.putIfAbsent(normalized, upper);
+                    }
                 }
-                String hex = entry.getValue();
-                String normalized = normalizeHex(hex);
-                if (normalized == null) {
-                    continue;
-                }
-                // Keep the first occurrence — the canonical US spelling
-                // (DARKGRAY before DARKGREY, etc.).
-                result.putIfAbsent(normalized, name.toUpperCase(java.util.Locale.ROOT));
             }
         } catch (Exception ex) {
             LOG.error("Failed to load fx-named-colors.json for reverse index", ex);
         }
-        return result;
+        return new Tables(hexToName, Collections.unmodifiableSet(allNames));
     }
 
     @Nullable
@@ -127,6 +152,6 @@ public final class FxNamedColorsReverseIndex {
         if (h.length() != 6) {
             return null;
         }
-        return h.toLowerCase(java.util.Locale.ROOT);
+        return h.toLowerCase(Locale.ROOT);
     }
 }

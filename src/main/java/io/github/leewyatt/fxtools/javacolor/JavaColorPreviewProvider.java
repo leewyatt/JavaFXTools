@@ -64,26 +64,14 @@ public class JavaColorPreviewProvider implements LineMarkerProvider {
             }
             GutterIconNavigationHandler<PsiElement> handler =
                     (e, elt) -> JavaColorGutterHandler.openEditor(e, file, expression);
-            String tooltip = describe(expression);
             result.add(new LineMarkerInfo<>(
                     identifier,
                     identifier.getTextRange(),
                     icon,
-                    psi -> tooltip,
+                    null,
                     handler,
                     CssPreviewIconRenderer.GUTTER_ALIGNMENT,
-                    () -> tooltip));
+                    () -> ""));
         }
-    }
-
-    @NotNull
-    private static String describe(@NotNull JavaColorExpression expression) {
-        java.awt.Color c = expression.color();
-        if (c.getAlpha() == 255) {
-            return String.format("Color preview: #%02X%02X%02X",
-                    c.getRed(), c.getGreen(), c.getBlue());
-        }
-        return String.format("Color preview: #%02X%02X%02X%02X",
-                c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
     }
 }

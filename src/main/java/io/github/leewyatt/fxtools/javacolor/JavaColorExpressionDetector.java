@@ -16,6 +16,7 @@ import com.intellij.psi.PsiMethodCallExpression;
 import com.intellij.psi.PsiNewExpression;
 import com.intellij.psi.PsiReferenceExpression;
 import com.intellij.psi.PsiType;
+import io.github.leewyatt.fxtools.css.FxNamedColors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -108,7 +109,7 @@ public final class JavaColorExpressionDetector {
         if (owner == null || !COLOR_FQN.equals(owner.getQualifiedName())) {
             return null;
         }
-        Color c = io.github.leewyatt.fxtools.css.FxNamedColors.getColor(identifier.getText());
+        Color c = FxNamedColors.getColor(identifier.getText());
         if (c == null) {
             return null;
         }
@@ -171,6 +172,11 @@ public final class JavaColorExpressionDetector {
         String name = methodIdent.getText();
         PsiExpression qualifier = methodRef.getQualifierExpression();
         if (qualifier == null) {
+            return null;
+        }
+        // Cheap text prefilter to avoid resolveMethod() on the many
+        // String.valueOf / Integer.valueOf / etc. call sites.
+        if (!qualifier.getText().contains("Color")) {
             return null;
         }
         PsiMethod method = call.resolveMethod();
@@ -378,7 +384,8 @@ public final class JavaColorExpressionDetector {
                     parsed.namedOriginal, parsed.color);
             case FUNC_RGB, FUNC_RGBA, FUNC_HSL, FUNC_HSLA -> new JavaColorExpression.WebFunctional(
                     call, ident, qualifier, methodName, literal,
-                    parsed.subformat, parsed.rgbStyles, parsed.color);
+                    parsed.subformat, parsed.rgbStyles, parsed.rgbTokens, parsed.rgbBytes,
+                    parsed.color);
         };
     }
 

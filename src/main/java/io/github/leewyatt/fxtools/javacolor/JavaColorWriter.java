@@ -292,14 +292,16 @@ public final class JavaColorWriter {
                         JavaFxWebStringParser.ComponentStyle.INTEGER
                 };
             }
-            String r = formatRgbComponent(newColor.getRed(), styles[0]);
-            String g = formatRgbComponent(newColor.getGreen(), styles[1]);
-            String b = formatRgbComponent(newColor.getBlue(), styles[2]);
+            int[] newBytes = {newColor.getRed(), newColor.getGreen(), newColor.getBlue()};
+            String[] tokens = new String[3];
+            for (int i = 0; i < 3; i++) {
+                tokens[i] = reuseOrFormatRgbComponent(wf, i, newBytes[i], styles[i]);
+            }
             if (emitAlpha) {
                 String a = formatDouble(newColor.getAlpha() / 255.0);
-                content = r + ", " + g + ", " + b + ", " + a;
+                content = tokens[0] + ", " + tokens[1] + ", " + tokens[2] + ", " + a;
             } else {
-                content = r + ", " + g + ", " + b;
+                content = tokens[0] + ", " + tokens[1] + ", " + tokens[2];
             }
         } else {
             // hsl/hsla: convert to HSB, emit as hsl wrapper (JavaFX parses hsl as hsb).
@@ -469,6 +471,27 @@ public final class JavaColorWriter {
             return formatPercent(byteValue / 255.0);
         }
         return Integer.toString(byteValue);
+    }
+
+    /**
+     * Returns the original token text verbatim if {@code newByte} matches the
+     * byte the original token parsed to (research doc §4.2 golden example:
+     * editing only alpha must not touch the R/G/B token text). Falls back to
+     * style-driven formatting otherwise.
+     */
+    @NotNull
+    private static String reuseOrFormatRgbComponent(@NotNull JavaColorExpression.WebFunctional wf,
+                                                    int index, int newByte,
+                                                    @NotNull JavaFxWebStringParser.ComponentStyle style) {
+        String[] tokens = wf.rgbTokens();
+        int[] bytes = wf.rgbBytes();
+        if (tokens != null && bytes != null
+                && index < tokens.length && index < bytes.length
+                && bytes[index] == newByte
+                && tokens[index] != null) {
+            return tokens[index];
+        }
+        return formatRgbComponent(newByte, style);
     }
 
     /**
