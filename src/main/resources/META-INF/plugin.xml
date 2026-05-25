@@ -358,6 +358,8 @@
                                         implementationClass="io.github.leewyatt.fxtools.css.preview.FxmlInlineCssLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA"
                                         implementationClass="io.github.leewyatt.fxtools.ikonli.IkonliGutterIconProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA"
+                                        implementationClass="io.github.leewyatt.fxtools.javacolor.JavaColorPreviewProvider"/>
         <codeInsight.lineMarkerProvider language="XML"
                                         implementationClass="io.github.leewyatt.fxtools.ikonli.FxmlIconLiteralGutterProvider"/>
         <completion.contributor language="XML"
