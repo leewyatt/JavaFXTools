@@ -49,6 +49,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+<h3>2.2.5</h3>
+
+<h4>Fixes</h4>
+<ul>
+  <li>Cleared several IntelliJ Platform compatibility warnings from JetBrains plugin verification: replaced an internal API used for CSS language detection, migrated the FxmlKit dev-mode version warning dialog off two scheduled-for-removal dialog APIs, and reduced deprecated API usage. No change to existing behavior.</li>
+</ul>
+
 <h3>2.2.4</h3>
 
 <h4>Fixes</h4>
