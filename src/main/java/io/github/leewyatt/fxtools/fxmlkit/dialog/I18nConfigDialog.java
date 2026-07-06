@@ -1,7 +1,7 @@
 package io.github.leewyatt.fxtools.fxmlkit.dialog;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.module.Module;
@@ -12,6 +12,7 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -111,7 +112,8 @@ public class I18nConfigDialog extends DialogWrapper {
         this.previousConfig = previousConfig;
         this.contextDir = contextDir;
         this.defaultLocation = computeDefaultLocation();
-        this.existingBundles = ReadAction.compute(() -> scanExistingBundles(project));
+        this.existingBundles = ApplicationManager.getApplication()
+                .runReadAction((Computable<List<BundleInfo>>) () -> scanExistingBundles(project));
         setTitle(FxToolsBundle.message("dialog.new.fxmlkit.view.i18n.dialog.title"));
         init();
         initValidation();

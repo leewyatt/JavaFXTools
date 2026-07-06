@@ -6,8 +6,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import io.github.leewyatt.fxtools.css.FxCssPropertyTable;
 import io.github.leewyatt.fxtools.util.FxDetector;
 import org.jetbrains.annotations.NotNull;
@@ -18,19 +16,6 @@ import org.jetbrains.annotations.NotNull;
  * where CSS files are treated as plain text.
  */
 public class FxCssCompletionContributor extends CompletionContributor {
-
-    @Override
-    public boolean invokeAutoPopup(@NotNull PsiElement position, char typeChar) {
-        PsiFile file = position.getContainingFile();
-        if (file == null) {
-            return false;
-        }
-        VirtualFile vFile = file.getVirtualFile();
-        if (vFile == null || !"css".equals(vFile.getExtension())) {
-            return false;
-        }
-        return typeChar == '-' || typeChar == ':';
-    }
 
     @Override
     public void fillCompletionVariants(@NotNull CompletionParameters parameters,

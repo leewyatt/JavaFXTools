@@ -3,12 +3,21 @@ package io.github.leewyatt.fxtools.fxmlkit.devmode;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.DoNotAskOption;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Key;
+import com.intellij.ui.components.JBLabel;
 import com.intellij.util.text.VersionComparatorUtil;
+import com.intellij.util.ui.JBUI;
 import io.github.leewyatt.fxtools.FxToolsBundle;
 import io.github.leewyatt.fxtools.fxmlkit.FxmlKitInstalledVersionReader;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextPane;
+import java.awt.BorderLayout;
 
 /**
  * Checks the installed FxmlKit version before launching in dev mode. Versions below
@@ -58,7 +67,7 @@ final class FxmlKitDevVersionChecker {
         String launchButton = FxToolsBundle.message("dialog.fxmlkit.devmode.button.launchAnyway");
         String cancelButton = FxToolsBundle.message("dialog.fxmlkit.devmode.button.cancel");
 
-        DialogWrapper.DoNotAskOption option = new DialogWrapper.DoNotAskOption.Adapter() {
+        DoNotAskOption option = new DoNotAskOption.Adapter() {
             @Override
             public void rememberChoice(boolean isSelected, int exitCode) {
                 if (isSelected && exitCode == 0) {
@@ -72,15 +81,46 @@ final class FxmlKitDevVersionChecker {
             }
         };
 
-        int result = Messages.showDialog(
-                project,
-                message,
-                title,
-                new String[]{launchButton, cancelButton},
-                0,
-                Messages.getWarningIcon(),
-                option);
+        return new VersionWarningDialog(project, title, message, launchButton, cancelButton, option)
+                .showAndGet();
+    }
 
-        return result == 0;
+    /**
+     * Modal warning dialog built on {@link DialogWrapper} directly, avoiding the
+     * removed dialog helpers. Presents the multi-line message with a warning icon and wires the
+     * "don't show again" checkbox through {@link #setDoNotAskOption}.
+     */
+    private static final class VersionWarningDialog extends DialogWrapper {
+
+        private final String message;
+
+        // FQN is required here: inside a DialogWrapper subclass the simple name DoNotAskOption
+        // resolves to the inherited, deprecated DialogWrapper.DoNotAskOption, which shadows the
+        // imported top-level com.intellij.openapi.ui.DoNotAskOption.
+        VersionWarningDialog(@NotNull Project project, @NotNull String title, @NotNull String message,
+                             @NotNull String okText, @NotNull String cancelText,
+                             @NotNull com.intellij.openapi.ui.DoNotAskOption option) {
+            super(project, true);
+            this.message = message;
+            setTitle(title);
+            setOKButtonText(okText);
+            setCancelButtonText(cancelText);
+            setDoNotAskOption(option);
+            init();
+        }
+
+        @Override
+        protected @Nullable JComponent createCenterPanel() {
+            JPanel panel = new JPanel(new BorderLayout(JBUI.scale(12), 0));
+
+            JBLabel iconLabel = new JBLabel(Messages.getWarningIcon());
+            iconLabel.setVerticalAlignment(JBLabel.TOP);
+            panel.add(iconLabel, BorderLayout.WEST);
+
+            JTextPane pane = Messages.configureMessagePaneUi(new JTextPane(), message);
+            panel.add(pane, BorderLayout.CENTER);
+
+            return panel;
+        }
     }
 }
